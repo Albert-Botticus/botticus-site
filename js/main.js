@@ -128,7 +128,7 @@
   wireRelayForm({
     formId: 'mockup-form', statusId: 'mockup-status', formType: 'website-mockup',
     subjectPrefix: 'Botticus website mockup: ',
-    successText: 'Got it. Your mockup will be in your inbox within one business day.',
+    successText: 'Got it. Your mockup will be in your inbox, usually within the hour.',
     fields: [
       { name: 'name', label: 'Name' }, { name: 'business', label: 'Business' },
       { name: 'email', label: 'Email' }, { name: 'phone', label: 'Phone' },
