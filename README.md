@@ -9,14 +9,22 @@ Static site for botticus.com (Botticus, tailored AI agents for small business ow
 
 ## Contact form
 
-`js/main.js` posts JSON to **FormSubmit** (`https://formsubmit.co/ajax/hello@botticus.com`), which emails the
-submission to hello@botticus.com with subject `Botticus inquiry: <business or name>`. No account and no fee;
-the address was activated once (2026-10-30) by clicking FormSubmit's confirmation email in the hello@ inbox.
-Formspree was not used because the free SRL Formspree account is capped at two linked emails, both in use.
+`js/main.js` posts JSON (Content-Type `text/plain`, to avoid a CORS preflight) to a **Google Apps Script web
+app** in Nathan's nlevysrl@gmail.com account, which emails the submission to hello@botticus.com with subject
+`Botticus inquiry: <business or name>` and Reply-To set to the visitor. Source: `tools/form-relay/Code.gs`
+(+ `.clasp.json`, script id `1vdIejxr4o7HJYVrZJXVD0bXaBbDlNILzIN6a4KN6HN2eTS-J8IiawLZN`). Deployed 2026-10-30
+as version 1, deployment `AKfycbxO0iHYHOCovD6Lk4eGggo_VIIYffzFMnQFjbC0NfnBqitcsJanFDpd12RApKg2coeZUA`.
 
-Spam: the `_gotcha` honeypot is checked client-side; `_captcha: 'false'` turns off FormSubmit's captcha page
-(it is an AJAX call, so the captcha page would never render anyway). If spam becomes a problem, set
-`_captcha` to `'true'` and switch to a normal form POST.
+Why not a form service: Formspree's free SRL account is capped at two linked emails (both used); FormSubmit was
+down (Cloudflare 521) and Web3Forms sits behind a bot check. The Apps Script costs nothing, has no vendor, and
+fits the pitch (runs in your own account).
+
+Changing the relay: edit `tools/form-relay/Code.gs`, `cd tools/form-relay && clasp push --force`, then publish
+in the editor (Deploy > Manage deployments > pencil > Version: New version > Deploy). Never `clasp deploy` a web
+app: CLI deployments lose the web-app entry point. The URL stays the same across versions.
+
+Spam: `_gotcha` honeypot client-side (the relay also drops anything with it filled), 4,000-char field cap, and a
+30-submissions-per-hour brake in the relay. No CAPTCHA, by choice.
 
 Albert watches hello@ through `~/.openclaw/workspace/mail-alerts` (account `botticus`): any mail to the box
 pings Telegram, and FormSubmit leads are highlighted "NEW LEAD: botticus.com".

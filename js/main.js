@@ -37,12 +37,13 @@
     });
   }
 
-  // The site is static, so the form posts to FormSubmit (formsubmit.co), which emails
-  // the request to hello@botticus.com. No account: the address was activated once by
-  // clicking FormSubmit's confirmation email. If the POST fails, it falls back to
-  // opening the visitor's email client with the same text.
+  // The site is static, so the form posts to a Google Apps Script web app in Nathan's
+  // own Google account (source: tools/form-relay/Code.gs), which emails the request to
+  // hello@botticus.com. Content-Type is text/plain on purpose: it keeps the browser from
+  // sending a CORS preflight, which Apps Script cannot answer. If the POST fails, it
+  // falls back to opening the visitor's email client with the same text.
   var CONTACT_EMAIL = 'hello@botticus.com';
-  var FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + CONTACT_EMAIL;
+  var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxO0iHYHOCovD6Lk4eGggo_VIIYffzFMnQFjbC0NfnBqitcsJanFDpd12RApKg2coeZUA/exec';
   var form = document.getElementById('contact-form');
   if (form) {
     var sending = false;
@@ -86,17 +87,16 @@
       if (status) status.textContent = 'Sending...';
       fetch(FORM_ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
-          _subject: subject, _template: 'table', _captcha: 'false', _replyto: get('email'),
-          kind: 'BOTTICUS_INQUIRY', name: get('name'), business: get('business'),
-          email: get('email'), phone: get('phone'), size: get('size'), message: text
+          name: get('name'), business: get('business'), email: get('email'),
+          phone: get('phone'), size: get('size'), details: get('details')
         })
       }).then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.json();
       }).then(function (data) {
-        if (!data || String(data.success) !== 'true') throw new Error('rejected');
+        if (!data || data.ok !== true) throw new Error((data && data.error) || 'rejected');
         sending = false;
         if (status) status.textContent = 'Sent. I will reply within one business day.';
         form.reset();
