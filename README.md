@@ -19,9 +19,15 @@ Why not a form service: Formspree's free SRL account is capped at two linked ema
 down (Cloudflare 521) and Web3Forms sits behind a bot check. The Apps Script costs nothing, has no vendor, and
 fits the pitch (runs in your own account).
 
-Changing the relay: edit `tools/form-relay/Code.gs`, `cd tools/form-relay && clasp push --force`, then publish
-in the editor (Deploy > Manage deployments > pencil > Version: New version > Deploy). Never `clasp deploy` a web
-app: CLI deployments lose the web-app entry point. The URL stays the same across versions.
+Changing the relay: edit `tools/form-relay/Code.gs`, then from `tools/form-relay`:
+
+    clasp push --force
+    clasp deploy --deploymentId AKfycbxO0iHYHOCovD6Lk4eGggo_VIIYffzFMnQFjbC0NfnBqitcsJanFDpd12RApKg2coeZUA --description "what changed"
+
+`clasp push` only uploads source; visitors keep hitting the last *deployed* version until you deploy. Always
+target the existing deployment ID: a bare `clasp deploy` creates a new deployment and loses the web-app entry
+point. The URL never changes. Verify with a GET to `/exec`, which returns `{"ok":true,"service":"botticus-form-relay"}`.
+A form field the deployed relay does not know about is silently dropped, so redeploy whenever a form gains a field.
 
 Spam: `_gotcha` honeypot client-side (the relay also drops anything with it filled), 4,000-char field cap, and a
 30-submissions-per-hour brake in the relay. No CAPTCHA, by choice.
