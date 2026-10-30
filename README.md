@@ -57,6 +57,8 @@ image model so the lettering is exact. Re-run `python tools/make_botticus_images
   `botticus` in `mail-alerts/config.json`.
 - Pricing: the plans deliberately show "quote on the call" instead of numbers.
 - The 3D-print shop and social club case studies are unnamed on purpose until their owners agree to be named.
-- The comparison table names Meta Muse and ChatGPT Dots (added 2026-10-30). Every claim came from Meta's/OpenAI's
-  announcements or public reporting at that date (TechCrunch, CNBC, eesel, Syntax Dispatch). Re-check before
+- The comparison table names Meta Muse, ChatGPT Dots and xAI's Grok Bot (Grok Bot added 2026-10-30 evening). Every claim
+  came from the vendors' announcements or public reporting at that date (TechCrunch, CNBC, eesel, Syntax Dispatch;
+  for Grok Bot: VentureBeat launch coverage 2026-08-11, Vellum, eesel pricing, Coursiv, Paralect's October update).
+  Grok Bot is a beta whose plans changed several times in Aug-Oct 2026; re-check the Cost cell before quoting it. Re-check before
   editing: a wrong claim about a named competitor is a legal problem, a vague one is just weak copy.
