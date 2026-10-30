@@ -29,6 +29,12 @@ Spam: `_gotcha` honeypot client-side (the relay also drops anything with it fill
 Albert watches hello@ through `~/.openclaw/workspace/mail-alerts` (account `botticus`): any mail to the box
 pings Telegram, and FormSubmit leads are highlighted "NEW LEAD: botticus.com".
 
+## Images
+
+`tools/make_botticus_images.py` renders `img/og-card.png` (1200x630 share card), `img/favicon-32.png`
+and `img/favicon-180.png` from the brand values in `css/style.css`. Rendered with PIL rather than an
+image model so the lettering is exact. Re-run `python tools/make_botticus_images.py` after a brand change.
+
 ## Things still to decide (as of 2026-10-30)
 
 - ~~Contact email~~ **SETTLED 2026-10-30.** `hello@botticus.com` exists on Google Workspace and the lead path is

@@ -111,7 +111,11 @@
         if (!data || data.ok !== true) throw new Error((data && data.error) || 'rejected');
         sending = false;
         if (status) status.textContent = 'Sent. I will reply within one business day.';
+        // Clear the fields and relabel the button rather than leaving an empty form
+        // behind a dead Send. The button stays disabled so a second click cannot
+        // duplicate the lead, but it now says why instead of looking broken.
         form.reset();
+        if (button) { button.textContent = 'Sent'; button.disabled = true; }
       }).catch(function (err) { fallback(err && err.message ? err.message : 'network error'); });
     });
   }
