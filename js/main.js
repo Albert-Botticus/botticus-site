@@ -132,7 +132,7 @@
     fields: [
       { name: 'name', label: 'Name' }, { name: 'business', label: 'Business' },
       { name: 'email', label: 'Email' }, { name: 'phone', label: 'Phone' },
-      { name: 'city', label: 'City' }, { name: 'what', label: 'What the business does' },
+      { name: 'website', label: 'Current website' }, { name: 'city', label: 'City' }, { name: 'what', label: 'What the business does' },
       { name: 'services', label: 'Top three services' }, { name: 'notes', label: 'Anything else' }
     ]
   });

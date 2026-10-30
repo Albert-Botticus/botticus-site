@@ -40,6 +40,7 @@ function doPost(e) {
     'Business: ' + get('business'),
     'Email: ' + get('email'),
     'Phone: ' + get('phone'),
+    'Current website: ' + get('website'),
     'City: ' + get('city'),
     'What the business does: ' + get('what'),
     'Top three services: ' + get('services'),
