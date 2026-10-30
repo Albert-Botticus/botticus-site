@@ -22,4 +22,6 @@ The honeypot field `_gotcha` is checked client-side and by Formspree. No CAPTCHA
   GoDaddy email forwarding) or change it site-wide.
 - Pricing: the plans deliberately show "quote on the call" instead of numbers.
 - The 3D-print shop and social club case studies are unnamed on purpose until their owners agree to be named.
-- The comparison table talks about "big-platform assistants" generically rather than naming a product.
+- The comparison table names Meta Muse and ChatGPT Dots (added 2026-10-30). Every claim came from Meta's/OpenAI's
+  announcements or public reporting at that date (TechCrunch, CNBC, eesel, Syntax Dispatch). Re-check before
+  editing: a wrong claim about a named competitor is a legal problem, a vague one is just weak copy.
