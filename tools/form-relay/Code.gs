@@ -28,8 +28,28 @@ function doPost(e) {
   if (!get('name') || !get('email')) return json_({ ok: false, error: 'name and email required' });
   if (overCap_()) return json_({ ok: false, error: 'rate limited' });
 
-  var subject = 'Botticus inquiry: ' + (get('business') || get('name'));
-  var body = [
+  // Two forms share this relay. formType decides the subject, so a free-mockup request
+  // is obvious in the inbox instead of reading like another general inquiry. A page that
+  // posts no formType still works and still says "inquiry".
+  var mockup = get('formType') === 'website-mockup';
+  var subject = (mockup ? 'Botticus website mockup: ' : 'Botticus inquiry: ') + (get('business') || get('name'));
+  var body = (mockup ? [
+    'FREE WEBSITE MOCKUP REQUEST',
+    '',
+    'Name: ' + get('name'),
+    'Business: ' + get('business'),
+    'Email: ' + get('email'),
+    'Phone: ' + get('phone'),
+    'City: ' + get('city'),
+    'What the business does: ' + get('what'),
+    'Top three services: ' + get('services'),
+    '',
+    'Anything else:',
+    get('notes'),
+    '',
+    '--',
+    'Sent from the botticus.com free mockup form.'
+  ] : [
     'Name: ' + get('name'),
     'Business: ' + get('business'),
     'Email: ' + get('email'),
@@ -41,7 +61,7 @@ function doPost(e) {
     '',
     '--',
     'Sent from the botticus.com contact form.'
-  ].join('\n');
+  ]).join('\n');
 
   var options = { name: 'botticus.com form' };
   if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(get('email'))) options.replyTo = get('email');

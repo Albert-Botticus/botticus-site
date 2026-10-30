@@ -44,12 +44,16 @@
   // falls back to opening the visitor's email client with the same text.
   var CONTACT_EMAIL = 'hello@botticus.com';
   var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxO0iHYHOCovD6Lk4eGggo_VIIYffzFMnQFjbC0NfnBqitcsJanFDpd12RApKg2coeZUA/exec';
-  var form = document.getElementById('contact-form');
-  if (form) {
+  // One relay, two forms. Both post the same JSON shape to the Apps Script and are
+  // told apart by formType, so the subject line says which one it was. Generalised
+  // rather than copied so a fix to validation or the fallback reaches both.
+  function wireRelayForm(opts) {
+    var form = document.getElementById(opts.formId);
+    if (!form) return;
     var sending = false;
     form.addEventListener('submit', function (event) {
       event.preventDefault();
-      var status = document.getElementById('form-status');
+      var status = document.getElementById(opts.statusId);
       var button = form.querySelector('button[type="submit"]');
       var get = function (name) { var el = form.elements[name]; return el ? String(el.value || '').trim() : ''; };
       if (sending) return;
@@ -72,17 +76,13 @@
         if (emailField && emailField.focus) emailField.focus();
         return;
       }
-      var lines = [
-        'Name: ' + get('name'),
-        'Business: ' + get('business'),
-        'Email: ' + get('email'),
-        'Phone: ' + get('phone'),
-        'Team size: ' + get('size'),
-        '',
-        'What eats your time:',
-        get('details')
-      ];
-      var subject = 'Botticus inquiry: ' + (get('business') || get('name'));
+      var payload = { _gotcha: get('_gotcha'), formType: opts.formType };
+      var lines = [];
+      opts.fields.forEach(function (f) {
+        payload[f.name] = get(f.name);
+        lines.push(f.label + ': ' + get(f.name));
+      });
+      var subject = opts.subjectPrefix + (get('business') || get('name'));
       var text = lines.join('\n');
       var fallback = function (reason) {
         sending = false;
@@ -97,20 +97,14 @@
       fetch(FORM_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          name: get('name'), business: get('business'), email: get('email'),
-          phone: get('phone'), size: get('size'), details: get('details'),
-          // Pass the honeypot through so the relay's own check is reachable. Without it
-          // Code.gs can only ever see an empty _gotcha and that defence is dead weight.
-          _gotcha: get('_gotcha')
-        })
+        body: JSON.stringify(payload)
       }).then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.json();
       }).then(function (data) {
         if (!data || data.ok !== true) throw new Error((data && data.error) || 'rejected');
         sending = false;
-        if (status) status.textContent = 'Sent. I will reply within one business day.';
+        if (status) status.textContent = opts.successText;
         // Clear the fields and relabel the button rather than leaving an empty form
         // behind a dead Send. The button stays disabled so a second click cannot
         // duplicate the lead, but it now says why instead of looking broken.
@@ -119,4 +113,27 @@
       }).catch(function (err) { fallback(err && err.message ? err.message : 'network error'); });
     });
   }
+
+  wireRelayForm({
+    formId: 'contact-form', statusId: 'form-status', formType: 'inquiry',
+    subjectPrefix: 'Botticus inquiry: ',
+    successText: 'Sent. I will reply within one business day.',
+    fields: [
+      { name: 'name', label: 'Name' }, { name: 'business', label: 'Business' },
+      { name: 'email', label: 'Email' }, { name: 'phone', label: 'Phone' },
+      { name: 'size', label: 'Team size' }, { name: 'details', label: 'What eats your time' }
+    ]
+  });
+
+  wireRelayForm({
+    formId: 'mockup-form', statusId: 'mockup-status', formType: 'website-mockup',
+    subjectPrefix: 'Botticus website mockup: ',
+    successText: 'Got it. Your mockup will be in your inbox within one business day.',
+    fields: [
+      { name: 'name', label: 'Name' }, { name: 'business', label: 'Business' },
+      { name: 'email', label: 'Email' }, { name: 'phone', label: 'Phone' },
+      { name: 'city', label: 'City' }, { name: 'what', label: 'What the business does' },
+      { name: 'services', label: 'Top three services' }, { name: 'notes', label: 'Anything else' }
+    ]
+  });
 })();

@@ -268,6 +268,16 @@
         </ul>
       </div>
       <div class="card">
+        <div class="icon">✦</div>
+        <h3>See it first, free</h3>
+        <ul>
+          <li>Tell us about your business in the form below</li>
+          <li>We build you a real mockup, not a slide</li>
+          <li>It lands in your inbox within a business day</li>
+          <li>Change anything you like, or walk away. No cost either way</li>
+        </ul>
+      </div>
+      <div class="card">
         <div class="icon">✓</div>
         <h3>Straight answers</h3>
         <ul>
@@ -277,6 +287,43 @@
           <li>Quote on the call, like everything else here</li>
         </ul>
       </div>
+    </div>
+
+    <div class="center" style="margin-top:56px">
+      <h2>Want to see yours? We will build it free.</h2>
+      <p class="lead">Fill this in and we will put together a real, working mockup of your site and email it to you. No charge, no commitment, and nothing goes live until you say so. If you like it, we finish it and put it on your own domain. If you do not, keep the mockup and we will leave you alone.</p>
+    </div>
+
+    <div class="formwrap" style="max-width:720px;margin:28px auto 0">
+      <form id="mockup-form" novalidate>
+        <div class="row">
+          <div><label for="m-name">Your name</label><input id="m-name" name="name" type="text" required autocomplete="name"></div>
+          <div><label for="m-business">Business name</label><input id="m-business" name="business" type="text" autocomplete="organization"></div>
+        </div>
+        <div class="row">
+          <div><label for="m-email">Email</label><input id="m-email" name="email" type="email" required autocomplete="email"></div>
+          <div><label for="m-phone">Phone</label><input id="m-phone" name="phone" type="tel" autocomplete="tel"></div>
+        </div>
+        <div>
+          <label for="m-city">City</label>
+          <input id="m-city" name="city" type="text" placeholder="Gahanna, Ohio">
+        </div>
+        <div>
+          <label for="m-what">What does the business do?</label>
+          <input id="m-what" name="what" type="text" placeholder="Furnace and AC repair">
+        </div>
+        <div>
+          <label for="m-services">Your top three services</label>
+          <input id="m-services" name="services" type="text" placeholder="Furnace repair, AC install, maintenance plans">
+        </div>
+        <div>
+          <label for="m-notes">Anything else we should know?</label>
+          <textarea id="m-notes" name="notes" placeholder="Colors you like, a site you admire, the one thing customers always ask."></textarea>
+        </div>
+        <div class="hp" aria-hidden="true"><label>Leave this empty<input name="_gotcha" type="text" tabindex="-1" autocomplete="off"></label></div>
+        <button class="btn primary" type="submit">Build my free mockup</button>
+        <p class="note" id="mockup-status" role="status" aria-live="polite">Goes straight to hello@botticus.com. No spam, no newsletter.</p>
+      </form>
     </div>
   </div>
 </section>
