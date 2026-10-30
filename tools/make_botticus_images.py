@@ -63,7 +63,7 @@ def og_card():
     img.paste(mark, (80, 86), mark)
 
     d.text((208, 100), "BOTTICUS", font=font("segoeuib.ttf", 40), fill=WHITE)
-    d.text((210, 150), "Your business. Your bot.", font=font("segoeui.ttf", 26), fill=MUTED)
+    d.text((210, 150), "Your life. Your business. Your Bot.", font=font("segoeui.ttf", 26), fill=MUTED)
 
     headline = font("georgiab.ttf", 68)
     d.text((80, 250), "Your own AI employee.", font=headline, fill=WHITE)
