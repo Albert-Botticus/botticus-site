@@ -66,11 +66,11 @@ def og_card():
     d.text((210, 150), "Your business. Your bot.", font=font("segoeui.ttf", 26), fill=MUTED)
 
     headline = font("georgiab.ttf", 68)
-    d.text((80, 250), "Message your business.", font=headline, fill=WHITE)
-    d.text((80, 332), "Watch it get done.", font=headline, fill=GOLD)
+    d.text((80, 250), "Your own AI employee.", font=headline, fill=WHITE)
+    d.text((80, 332), "Tailored to your business.", font=headline, fill=GOLD)
 
     sub = font("segoeui.ttf", 28)
-    d.text((80, 442), "Your own AI agent, trained on how your business actually runs.", font=sub, fill=MUTED)
+    d.text((80, 442), "Inbox, orders, follow-ups, invoices. Around the clock.", font=sub, fill=MUTED)
 
     d.rectangle([80, 520, 80 + 92, 524], fill=GOLD)
     d.text((80, 548), "botticus.com", font=font("segoeuib.ttf", 30), fill=WHITE)
