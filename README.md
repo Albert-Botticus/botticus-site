@@ -9,12 +9,17 @@ Static site for botticus.com (Botticus, tailored AI agents for small business ow
 
 ## Contact form
 
-`js/main.js` posts JSON to Formspree when `FORM_ENDPOINT` is set. It is **empty** until a Botticus form is
-created on Formspree, so right now every submission falls back to opening the visitor's email app addressed to
-`hello@botticus.com`. To connect it: create a form on formspree.io that emails the Botticus inbox, paste its
-endpoint into `FORM_ENDPOINT`, and bump `main.js?v=`.
+`js/main.js` posts JSON to **FormSubmit** (`https://formsubmit.co/ajax/hello@botticus.com`), which emails the
+submission to hello@botticus.com with subject `Botticus inquiry: <business or name>`. No account and no fee;
+the address was activated once (2026-10-30) by clicking FormSubmit's confirmation email in the hello@ inbox.
+Formspree was not used because the free SRL Formspree account is capped at two linked emails, both in use.
 
-The honeypot field `_gotcha` is checked client-side and by Formspree. No CAPTCHA, by choice.
+Spam: the `_gotcha` honeypot is checked client-side; `_captcha: 'false'` turns off FormSubmit's captcha page
+(it is an AJAX call, so the captcha page would never render anyway). If spam becomes a problem, set
+`_captcha` to `'true'` and switch to a normal form POST.
+
+Albert watches hello@ through `~/.openclaw/workspace/mail-alerts` (account `botticus`): any mail to the box
+pings Telegram, and FormSubmit leads are highlighted "NEW LEAD: botticus.com".
 
 ## Things still to decide (as of 2026-10-30)
 

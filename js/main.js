@@ -37,12 +37,12 @@
     });
   }
 
-  // The site is static, so the form posts to Formspree, which emails the request
-  // to Nathan. If that fails, it falls back to opening the visitor's email client.
-  // FORM_ENDPOINT is empty until a Botticus form exists on Formspree; until then
-  // every submission uses the mailto fallback, which still reaches the inbox.
-  var FORM_ENDPOINT = '';
+  // The site is static, so the form posts to FormSubmit (formsubmit.co), which emails
+  // the request to hello@botticus.com. No account: the address was activated once by
+  // clicking FormSubmit's confirmation email. If the POST fails, it falls back to
+  // opening the visitor's email client with the same text.
   var CONTACT_EMAIL = 'hello@botticus.com';
+  var FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + CONTACT_EMAIL;
   var form = document.getElementById('contact-form');
   if (form) {
     var sending = false;
@@ -88,11 +88,15 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
-          _subject: subject, kind: 'BOTTICUS_INQUIRY', name: get('name'), business: get('business'),
+          _subject: subject, _template: 'table', _captcha: 'false', _replyto: get('email'),
+          kind: 'BOTTICUS_INQUIRY', name: get('name'), business: get('business'),
           email: get('email'), phone: get('phone'), size: get('size'), message: text
         })
       }).then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      }).then(function (data) {
+        if (!data || String(data.success) !== 'true') throw new Error('rejected');
         sending = false;
         if (status) status.textContent = 'Sent. I will reply within one business day.';
         form.reset();
