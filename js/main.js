@@ -12,6 +12,31 @@
     });
   }
 
+  // Hero chat examples: three tabs, auto-rotate every 7s until the visitor clicks one.
+  var tabs = document.querySelectorAll('.chat-tab');
+  var panes = document.querySelectorAll('.chat-pane');
+  if (tabs.length && panes.length) {
+    var order = Array.prototype.map.call(tabs, function (t) { return t.getAttribute('data-tab'); });
+    var current = 0;
+    var show = function (name) {
+      tabs.forEach(function (t) {
+        var on = t.getAttribute('data-tab') === name;
+        t.classList.toggle('active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      panes.forEach(function (p) {
+        var on = p.getAttribute('data-pane') === name;
+        p.classList.toggle('active', on);
+        if (on) p.removeAttribute('hidden'); else p.setAttribute('hidden', '');
+      });
+      current = order.indexOf(name);
+    };
+    var timer = setInterval(function () { show(order[(current + 1) % order.length]); }, 7000);
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () { clearInterval(timer); show(t.getAttribute('data-tab')); });
+    });
+  }
+
   // The site is static, so the form posts to Formspree, which emails the request
   // to Nathan. If that fails, it falls back to opening the visitor's email client.
   // FORM_ENDPOINT is empty until a Botticus form exists on Formspree; until then

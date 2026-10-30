@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Botticus | Your own AI chief of staff, built for your business</title>
-  <meta name="description" content="Botticus builds you a tailored AI agent that runs your business around the clock: inbox, quotes, follow-ups, reports, inventory, alerts. You message it like a person. It does the work. Your data stays in your own accounts.">
+  <meta name="description" content="Botticus builds you a tailored AI agent that runs your business around the clock: inbox, orders, follow-ups, reports, inventory, alerts. You message it like a person. It does the work. Your data stays in your own accounts.">
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=2">
+  <link rel="stylesheet" href="css/style.css?v=3">
   <meta property="og:title" content="Botticus | Your own AI chief of staff">
   <meta property="og:description" content="A tailored AI agent that runs your business around the clock. You message it. It does the work. Your data stays yours.">
   <meta property="og:type" content="website">
@@ -59,12 +59,31 @@
         <a class="btn ghost" href="#proof">See one running</a>
       </div>
     </div>
-    <div class="chat" aria-label="Example conversation with a Botticus agent">
+    <div class="chat" aria-label="Example conversations with a Botticus agent">
       <div class="who"><span>Nathan ↔ Albert</span><i>● online</i></div>
-      <div class="msg me">Build the Clyde to Medford load for Monday and send it to the carrier.<time>7:42 AM</time></div>
-      <div class="msg bot"><b>Done.</b> Order built in the TMS, rate confirmation sent to dispatch, LOADS sheet updated. Pickup window is 06:00–08:00. Want me to text the driver the gate instructions?<time>7:43 AM</time></div>
-      <div class="msg me">Yes. And reconcile last week's carrier invoices.<time>7:44 AM</time></div>
-      <div class="msg bot">Texted. 14 invoices reconciled, 13 match. One is $120 over the agreed rate — I drafted the dispute email for you to approve.<time>7:51 AM</time></div>
+      <div class="chat-tabs" role="tablist" aria-label="Examples">
+        <button class="chat-tab active" role="tab" aria-selected="true" data-tab="work">Work</button>
+        <button class="chat-tab" role="tab" aria-selected="false" data-tab="home">Home</button>
+        <button class="chat-tab" role="tab" aria-selected="false" data-tab="shop">Shop</button>
+      </div>
+      <div class="chat-pane active" data-pane="work" role="tabpanel">
+        <div class="msg me">Build the Louisville to Nashville load for Monday and send it to the carrier.<time>7:42 AM</time></div>
+        <div class="msg bot"><b>Done.</b> Order built in the TMS, rate confirmation sent to dispatch, load sheet updated. Pickup window is 06:00–08:00. Want me to text the driver the gate instructions?<time>7:43 AM</time></div>
+        <div class="msg me">Yes. And reconcile last week's carrier invoices.<time>7:44 AM</time></div>
+        <div class="msg bot">Texted. 14 invoices reconciled, 13 match. One is $120 over the agreed rate — I drafted the dispute email for you to approve.<time>7:51 AM</time></div>
+      </div>
+      <div class="chat-pane" data-pane="home" role="tabpanel" hidden>
+        <div class="msg me">The old couch is going. Can you get it picked up?<time>8:05 PM</time></div>
+        <div class="msg bot"><b>Booked.</b> Bulk pickup requested with Columbus 311 for your address. They'll email the date; I'll ping you the night before so it's at the curb. Anything else going out with it?<time>8:06 PM</time></div>
+        <div class="msg me">No. Also add Mom's dentist, Tuesday 2 PM, to the family calendar.<time>8:07 PM</time></div>
+        <div class="msg bot">Added to the family calendar with a reminder to her phone Monday at 7 PM. The pickup confirmation just came in: <b>Thursday</b>. 🗑️<time>8:09 PM</time></div>
+      </div>
+      <div class="chat-pane" data-pane="shop" role="tabpanel" hidden>
+        <div class="msg me">What's low in the stockroom?<time>6:30 AM</time></div>
+        <div class="msg bot">Two items under their reorder point: <b>long screws</b> (4 bags, min 5) and <b>6×9 polybags</b> (2 packs, min 5). One-tap reorder links are in your email. Everything else is fine for the week.<time>6:30 AM</time></div>
+        <div class="msg me">Order both. How did packing go yesterday?<time>6:33 AM</time></div>
+        <div class="msg bot">Marked ordered; I'll match the tracking numbers when they ship. Yesterday: 11 orders scanned and packed, 0 mistakes, all supplies deducted. Three new orders came in overnight and are on the pack list.<time>6:34 AM</time></div>
+      </div>
     </div>
   </div>
 </section>
@@ -125,12 +144,12 @@
       </div>
       <div class="card">
         <div class="icon">⚡</div>
-        <h3>Quotes & orders</h3>
+        <h3>Orders & paperwork</h3>
         <ul>
-          <li>Reads incoming requests and prepares the quote</li>
-          <li>Submits it the moment you type the number</li>
           <li>Builds orders in your TMS, CRM, or back office</li>
           <li>Sends confirmations and paperwork automatically</li>
+          <li>Logs every job into your tracking sheet, no double entry</li>
+          <li>Keeps pickup, delivery, and status current</li>
         </ul>
       </div>
       <div class="card">
@@ -254,7 +273,7 @@
       <div>
         <p class="lead">Albert is the first Botticus. He was built by our founder to run his own freight agency in Columbus, Ohio, and he has been doing it every day since. This is what "runs the business" looks like in practice.</p>
         <ul>
-          <li><strong>Quotes loads in real time.</strong> Reads the customer's request, preps the quote, submits it the second a number is typed.</li>
+          <li><strong>Keeps the load sheet true.</strong> Every awarded load lands in the tracking sheet with its history, rates, and carrier details, with no double entry.</li>
           <li><strong>Answers carriers.</strong> Replies to inbound carrier inquiries from two mailboxes with the right lane and rate.</li>
           <li><strong>Builds and sends loads on command.</strong> One text message: order built, rate confirmation out, sheet updated.</li>
           <li><strong>Posts status updates to the customer's portal</strong> every five minutes, with strict rules about what it may and may not touch.</li>
@@ -331,7 +350,7 @@
         <div class="price">Setup + monthly care <small>· quote on the call</small></div>
         <ul>
           <li>Everything in Starter</li>
-          <li>Quotes, orders, and confirmations</li>
+          <li>Orders, confirmations, and paperwork</li>
           <li>Reports and reconciliation</li>
           <li>Inventory or CRM integration</li>
           <li>Scheduled jobs around the clock</li>
@@ -435,7 +454,7 @@
           </div>
           <div>
             <label for="details">What eats your time?</label>
-            <textarea id="details" name="details" placeholder="Example: I spend two hours a day on email, quotes go out late, and nobody chases unpaid invoices."></textarea>
+            <textarea id="details" name="details" placeholder="Example: I spend two hours a day on email, orders get entered twice, and nobody chases unpaid invoices."></textarea>
           </div>
           <div class="hp" aria-hidden="true"><label>Leave this empty<input name="_gotcha" type="text" tabindex="-1" autocomplete="off"></label></div>
           <button class="btn primary" type="submit">Send</button>
@@ -475,6 +494,6 @@
   </div>
 </footer>
 
-<script src="js/main.js?v=1"></script>
+<script src="js/main.js?v=2"></script>
 </body>
 </html>
