@@ -63,6 +63,15 @@
         if (status) status.textContent = 'Please add your name and email so I can reply.';
         return;
       }
+      // The form is novalidate, so the browser never checks the address. Without this a
+      // typo still submits: the lead arrives, but the relay omits Reply-To because the
+      // address is malformed, leaving no way to answer the person. Same test as Code.gs.
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(get('email'))) {
+        if (status) status.textContent = 'That email address does not look right. Please check it so I can reply.';
+        var emailField = form.elements['email'];
+        if (emailField && emailField.focus) emailField.focus();
+        return;
+      }
       var lines = [
         'Name: ' + get('name'),
         'Business: ' + get('business'),
@@ -90,7 +99,10 @@
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
           name: get('name'), business: get('business'), email: get('email'),
-          phone: get('phone'), size: get('size'), details: get('details')
+          phone: get('phone'), size: get('size'), details: get('details'),
+          // Pass the honeypot through so the relay's own check is reachable. Without it
+          // Code.gs can only ever see an empty _gotcha and that defence is dead weight.
+          _gotcha: get('_gotcha')
         })
       }).then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);

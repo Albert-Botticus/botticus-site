@@ -31,8 +31,10 @@ pings Telegram, and FormSubmit leads are highlighted "NEW LEAD: botticus.com".
 
 ## Things still to decide (as of 2026-10-30)
 
-- Contact email: the site says `hello@botticus.com`, which does not exist yet. Either create it (Google Workspace or
-  GoDaddy email forwarding) or change it site-wide.
+- ~~Contact email~~ **SETTLED 2026-10-30.** `hello@botticus.com` exists on Google Workspace and the lead path is
+  proven end to end: the relay sends from `nlevysrl@gmail.com` and three test leads landed in the box, including
+  one from the live form ("Botticus inquiry: Botticus QA (live form)"). Albert reads it over IMAP as account
+  `botticus` in `mail-alerts/config.json`.
 - Pricing: the plans deliberately show "quote on the call" instead of numbers.
 - The 3D-print shop and social club case studies are unnamed on purpose until their owners agree to be named.
 - The comparison table names Meta Muse and ChatGPT Dots (added 2026-10-30). Every claim came from Meta's/OpenAI's
