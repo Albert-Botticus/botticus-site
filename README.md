@@ -62,3 +62,27 @@ image model so the lettering is exact. Re-run `python tools/make_botticus_images
   for Grok Bot: VentureBeat launch coverage 2026-08-11, Vellum, eesel pricing, Coursiv, Paralect's October update).
   Grok Bot is a beta whose plans changed several times in Aug-Oct 2026; re-check the Cost cell before quoting it. Re-check before
   editing: a wrong claim about a named competitor is a legal problem, a vague one is just weak copy.
+
+## Family page and kids (2026-10-30)
+
+`family.html` sells the household side: school portals in one digest, self-routing calendar, kids texting
+the Bot, kids' sites, and the rest. One site, one product; no business/personal fork and no separate
+family tier. The Plans lead says a household-only Bot starts smaller than Starter.
+
+**Kids and third-party terms, checked 2026-10-30 (re-check before any change to this section):**
+- Telegram's ToS requires 18+ in the EU, UK and Australia and publishes no general minimum elsewhere;
+  WhatsApp is 13+ in the US (16+ in Europe). So children never get a Telegram/WhatsApp/Discord thread.
+  Kids reach the Bot by SMS/iMessage from a phone on the parent's plan or a family device, with the
+  Bot's number approved under Apple child-account Allowed Contacts or Google Family Link.
+- Anthropic: consumer products are 18+ and the Usage Policy forbids "services that route requests
+  through consumer subscriptions". Any Bot a child can talk to (and, read literally, any client Bot)
+  must run on the commercial API, not a Claude.ai/Max subscription. Anthropic's "Guidelines for
+  Organizations Serving Minors" then require: age verification (here: parent-controlled allowlist of
+  numbers), content moderation/filtering (kid mode), monitoring and reporting (parents see every
+  message), educational guidance, the child-safety system prompt, AI disclosure at the start of each
+  thread, and a public compliance statement on the website. The "Kids, safely" section is that statement;
+  every claim in it must stay true in the build.
+- COPPA (amended rule effective 2025-06-23): Botticus does not collect children's data itself; anything
+  the Bot knows about a child comes from a parent, inside the family's own accounts. Kids' sites carry
+  first name only, no photo, school or address, and need parental approval. Lawyer review (Lorin
+  Westfall) still recommended before marketing the kids' features hard.
