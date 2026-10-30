@@ -31,10 +31,12 @@ function doPost(e) {
   // Two forms share this relay. formType decides the subject, so a free-mockup request
   // is obvious in the inbox instead of reading like another general inquiry. A page that
   // posts no formType still works and still says "inquiry".
-  var mockup = get('formType') === 'website-mockup';
-  var subject = (mockup ? 'Botticus website mockup: ' : 'Botticus inquiry: ') + (get('business') || get('name'));
+  // 'website-mockup' is the pre-2026-10-30-evening name for the same form; a cached
+  // page can still send it, so both are accepted and both get the demo subject.
+  var mockup = get('formType') === 'website-demo' || get('formType') === 'website-mockup';
+  var subject = (mockup ? 'Botticus demo site: ' : 'Botticus inquiry: ') + (get('business') || get('name'));
   var body = (mockup ? [
-    'FREE WEBSITE MOCKUP REQUEST',
+    'FREE DEMO SITE REQUEST',
     '',
     'Name: ' + get('name'),
     'Business: ' + get('business'),
@@ -49,7 +51,7 @@ function doPost(e) {
     get('notes'),
     '',
     '--',
-    'Sent from the botticus.com free mockup form.'
+    'Sent from the botticus.com free demo form.'
   ] : [
     'Name: ' + get('name'),
     'Business: ' + get('business'),

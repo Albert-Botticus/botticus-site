@@ -126,9 +126,9 @@
   });
 
   wireRelayForm({
-    formId: 'mockup-form', statusId: 'mockup-status', formType: 'website-mockup',
-    subjectPrefix: 'Botticus website mockup: ',
-    successText: 'Got it. Your mockup will be in your inbox, usually within the hour.',
+    formId: 'demo-form', statusId: 'demo-status', formType: 'website-demo',
+    subjectPrefix: 'Botticus demo site: ',
+    successText: 'Got it. The link to your demo site will be in your inbox, usually within the hour.',
     fields: [
       { name: 'name', label: 'Name' }, { name: 'business', label: 'Business' },
       { name: 'email', label: 'Email' }, { name: 'phone', label: 'Phone' },

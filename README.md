@@ -2,7 +2,8 @@
 
 Static site for botticus.com (Botticus, tailored AI agents for small business owners; a service of SRL Logistics LLC). No build step. Same pattern as the SRL Logistics site (shipsrl-site).
 
-- index.html, privacy.html
+- index.html, demo.html (free demo-site offer; mockup.html redirects to it), privacy.html
+- demo/<slug>/ : generated demo sites, published by the pipeline in ~/.openclaw/workspace/botticus-demo (never hand-edit; re-render from the saved spec instead)
 - css/, js/, img/
 - Hosted on GitHub Pages from `main`; CNAME = botticus.com
 - DNS at GoDaddy: A records to GitHub Pages (185.199.108.153, .109.153, .110.153, .111.153), CNAME `www` -> albert-botticus.github.io
@@ -11,9 +12,9 @@ Static site for botticus.com (Botticus, tailored AI agents for small business ow
 
 `js/main.js` posts JSON (Content-Type `text/plain`, to avoid a CORS preflight) to a **Google Apps Script web
 app** in Nathan's nlevysrl@gmail.com account, which emails the submission to hello@botticus.com with subject
-`Botticus inquiry: <business or name>` and Reply-To set to the visitor. Source: `tools/form-relay/Code.gs`
-(+ `.clasp.json`, script id `1vdIejxr4o7HJYVrZJXVD0bXaBbDlNILzIN6a4KN6HN2eTS-J8IiawLZN`). Deployed 2026-10-30
-as version 1, deployment `AKfycbxO0iHYHOCovD6Lk4eGggo_VIIYffzFMnQFjbC0NfnBqitcsJanFDpd12RApKg2coeZUA`.
+`Botticus inquiry: <business or name>` (contact form) or `Botticus demo site: <business>` (demo form, formType
+`website-demo`) and Reply-To set to the visitor. One `wireRelayForm()` serves both forms; extend it, never copy it. Source: `tools/form-relay/Code.gs`
+(+ `.clasp.json`, script id `1vdIejxr4o7HJYVrZJXVD0bXaBbDlNILzIN6a4KN6HN2eTS-J8IiawLZN`). Deployment (at @4 since 2026-10-30 evening) `AKfycbxO0iHYHOCovD6Lk4eGggo_VIIYffzFMnQFjbC0NfnBqitcsJanFDpd12RApKg2coeZUA`.
 
 Why not a form service: Formspree's free SRL account is capped at two linked emails (both used); FormSubmit was
 down (Cloudflare 521) and Web3Forms sits behind a bot check. The Apps Script costs nothing, has no vendor, and
@@ -33,7 +34,14 @@ Spam: `_gotcha` honeypot client-side (the relay also drops anything with it fill
 30-submissions-per-hour brake in the relay. No CAPTCHA, by choice.
 
 Albert watches hello@ through `~/.openclaw/workspace/mail-alerts` (account `botticus`): any mail to the box
-pings Telegram, and FormSubmit leads are highlighted "NEW LEAD: botticus.com".
+pings Telegram, and relay leads (both subjects) are highlighted "NEW LEAD: botticus.com". Demo requests are
+then picked up by the `botticus-mockup-pipeline` cron, which builds the site and emails the link from hello@.
+
+## Wording
+
+Botticus is the company. The product is "a Bot" ("Meet your Bot"), never "a Botticus". The free website offer
+is a **demo site**, never a mockup (Nathan, 2026-10-30 evening). Messaging a Bot is the paid product; the demo
+iterates by email and has no chat widget.
 
 ## Images
 

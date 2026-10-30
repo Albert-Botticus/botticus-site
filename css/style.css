@@ -96,6 +96,8 @@ p { margin: 0 0 1em; }
 .hero h1 { color: var(--white); }
 .hero h1 em { font-style: normal; color: var(--gold); }
 .hero .lead { color: #cfc8e0; font-size: 1.2rem; }
+.hero .hero-note { color: #cfc8e0; font-size: 1rem; margin: -6px 0 22px; padding-left: 14px; border-left: 3px solid var(--gold); max-width: 640px; }
+.hero .hero-note strong { color: #fff; }
 .hero .eyebrow { color: var(--gold); }
 
 /* Chat mock in hero */
