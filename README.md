@@ -65,14 +65,14 @@ image model so the lettering is exact. Re-run `python tools/make_botticus_images
 
 ## Family page and kids (2026-10-30)
 
-`family.html` sells the household side: school portals in one digest, self-routing calendar, kids texting
-the Bot, kids' sites, and the rest. One site, one product; no business/personal fork and no separate
+`family.html` sells the household side: school portals in one digest, self-routing calendar, teens (16+)
+texting the Bot, kids' sites requested by a parent, and the rest. **Nathan, 2026-10-30: children under 16
+never interact with the Bot.** It runs their logistics through the parent. One site, one product; no business/personal fork and no separate
 family tier. The Plans lead says a household-only Bot starts smaller than Starter.
 
 **Kids and third-party terms, checked 2026-10-30 (re-check before any change to this section):**
 - Telegram's ToS requires 18+ in the EU, UK and Australia and publishes no general minimum elsewhere;
-  WhatsApp is 13+ in the US (16+ in Europe). So children never get a Telegram/WhatsApp/Discord thread.
-  Kids reach the Bot by SMS/iMessage from a phone on the parent's plan or a family device, with the
+  WhatsApp is 13+ in the US (16+ in Europe). So nobody under 16 gets a thread at all, and teens 16+ reach the Bot by SMS/iMessage from a phone on the parent's plan or a family device, with the
   Bot's number approved under Apple child-account Allowed Contacts or Google Family Link.
 - Anthropic: consumer products are 18+ and the Usage Policy forbids "services that route requests
   through consumer subscriptions". Any Bot a child can talk to (and, read literally, any client Bot)
