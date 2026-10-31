@@ -39,7 +39,8 @@
     .alert .sub { color: #a79fc0; font-size: 0.85rem; margin-top: 4px; }
     .alert .btn { white-space: nowrap; }
     .log { font-size: 0.9rem; color: var(--muted); list-style: none; padding: 0; margin: 0; }
-    .log li { padding: 7px 0; border-bottom: 1px solid var(--line); }
+    .log li { padding: 7px 0; border-bottom: 1px solid var(--line); position: static; }
+    .log li::before { display: none; }
     .scan-result { text-align: center; padding: 28px 0 8px; }
     .scan-result .big { font-family: "Fraunces", Georgia, serif; font-size: 3.6rem; color: var(--ink); line-height: 1; margin: 10px 0; }
     .scan-result .arrow { color: var(--muted); font-size: 1.4rem; }
