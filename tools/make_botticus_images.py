@@ -67,10 +67,10 @@ def og_card():
 
     headline = font("georgiab.ttf", 68)
     d.text((80, 250), "Your own AI employee.", font=headline, fill=WHITE)
-    d.text((80, 332), "Tailored to your business.", font=headline, fill=GOLD)
+    d.text((80, 332), "Tailored to your life.", font=headline, fill=GOLD)
 
     sub = font("segoeui.ttf", 28)
-    d.text((80, 442), "Inbox, orders, follow-ups, invoices. Around the clock.", font=sub, fill=MUTED)
+    d.text((80, 442), "Inbox, orders, invoices, school portals, appointments. Around the clock.", font=sub, fill=MUTED)
 
     d.rectangle([80, 520, 80 + 92, 524], fill=GOLD)
     d.text((80, 548), "botticus.com", font=font("segoeuib.ttf", 30), fill=WHITE)
