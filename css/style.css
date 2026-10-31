@@ -182,6 +182,11 @@ p { margin: 0 0 1em; }
 .split li::before { content: ""; position: absolute; left: 0; top: 17px; width: 14px; height: 14px; border-radius: 50%; background: var(--gold); }
 .split li strong { color: var(--ink); }
 .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+.outcomes { display: grid; gap: 12px; margin-top: 24px; }
+.outcome { display: flex; gap: 14px; align-items: flex-start; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+.outcome .k { flex: 0 0 auto; width: 40px; height: 40px; border-radius: 10px; background: var(--ink); color: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+.outcome b { display: block; color: var(--ink); font-size: 1.02rem; margin-bottom: 2px; }
+.outcome p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.45; }
 .stat { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; text-align: center; }
 .stat b { display: block; font-size: 1.9rem; color: var(--ink); font-family: "Fraunces", Georgia, serif; line-height: 1.1; }
 .stat span { font-size: 0.85rem; color: var(--muted); }
