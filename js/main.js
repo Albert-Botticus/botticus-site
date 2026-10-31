@@ -137,7 +137,7 @@
       { name: 'email', label: 'Email' }, { name: 'phone', label: 'Phone' },
       { name: 'want', label: 'Looking for' }, { name: 'size', label: 'Team size' },
       { name: 'systems', label: 'Systems' }, { name: 'autonomy', label: 'Autonomy' },
-      { name: 'details', label: 'What eats your time' }
+      { name: 'details', label: 'What piles up' }
     ]
   });
 
