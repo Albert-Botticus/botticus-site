@@ -52,18 +52,26 @@ def profile():
 
 
 def cover():
+    # Facebook's current Page layout centres the round profile picture over the bottom-middle of the
+    # cover (and crops the sides on phones). Everything important sits in the top half, left of
+    # centre, and the bottom-middle stays empty.
     w, h = 1640, 624
     img = gradient(w, h, INK, INK_SOFT)
     d = ImageDraw.Draw(img)
     d.rectangle([0, 0, w, 6], fill=GOLD)
-    m = mark(120)
-    img.paste(m, (260, 150), m)
-    d.text((400, 150), "BOTTICUS", font=font("segoeuib.ttf", 54), fill=WHITE)
-    d.text((402, 218), "Your life. Your business. Your Bot.", font=font("segoeui.ttf", 30), fill=MUTED)
-    head = font("georgiab.ttf", 64)
-    d.text((260, 320), "Message your Bot.", font=head, fill=WHITE)
-    d.text((260, 400), "Watch it get done.", font=head, fill=GOLD)
-    d.text((262, 505), "Tailored AI agents for business owners and their families  ·  Columbus, Ohio  ·  botticus.com", font=font("segoeui.ttf", 26), fill=MUTED)
+    x = 150
+    m = mark(84)
+    img.paste(m, (x, 58), m)
+    d.text((x + 104, 58), "BOTTICUS", font=font("segoeuib.ttf", 44), fill=WHITE)
+    d.text((x + 106, 110), "Your life. Your business. Your Bot.", font=font("segoeui.ttf", 26), fill=MUTED)
+    head = font("georgiab.ttf", 62)
+    d.text((x, 190), "Message your Bot.", font=head, fill=WHITE)
+    d.text((x, 268), "Watch it get done.", font=head, fill=GOLD)
+    d.text((x + 2, 352), "Tailored AI agents for business owners and their families.", font=font("segoeui.ttf", 26), fill=MUTED)
+    tail = "Columbus, Ohio  ·  botticus.com"
+    f = font("segoeui.ttf", 26)
+    tw = d.textlength(tail, font=f)
+    d.text((w - 150 - tw, 548), tail, font=f, fill=MUTED)
     return img
 
 
