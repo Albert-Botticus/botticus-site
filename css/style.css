@@ -291,3 +291,20 @@ form .note { font-size: 0.85rem; color: var(--muted); margin-top: 10px; }
 .grid .chat { height: 100%; min-height: 0; }
 .grid .chat .msg { font-size: 0.9rem; }
 @media (max-width: 960px) { .grid.cols-2 { grid-template-columns: 1fr; } }
+
+/* Services dropdown: click to open, stays open until you click away or press Escape */
+.nav-item { position: relative; }
+.nav .menu-toggle { background: none; border: 0; padding: 0; cursor: pointer; font: inherit; font-weight: 600; font-size: 0.97rem; color: var(--text); display: inline-flex; align-items: center; gap: 6px; }
+.nav .menu-toggle:hover, .nav .menu-toggle[aria-expanded="true"] { color: var(--gold-dark); }
+.nav .caret { width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .15s; }
+.nav .menu-toggle[aria-expanded="true"] .caret { transform: translateY(2px) rotate(-135deg); }
+.nav .menu { position: absolute; top: calc(100% + 14px); left: -12px; min-width: 340px; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 8px; z-index: 60; }
+.nav .menu a { display: block; padding: 10px 12px; border-radius: 10px; text-decoration: none; white-space: normal; }
+.nav .menu a:hover { background: var(--bg-soft); }
+.nav .menu a strong { display: block; color: var(--ink); font-size: 0.97rem; }
+.nav .menu a span { display: block; color: var(--muted); font-size: 0.85rem; font-weight: 400; line-height: 1.35; margin-top: 2px; }
+.nav .menu a[aria-current="page"] strong { color: var(--gold-dark); }
+@media (max-width: 960px) {
+  .nav-item { width: 100%; }
+  .nav .menu { position: static; min-width: 0; box-shadow: none; border: 0; border-left: 2px solid var(--line); border-radius: 0; padding: 4px 0 4px 12px; margin: 6px 0 4px; }
+}

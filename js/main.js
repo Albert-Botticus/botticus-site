@@ -12,6 +12,20 @@
     });
   }
 
+  // Services dropdown: click to open, click anywhere else or press Escape to close.
+  document.querySelectorAll('.nav-item').forEach(function (item) {
+    var button = item.querySelector('.menu-toggle');
+    var menu = item.querySelector('.menu');
+    if (!button || !menu) return;
+    var setOpen = function (open) {
+      button.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
+    };
+    button.addEventListener('click', function (e) { e.stopPropagation(); setOpen(button.getAttribute('aria-expanded') !== 'true'); });
+    document.addEventListener('click', function (e) { if (!item.contains(e.target)) setOpen(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
+  });
+
   // Hero chat examples: three tabs, auto-rotate every 7s until the visitor clicks one.
   var tabs = document.querySelectorAll('.chat-tab');
   var panes = document.querySelectorAll('.chat-pane');

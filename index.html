@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=10">
+  <link rel="stylesheet" href="css/style.css?v=11">
   <meta property="og:title" content="Botticus | Your own AI chief of staff">
   <meta property="og:description" content="A tailored AI agent that runs your business and your home around the clock. You message it. It does the work. Your data stays yours.">
   <meta property="og:type" content="website">
@@ -52,10 +52,15 @@
     </a>
     <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     <nav class="nav">
-      <a href="#services">Services</a>
-      <a href="stockroom.html">Stockroom</a>
-      <a href="websites.html">Websites</a>
-      <a href="family.html">Family</a>
+      <div class="nav-item">
+        <button class="nav-link menu-toggle" type="button" aria-expanded="false" aria-controls="services-menu">Services <span class="caret" aria-hidden="true"></span></button>
+        <div class="menu" id="services-menu" hidden>
+          <a href="#services"><strong>Bots for your business</strong><span>Inbox, orders, paperwork, follow-ups. Runs where your systems run.</span></a>
+          <a href="family.html"><strong>Bots for your family</strong><span>Every school portal in one digest, a calendar that routes itself.</span></a>
+          <a href="stockroom.html"><strong>Stockroom</strong><span>Inventory, QR packing and reorder alerts, in your own Google account.</span></a>
+          <a href="websites.html"><strong>Websites</strong><span>Fast, static, and yours. See a free demo first.</span></a>
+        </div>
+      </div>
       <a href="demo.html">Demo</a>
       <a href="#plans">Pricing</a>
       <a class="btn primary" href="#quote">Get a quote</a>
@@ -596,6 +601,6 @@
   </div>
 </footer>
 
-<script src="js/main.js?v=6"></script>
+<script src="js/main.js?v=7"></script>
 </body>
 </html>
