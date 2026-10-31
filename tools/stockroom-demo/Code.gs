@@ -15,12 +15,12 @@
 // existing deployment ID (see the site README); never a bare `clasp deploy`.
 
 var CATALOG = [
-  { sku: 'GRN-ETH', name: 'Ethiopia Yirgacheffe, green', unit: 'bags', start: 14, reorderAt: 6, reorderQty: 20, supplier: 'Royal Coffee' },
-  { sku: 'GRN-COL', name: 'Colombia Huila, green', unit: 'bags', start: 9, reorderAt: 4, reorderQty: 15, supplier: 'Royal Coffee' },
-  { sku: 'BAG-12K', name: 'Retail bags, 12 oz kraft', unit: 'bags', start: 31, reorderAt: 15, reorderQty: 50, supplier: 'Pacific Bag' },
-  { sku: 'LBL-HSE', name: 'Labels, house blend', unit: 'labels', start: 18, reorderAt: 10, reorderQty: 100, supplier: 'Sticker Mule' },
-  { sku: 'BOX-MED', name: 'Shipping boxes, medium', unit: 'boxes', start: 12, reorderAt: 5, reorderQty: 30, supplier: 'Uline' }
+  { sku: 'BAG-12K', name: 'Retail bags, 12 oz kraft', unit: 'bags', start: 12, reorderAt: 5, reorderQty: 50, supplier: 'Pacific Bag', eta: 'Tuesday' },
+  { sku: 'BOX-MED', name: 'Shipping boxes, medium', unit: 'boxes', start: 10, reorderAt: 4, reorderQty: 30, supplier: 'Uline', eta: 'Thursday' },
+  { sku: 'GRN-ETH', name: 'Ethiopia Yirgacheffe, green', unit: 'bags', start: 3, reorderAt: 6, reorderQty: 20, supplier: 'Royal Coffee', eta: 'next Wednesday', pinnedLow: true }
 ];
+var VERSION = 3; // bump when the catalog changes so old saved state is thrown away
+var ORDER_SHOWN_MS = 120000; // a demo reorder stays "on order" for two minutes, then the bin is low again
 var BUSINESS = 'Clintonville Coffee Roasters (demo)';
 var SCANS_PER_MINUTE = 120;   // across everyone; a booth crowd is well under this
 var RESET_AFTER_HOURS = 20;   // a fresh demo every day
@@ -37,6 +37,9 @@ function doGet(e) {
     var bin = state.items[sku];
     var before = bin.stock;
     var event;
+    if (item.pinnedLow && bin.stock <= 1) {
+      return json_({ ok: true, sku: sku, name: item.name, unit: item.unit, before: bin.stock, after: bin.stock, reorderAt: item.reorderAt, alert: false, restocked: false, pinned: true, state: view_(state) });
+    }
     if (bin.stock <= 0) {
       bin.stock = item.start; bin.alerted = false;
       event = { t: Date.now(), sku: sku, kind: 'restock', text: item.name + ' restocked to ' + item.start + ' ' + item.unit + ' (demo auto-restock)' };
@@ -55,6 +58,17 @@ function doGet(e) {
     save_(state);
     return json_({ ok: true, sku: sku, name: item.name, unit: item.unit, before: before, after: bin.stock, reorderAt: item.reorderAt, alert: !!event.alert, restocked: event.kind === 'restock', state: view_(state) });
   }
+  if (action === 'reorder') {
+    var rsku = String(p.sku || '').toUpperCase().slice(0, 12);
+    var ritem = find_(rsku);
+    if (!ritem) return json_({ ok: false, error: 'unknown bin', state: view_(state) });
+    var rbin = state.items[rsku];
+    rbin.order = { at: Date.now(), qty: ritem.reorderQty, supplier: ritem.supplier, eta: ritem.eta };
+    state.log.unshift({ t: Date.now(), sku: rsku, kind: 'order', text: ritem.reorderQty + ' ' + ritem.unit + ' of ' + ritem.name + ' ordered from ' + ritem.supplier + ', arrives ' + ritem.eta });
+    state.log = state.log.slice(0, 25);
+    save_(state);
+    return json_({ ok: true, sku: rsku, order: rbin.order, state: view_(state) });
+  }
   if (action === 'reset') {
     if (String(p.key || '') !== PropertiesService.getScriptProperties().getProperty('RESET_KEY')) return json_({ ok: false, error: 'no' });
     state = fresh_(); save_(state);
@@ -66,12 +80,12 @@ function doGet(e) {
 function fresh_() {
   var items = {};
   CATALOG.forEach(function (i) { items[i.sku] = { stock: i.start, alerted: false }; });
-  return { since: Date.now(), items: items, picked: 0, alerts: [], log: [] };
+  return { version: VERSION, since: Date.now(), items: items, picked: 0, alerts: [], log: [] };
 }
 function load_() {
   var raw = PropertiesService.getScriptProperties().getProperty('STATE');
   var s = raw ? JSON.parse(raw) : fresh_();
-  if (Date.now() - (s.since || 0) > RESET_AFTER_HOURS * 3600000) s = fresh_();
+  if (s.version !== VERSION || Date.now() - (s.since || 0) > RESET_AFTER_HOURS * 3600000) s = fresh_();
   CATALOG.forEach(function (i) { if (!s.items[i.sku]) s.items[i.sku] = { stock: i.start, alerted: false }; });
   return s;
 }
@@ -81,7 +95,11 @@ function singular_(u) { return u.replace(/es$/, '').replace(/s$/, ''); }
 function view_(s) {
   return {
     business: BUSINESS, since: s.since, picked: s.picked,
-    items: CATALOG.map(function (i) { var b = s.items[i.sku]; return { sku: i.sku, name: i.name, unit: i.unit, stock: b.stock, start: i.start, reorderAt: i.reorderAt, reorderQty: i.reorderQty, supplier: i.supplier, low: b.stock <= i.reorderAt }; }),
+    items: CATALOG.map(function (i) {
+      var b = s.items[i.sku];
+      var order = (b.order && Date.now() - b.order.at < ORDER_SHOWN_MS) ? b.order : null;
+      return { sku: i.sku, name: i.name, unit: i.unit, stock: b.stock, start: i.start, reorderAt: i.reorderAt, reorderQty: i.reorderQty, supplier: i.supplier, eta: i.eta, pinnedLow: !!i.pinnedLow, low: b.stock <= i.reorderAt, order: order };
+    }),
     alerts: s.alerts, log: s.log
   };
 }

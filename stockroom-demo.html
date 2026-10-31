@@ -4,59 +4,69 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stockroom demo | Botticus</title>
-  <meta name="description" content="A live Stockroom demo. Scan a bin's QR code with your phone and watch the count drop on the board, for everyone, in real time. When a bin crosses its reorder point, the alert shows up too.">
+  <meta name="description" content="A live Stockroom demo. Scan a bin's QR code with your phone and watch its count drop on this page. One bin is already low, so you can see the reorder step too.">
   <meta name="robots" content="noindex">
   <link rel="canonical" href="https://botticus.com/stockroom-demo.html">
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
   <link rel="apple-touch-icon" sizes="180x180" href="img/favicon-180.png">
+  <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#15121c">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css?v=11">
   <style>
-    .demo-wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
-    .board { display: grid; gap: 14px; }
-    .bin { display: grid; grid-template-columns: 1fr auto; gap: 8px 18px; align-items: center; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; transition: box-shadow .3s; }
-    .bin.flash { box-shadow: 0 0 0 3px var(--gold); }
-    .bin h3 { margin: 0 0 2px; font-size: 1.05rem; }
-    .bin .sku { color: var(--muted); font-size: 0.8rem; letter-spacing: .06em; }
-    .bin .count { font-family: "Fraunces", Georgia, serif; font-size: 2.2rem; line-height: 1; color: var(--ink); text-align: right; }
-    .bin .count small { font-family: "Inter", sans-serif; font-size: 0.8rem; color: var(--muted); display: block; }
-    .bin .bar { grid-column: 1 / -1; height: 8px; background: var(--bg-soft); border-radius: 6px; overflow: hidden; }
-    .bin .bar i { display: block; height: 100%; background: #1f7a4d; border-radius: 6px; transition: width .4s; }
-    .bin.low .bar i { background: #c0392b; }
-    .bin .meta { grid-column: 1 / -1; display: flex; justify-content: space-between; color: var(--muted); font-size: 0.85rem; }
-    .badge { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; letter-spacing: .04em; }
+    .bins { display: grid; gap: 20px; }
+    .binrow { display: grid; grid-template-columns: 190px 1fr; gap: 24px; align-items: center; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; transition: box-shadow .3s; }
+    .binrow.flash { box-shadow: 0 0 0 3px var(--gold); }
+    .binrow .qr img { width: 170px; height: 170px; display: block; border-radius: 10px; }
+    .binrow .qr small { display: block; text-align: center; color: var(--muted); font-size: 0.78rem; margin-top: 6px; }
+    .binrow .sku { color: var(--muted); font-size: 0.8rem; letter-spacing: .06em; }
+    .binrow h3 { margin: 0 0 6px; font-size: 1.25rem; }
+    .binrow .count { font-family: "Fraunces", Georgia, serif; font-size: 3.4rem; line-height: 1; color: var(--ink); }
+    .binrow .count small { font-family: "Inter", sans-serif; font-size: 0.9rem; color: var(--muted); margin-left: 8px; }
+    .binrow .bar { height: 10px; background: var(--bg-soft); border-radius: 6px; overflow: hidden; margin: 12px 0 10px; }
+    .binrow .bar i { display: block; height: 100%; background: #1f7a4d; border-radius: 6px; transition: width .4s; }
+    .binrow.low .bar i { background: #c0392b; }
+    .binrow .meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; color: var(--muted); font-size: 0.9rem; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; letter-spacing: .04em; }
     .badge.low { background: #fdecea; color: #c0392b; }
     .badge.ok { background: #e8f5ee; color: #1f7a4d; }
-    .alerts .alert { background: var(--ink); color: #fff; border-radius: var(--radius); padding: 16px 18px; margin-bottom: 12px; }
-    .alerts .alert b { color: var(--gold); }
-    .alerts .alert .when { color: #a79fc0; font-size: 0.8rem; margin-top: 6px; }
-    .log { font-size: 0.9rem; color: var(--muted); }
-    .log li { padding: 6px 0; border-bottom: 1px solid var(--line); }
-    .scan-result { text-align: center; padding: 28px 0; }
-    .scan-result .big { font-family: "Fraunces", Georgia, serif; font-size: 3.2rem; color: var(--ink); line-height: 1; margin: 10px 0; }
-    .scan-result .arrow { color: var(--muted); font-size: 1.2rem; }
-    .qr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; }
-    .qr { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; text-align: center; }
-    .qr canvas, .qr img { width: 160px; height: 160px; display: block; margin: 0 auto 10px; }
-    .qr b { display: block; font-size: 0.95rem; color: var(--ink); }
-    .qr span { color: var(--muted); font-size: 0.8rem; }
-    @media print { header, footer, .no-print { display: none !important; } .qr-grid { grid-template-columns: repeat(2, 1fr); } }
+    .badge.ordered { background: #e8eefb; color: #2c4f9e; }
+    .alert { grid-column: 1 / -1; background: var(--ink); color: #fff; border-radius: 12px; padding: 16px 18px; margin-top: 6px; display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; }
+    .alert b { color: var(--gold); }
+    .alert .sub { color: #a79fc0; font-size: 0.85rem; margin-top: 4px; }
+    .alert .btn { white-space: nowrap; }
+    .log { font-size: 0.9rem; color: var(--muted); list-style: none; padding: 0; margin: 0; }
+    .log li { padding: 7px 0; border-bottom: 1px solid var(--line); }
+    .scan-result { text-align: center; padding: 28px 0 8px; }
+    .scan-result .big { font-family: "Fraunces", Georgia, serif; font-size: 3.6rem; color: var(--ink); line-height: 1; margin: 10px 0; }
+    .scan-result .arrow { color: var(--muted); font-size: 1.4rem; }
+    @media (max-width: 720px) { .binrow { grid-template-columns: 1fr; } .binrow .qr img { margin: 0 auto; } .alert { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-<header class="site-header no-print">
+<header class="site-header">
   <div class="container">
     <a class="brand" href="index.html">
       <span class="mark">B</span>
       <div><strong>BOTTICUS</strong><span>Your life. Your business. Your Bot.</span></div>
     </a>
-    <nav class="nav" style="display:flex">
-      <a href="stockroom.html">About Stockroom</a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav class="nav">
+      <div class="nav-item">
+        <button class="nav-link menu-toggle" type="button" aria-expanded="false" aria-controls="services-menu">Services <span class="caret" aria-hidden="true"></span></button>
+        <div class="menu" id="services-menu" hidden>
+          <a href="index.html#services"><strong>Bots for your business</strong><span>Inbox, orders, paperwork, follow-ups. Runs where your systems run.</span></a>
+          <a href="family.html"><strong>Bots for your family</strong><span>Every school portal in one digest, a calendar that routes itself.</span></a>
+          <a href="stockroom.html"><strong>Stockroom</strong><span>Inventory, QR packing and reorder alerts, in your own Google account.</span></a>
+          <a href="websites.html"><strong>Websites</strong><span>Fast, static, and yours. See a free demo first.</span></a>
+        </div>
+      </div>
+      <a href="demo.html">Demo</a>
+      <a href="index.html#plans">Pricing</a>
       <a class="btn primary" href="index.html#quote">Get a quote</a>
     </nav>
   </div>
@@ -64,9 +74,9 @@
 
 <section class="page-hero">
   <div class="container">
-    <span class="eyebrow">Live demo</span>
-    <h1 id="hero-title">Scan a bin. Watch the count drop.</h1>
-    <p class="lead" id="hero-lead">This is a working Stockroom for a made-up coffee roaster. Every scan from any phone changes the same board, which everyone sees within a few seconds. When a bin falls to its reorder point, the alert the owner would get appears on the right. Bins restock themselves at zero, and the whole thing resets each night.</p>
+    <span class="eyebrow">Live Stockroom demo</span>
+    <h1 id="hero-title">Scan a bin with your phone. Watch the count drop here.</h1>
+    <p class="lead" id="hero-lead">Two bins from a made-up coffee roaster, each with its own QR code. Point your phone's camera at one and the count next to it goes down, on this page and on anyone else's. The third bin is already below its reorder point, so you can see what the owner gets, and click through to reorder the way they would.</p>
   </div>
 </section>
 
@@ -84,38 +94,25 @@
 </section>
 
 <section class="section soft" id="board-view">
-  <div class="demo-wrap">
-    <div class="split" style="align-items:start">
+  <div class="container">
+    <div class="split" style="align-items:start;grid-template-columns:1.5fr 1fr">
       <div>
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:16px">
           <h2 style="margin:0" id="business">Stockroom</h2>
           <span class="note" id="status">Loading…</span>
         </div>
-        <p class="note" style="margin:8px 0 18px">Picked so far today: <strong id="picked">0</strong>. Scan any QR below, or <a href="#qr" class="no-print">print the labels</a> for a table or a booth.</p>
-        <div class="board" id="board"></div>
+        <div class="bins" id="bins"></div>
       </div>
       <div>
-        <h3>Alerts the owner would get</h3>
-        <div class="alerts" id="alerts"><p class="note">Nothing low yet. Scan a bin down to its reorder point.</p></div>
-        <h3 style="margin-top:26px">Log</h3>
-        <ul class="log" id="log" style="list-style:none;padding:0;margin:0"></ul>
+        <h3>What just happened</h3>
+        <ul class="log" id="log"><li>Loading…</li></ul>
+        <p class="note" style="margin-top:18px">Picked so far today: <strong id="picked">0</strong>. Bins restock themselves at zero and the demo resets each night, so scan as much as you like.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="section" id="qr">
-  <div class="demo-wrap">
-    <div class="center no-print">
-      <span class="eyebrow">Labels</span>
-      <h2>One QR per bin. Any phone camera.</h2>
-      <p class="lead">Print this page and stick the labels on five jars or boxes. Each one opens the scan page for its bin.</p>
-    </div>
-    <div class="qr-grid" id="qr-grid" style="margin-top:28px"></div>
-  </div>
-</section>
-
-<section class="section soft no-print">
+<section class="section">
   <div class="container center">
     <h2>The real one runs your shop.</h2>
     <p class="lead">Orders arriving from your marketplaces, scan-to-pack with supplies deducting themselves, reorder emails with one-tap links, a log by person, all inside your own Google account.</p>
@@ -126,13 +123,14 @@
   </div>
 </section>
 
-<footer class="site-footer no-print">
+<footer class="site-footer">
   <div class="container">
     <p><a href="index.html">Botticus</a> &middot; <a href="mailto:hello@botticus.com">hello@botticus.com</a> &middot; <a href="tel:+16148559504">614-855-9504</a></p>
     <p class="fine">Botticus is operated by SRL Logistics LLC, Columbus, Ohio. Demo stock is fictional. <a href="privacy.html">Privacy</a></p>
   </div>
 </footer>
 
+<script src="js/main.js?v=7"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 (function () {
@@ -140,41 +138,38 @@
   var PAGE = 'https://botticus.com/stockroom-demo.html';
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); };
   var get = function (q) { return fetch(API + '?' + q + '&_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.json(); }); };
-  var when = function (t) { var d = new Date(t); return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); };
-  var lastStock = {};
+  var when = function (t) { return new Date(t).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); };
+  var lastStock = {}, qrCache = {};
+
+  function qrFor(sku) {
+    if (!qrCache[sku] && typeof qrcode === 'function') { var q = qrcode(0, 'M'); q.addData(PAGE + '?scan=' + sku); q.make(); qrCache[sku] = q.createImgTag(5, 8); }
+    return qrCache[sku] || '';
+  }
 
   function render(state) {
     document.getElementById('business').textContent = state.business;
     document.getElementById('picked').textContent = state.picked;
-    document.getElementById('status').textContent = 'Live · updated ' + new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
-    var board = document.getElementById('board');
-    board.innerHTML = state.items.map(function (i) {
-      var pct = Math.max(2, Math.round(100 * i.stock / i.start));
+    document.getElementById('status').textContent = 'Live · ' + new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+    document.getElementById('bins').innerHTML = state.items.map(function (i) {
+      var pct = Math.max(3, Math.round(100 * i.stock / Math.max(i.start, i.reorderAt + 1)));
       var changed = lastStock[i.sku] !== undefined && lastStock[i.sku] !== i.stock;
       lastStock[i.sku] = i.stock;
-      return '<div class="bin' + (i.low ? ' low' : '') + (changed ? ' flash' : '') + '" id="bin-' + esc(i.sku) + '">' +
-        '<div><div class="sku">' + esc(i.sku) + '</div><h3>' + esc(i.name) + '</h3></div>' +
-        '<div class="count">' + i.stock + '<small>of ' + i.start + ' ' + esc(i.unit) + '</small></div>' +
+      var badge = i.order ? '<span class="badge ordered">ON ORDER · ' + i.order.qty + ' ' + esc(i.unit) + '</span>' : i.low ? '<span class="badge low">REORDER</span>' : '<span class="badge ok">OK</span>';
+      var alert = '';
+      if (i.low && !i.order) alert = '<div class="alert"><div><b>Reorder alert.</b> ' + esc(i.name) + ' is down to ' + i.stock + ' ' + esc(i.unit) + ' (reorder at ' + i.reorderAt + ').<div class="sub">In the real Stockroom this lands in the owner\'s inbox with a one-tap link to the supplier. Click it here to see what happens.</div></div><button class="btn primary" data-reorder="' + esc(i.sku) + '">Reorder ' + i.reorderQty + ' from ' + esc(i.supplier) + '</button></div>';
+      if (i.order) alert = '<div class="alert"><div><b>Ordered.</b> ' + i.order.qty + ' ' + esc(i.unit) + ' from ' + esc(i.order.supplier) + ', arriving ' + esc(i.order.eta) + '.<div class="sub">The tracking link attaches itself when the supplier\'s shipping email arrives. For the demo this bin goes back to low in a couple of minutes.</div></div></div>';
+      return '<div class="binrow' + (i.low ? ' low' : '') + (changed ? ' flash' : '') + '" id="bin-' + esc(i.sku) + '">' +
+        '<div class="qr">' + qrFor(i.sku) + '<small>Scan to use one ' + esc(i.unit.replace(/es$/, '').replace(/s$/, '')) + '</small></div>' +
+        '<div><div class="sku">' + esc(i.sku) + (i.pinnedLow ? ' · always low, for the demo' : '') + '</div><h3>' + esc(i.name) + '</h3>' +
+        '<div class="count">' + i.stock + '<small>' + esc(i.unit) + ' on hand</small></div>' +
         '<div class="bar"><i style="width:' + pct + '%"></i></div>' +
-        '<div class="meta"><span>Reorder at ' + i.reorderAt + ' · ' + esc(i.supplier) + '</span>' + (i.low ? '<span class="badge low">REORDER ' + i.reorderQty + '</span>' : '<span class="badge ok">OK</span>') + '</div>' +
-        '</div>';
+        '<div class="meta"><span>Reorder at ' + i.reorderAt + ' · ' + esc(i.supplier) + '</span>' + badge + '</div></div>' +
+        alert + '</div>';
     }).join('');
-    var alerts = document.getElementById('alerts');
-    alerts.innerHTML = state.alerts.length ? state.alerts.map(function (a) {
-      return '<div class="alert">📦 <b>' + esc(a.name) + '</b> is down to ' + a.stock + ' ' + esc(a.unit) + '.<br>Reorder ' + a.reorderQty + ' from ' + esc(a.supplier) + ': <u>one-tap reorder link</u><div class="when">Emailed to the owner at ' + when(a.t) + '. In the real Stockroom this is a real email with a real link.</div></div>';
-    }).join('') : '<p class="note">Nothing low yet. Scan a bin down to its reorder point.</p>';
-    document.getElementById('log').innerHTML = state.log.slice(0, 10).map(function (l) { return '<li>' + when(l.t) + ' · ' + esc(l.text) + (l.alert ? ' · <strong>alert sent</strong>' : '') + '</li>'; }).join('') || '<li>No scans yet today.</li>';
-    renderQr(state.items);
-  }
-
-  var qrDone = false;
-  function renderQr(items) {
-    if (qrDone || typeof qrcode !== 'function') return;
-    qrDone = true;
-    document.getElementById('qr-grid').innerHTML = items.map(function (i) {
-      var q = qrcode(0, 'M'); q.addData(PAGE + '?scan=' + i.sku); q.make();
-      return '<div class="qr">' + q.createImgTag(4, 8) + '<b>' + esc(i.name) + '</b><span>' + esc(i.sku) + ' · ' + esc(i.unit) + '</span></div>';
-    }).join('');
+    document.getElementById('log').innerHTML = state.log.slice(0, 8).map(function (l) { return '<li>' + when(l.t) + ' · ' + esc(l.text) + (l.alert ? ' · <strong>alert sent</strong>' : '') + '</li>'; }).join('') || '<li>No scans yet today. Be the first.</li>';
+    document.querySelectorAll('[data-reorder]').forEach(function (b) {
+      b.addEventListener('click', function () { b.disabled = true; b.textContent = 'Ordering…'; get('action=reorder&sku=' + encodeURIComponent(b.getAttribute('data-reorder'))).then(function (r) { if (r.state) render(r.state); }); });
+    });
   }
 
   function poll() { get('action=state').then(function (r) { render(r.state); }).catch(function () { document.getElementById('status').textContent = 'Reconnecting…'; }); }
@@ -184,15 +179,16 @@
   if (sku) {
     document.getElementById('scan-view').removeAttribute('hidden');
     document.getElementById('hero-title').textContent = 'Scanning ' + sku + '…';
-    document.getElementById('hero-lead').textContent = 'One pick from this bin. The board updates for everyone watching.';
+    document.getElementById('hero-lead').textContent = 'One pick from this bin. The board below updates for everyone watching.';
     document.getElementById('scan-again').href = PAGE + '?scan=' + sku;
     get('action=scan&sku=' + encodeURIComponent(sku)).then(function (r) {
       if (!r.ok) { document.getElementById('scan-name').textContent = r.error === 'busy' ? 'Busy, try again in a moment' : 'Unknown bin'; if (r.state) render(r.state); return; }
-      document.getElementById('hero-title').textContent = r.restocked ? 'Bin was empty, so it restocked itself.' : 'Scanned. One ' + r.unit.replace(/es$/, '').replace(/s$/, '') + ' used.';
+      var unit = r.unit.replace(/es$/, '').replace(/s$/, '');
+      document.getElementById('hero-title').textContent = r.restocked ? 'Bin was empty, so it restocked itself.' : r.pinned ? 'This bin stays low on purpose.' : 'Scanned. One ' + unit + ' used.';
       document.getElementById('scan-name').textContent = r.name;
       document.getElementById('scan-before').textContent = r.before;
       document.getElementById('scan-after').textContent = r.after;
-      document.getElementById('scan-note').textContent = r.alert ? 'That crossed the reorder point of ' + r.reorderAt + '. The owner just got the reorder email with a one-tap link.' : (r.after <= r.reorderAt ? 'Below the reorder point of ' + r.reorderAt + '. The owner has already been told.' : 'Reorder point is ' + r.reorderAt + '. ' + (r.after - r.reorderAt) + ' more before the owner hears about it.');
+      document.getElementById('scan-note').textContent = r.pinned ? 'It is here to show the reorder step. Scroll down and click the reorder button.' : r.alert ? 'That crossed the reorder point of ' + r.reorderAt + '. The owner just got the reorder email.' : (r.after <= r.reorderAt ? 'Below the reorder point of ' + r.reorderAt + '. The owner has already been told.' : 'Reorder point is ' + r.reorderAt + '. ' + (r.after - r.reorderAt) + ' more before the owner hears about it.');
       render(r.state);
     }).catch(function () { document.getElementById('scan-name').textContent = 'Could not reach the demo. Try again.'; });
   } else {
