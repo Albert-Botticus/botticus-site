@@ -177,7 +177,7 @@
     }).join('');
   }
 
-  function poll() { get('action=state').then(render).catch(function () { document.getElementById('status').textContent = 'Reconnecting…'; }); }
+  function poll() { get('action=state').then(function (r) { render(r.state); }).catch(function () { document.getElementById('status').textContent = 'Reconnecting…'; }); }
 
   var params = new URLSearchParams(location.search);
   var sku = (params.get('scan') || '').toUpperCase();
