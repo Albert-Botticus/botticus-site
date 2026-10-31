@@ -85,3 +85,14 @@ family tier. The Plans lead says a household-only Bot starts smaller than Starte
 - COPPA (amended rule effective 2025-06-23): Botticus does not collect children's data itself; anything
   the Bot knows about a child comes from a parent, inside the family's own accounts. Kids' sites carry
   first name only, no photo, school or address, and need parental approval. Nathan (2026-10-30): no lawyer review needed right now; his attorney is A.C. Strip.
+
+## Stockroom live demo (stockroom-demo.html)
+
+A shared, public Stockroom for a fictional coffee roaster. Scanning a bin's QR (which opens
+`stockroom-demo.html?scan=<SKU>`) calls a second Apps Script web app in nlevysrl@gmail.com
+(`tools/stockroom-demo/`, deployment `AKfycbzydjjbIlceA654p9NB1ahpyG0kBjYp6q63WQAJgaqEK_72Mho5jsCvs_X7o9v_iXtvmA`)
+that decrements the bin and returns state; the board polls it every 4 s so every viewer sees the
+change. Guards: 120 scans/minute cap, floor at zero with auto-restock, full reset after 20 hours,
+no personal data anywhere, state in Script Properties. Redeploy with
+`clasp deploy --deploymentId <id>`; never a bare `clasp deploy`. QR codes are drawn in the
+browser (qrcode-generator from cdnjs); print the page for booth labels.
