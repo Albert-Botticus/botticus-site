@@ -113,15 +113,15 @@ def cover():
     d.text((bx + 84 + 22, cy - 230 + 14), "BOTTICUS", font=name_f, fill=WHITE)
 
     # Headline, two lines, centred
-    head = font("georgiab.ttf", 92)
-    for i, (line, color) in enumerate([("Message your Bot.", WHITE), ("Watch it get done.", GOLD)]):
+    head = font("georgiab.ttf", 86)
+    for i, (line, color) in enumerate([("Message your Bot.", WHITE), ("Get on with your day.", GOLD)]):
         tw = d.textlength(line, font=head)
         d.text((cx - tw / 2, cy - 110 + i * 104), line, font=head, fill=color)
 
     d.rectangle([cx - 60, cy + 122, cx + 60, cy + 126], fill=GOLD)
 
     sub_f = font("segoeui.ttf", 32)
-    sub = "Tailored AI agents for business owners and their families."
+    sub = "An AI agent tailored to you, your business and your family."
     d.text((cx - d.textlength(sub, font=sub_f) / 2, cy + 150), sub, font=sub_f, fill=MUTED)
     site_f = font("segoeuib.ttf", 30)
     site = "botticus.com"
