@@ -102,9 +102,9 @@ p { margin: 0 0 1em; }
 
 /* Chat mock in hero */
 .chat {
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: var(--radius);
+  background: var(--ink-2); border: 1px solid rgba(255,255,255,0.14); border-radius: var(--radius);
   padding: 22px; backdrop-filter: blur(2px);
-}
+ text-align: left; }
 .chat .who { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: #a79fc0; margin-bottom: 12px; display: flex; justify-content: space-between; }
 .chat .who i { font-style: normal; color: #6fcf97; }
 .chat-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
