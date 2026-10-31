@@ -5,8 +5,8 @@ brand text, and a diffusion model garbles lettering. Re-run after a brand change
 
     python tools/make_botticus_images.py
 
-Writes img/og-card.png (1200x630), img/favicon-32.png, img/favicon-180.png
-(apple-touch-icon). Brand values mirror css/style.css.
+Writes img/og-card.png (1200x630), img/favicon-32/180/192/512.png and favicon.ico.
+Brand values mirror css/style.css; the mark matches the Facebook profile picture.
 """
 from PIL import Image, ImageDraw, ImageFont
 import os
@@ -37,17 +37,26 @@ def vertical_gradient(w, h, top, bottom):
     return img
 
 
-def rounded_mark(size, radius_ratio=0.25):
-    """The square gold-on-ink 'B' used as the avatar and favicon."""
-    scale = 4  # supersample so the rounded corners and serif edges stay clean
+def rounded_mark(size, radius_ratio=0.22, bubble_ratio=0.86):
+    """The brand mark: ink rounded square carrying a gold chat bubble with an ink 'B'.
+    Same drawing as the Facebook profile picture (tools/make_facebook_assets.py)."""
+    scale = 4  # supersample so the curves and serif edges stay clean
     s = size * scale
     tile = Image.new("RGBA", (s, s), (0, 0, 0, 0))
     d = ImageDraw.Draw(tile)
     d.rounded_rectangle([0, 0, s - 1, s - 1], radius=int(s * radius_ratio), fill=INK)
-    f = font("georgiab.ttf", int(s * 0.62))
+    # Bubble body, slightly above centre so the tail has room.
+    b = int(s * bubble_ratio)
+    pad = int(s * 0.14 * bubble_ratio)
+    off = (s - b) // 2
+    x0, y0 = off + pad, off + pad - int(s * 0.02)
+    x1, y1 = off + b - pad, off + b - pad - int(b * 0.06)
+    d.rounded_rectangle([x0, y0, x1, y1], radius=int(b * 0.20), fill=GOLD)
+    d.polygon([(x0 + int(b * 0.06), y1 - int(b * 0.16)), (x0 - int(b * 0.02), y1 + int(b * 0.10)), (x0 + int(b * 0.26), y1 - int(b * 0.01))], fill=GOLD)
+    f = font("georgiab.ttf", int(b * 0.50))
     box = d.textbbox((0, 0), "B", font=f)
-    d.text(((s - (box[2] - box[0])) / 2 - box[0], (s - (box[3] - box[1])) / 2 - box[1]),
-           "B", font=f, fill=GOLD)
+    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2 - int(b * 0.01)
+    d.text((cx - (box[2] - box[0]) / 2 - box[0], cy - (box[3] - box[1]) / 2 - box[1]), "B", font=f, fill=INK)
     return tile.resize((size, size), Image.LANCZOS)
 
 
