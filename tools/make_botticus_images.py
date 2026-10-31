@@ -84,8 +84,8 @@ def main():
     for size, name in ((32, "favicon-32.png"), (180, "favicon-180.png"), (192, "favicon-192.png"), (512, "favicon-512.png")):
         rounded_mark(size).save(os.path.join(IMG, name), "PNG", optimize=True)
     # favicon.ico at the site root: what browsers, Google and bookmark bars ask for first.
-    ico = [rounded_mark(n).convert("RGBA") for n in (16, 32, 48)]
-    ico[0].save(os.path.join(os.path.dirname(IMG), "favicon.ico"), format="ICO", sizes=[(16, 16), (32, 32), (48, 48)], append_images=ico[1:])
+    # Pillow builds every ICO frame by downsizing the base image, so start from the largest.
+    rounded_mark(256).convert("RGBA").save(os.path.join(os.path.dirname(IMG), "favicon.ico"), format="ICO", sizes=[(16, 16), (32, 32), (48, 48), (64, 64)])
     print("wrote og-card.png (1200x630), favicon-32/180/192/512.png to", IMG, "and favicon.ico to the site root")
 
 
