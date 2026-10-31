@@ -6,11 +6,7 @@ Deterministic (PIL), same brand values as make_botticus_images.py. Re-run after 
 
 Writes to OneDrive\\Desktop\\Botticus\\facebook\\:
   profile-720.png      square; a gold chat bubble carrying the B mark, on ink. Reads at 40 px.
-  cover-1640x624.png   headline on the left, a short Bot conversation on the right.
-
-Cover safe area: Facebook shows the middle ~1110 px on phones and lays the round profile picture
-over the bottom-left on desktop, so everything that matters sits inside x 265..1375 and above
-y 470, and the bottom-left stays empty.
+  cover-1640x924.png   centred headline; see cover() for the crop reasoning.
 """
 import os
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -99,75 +95,45 @@ def profile():
 
 
 def cover():
-    w, h = 1640, 624
+    """1640x924 (16:9, Meta's stated computer ratio). Desktop currently shows a ~2.7:1 band and
+    phones 2.4:1, both from the middle, so everything sits inside the central 1250x560 and the
+    background runs edge to edge. Deliberately little text: a cover is a sign, not a brochure."""
+    w, h = 1640, 924
     img = gradient(w, h, INK_2, INK)
-    glow(img, (900, -80, 1500, 420), GOLD_DEEP, 120)
+    glow(img, (560, 160, 1080, 680), GOLD_DEEP, 160)
     d = ImageDraw.Draw(img)
-    d.rectangle([0, 0, w, 6], fill=GOLD)
+    cx, cy = w // 2, h // 2
 
-    # Left: brand line + headline.
-    x = 330
-    m = mark(72)
-    img.paste(m, (x, 110), m)
-    d.text((x + 90, 112), "BOTTICUS", font=font("segoeuib.ttf", 40), fill=WHITE)
-    d.text((x + 92, 158), "Your life. Your business. Your Bot.", font=font("segoeui.ttf", 24), fill=MUTED)
-    head = font("georgiab.ttf", 62)
-    d.text((x, 226), "Message your Bot.", font=head, fill=WHITE)
-    d.text((x, 302), "Watch it get done.", font=head, fill=GOLD)
-    d.text((x + 2, 392), "Tailored AI agents for business owners", font=font("segoeui.ttf", 26), fill=MUTED)
-    d.text((x + 2, 426), "and their families. Columbus, Ohio.", font=font("segoeui.ttf", 26), fill=MUTED)
-    d.text((x + 2, 478), "botticus.com", font=font("segoeuib.ttf", 26), fill=GOLD)
+    # Brand line
+    m = mark(84)
+    name_f = font("segoeuib.ttf", 46)
+    name_w = d.textlength("BOTTICUS", font=name_f)
+    bx = int(cx - (84 + 22 + name_w) / 2)
+    img.paste(m, (bx, cy - 230), m)
+    d.text((bx + 84 + 22, cy - 230 + 14), "BOTTICUS", font=name_f, fill=WHITE)
 
-    # Right: a short conversation card. Inside the phone-safe area (x < 1375).
-    cx0, cy0, cx1, cy1 = 975, 70, 1375, 556
-    d.rounded_rectangle((cx0, cy0, cx1, cy1), radius=28, fill=INK_3)
-    d.rounded_rectangle((cx0, cy0, cx1, cy0 + 58), radius=28, fill=(52, 46, 68))
-    d.rectangle((cx0, cy0 + 30, cx1, cy0 + 58), fill=(52, 46, 68))
-    mm = mark(34)
-    img.paste(mm, (cx0 + 20, cy0 + 12), mm)
-    d.text((cx0 + 64, cy0 + 15), "Your Bot", font=font("segoeuib.ttf", 22), fill=WHITE)
-    d.ellipse((cx1 - 100, cy0 + 24, cx1 - 88, cy0 + 36), fill=(78, 196, 120))
-    d.text((cx1 - 80, cy0 + 17), "online", font=font("segoeui.ttf", 18), fill=MUTED)
+    # Headline, two lines, centred
+    head = font("georgiab.ttf", 92)
+    for i, (line, color) in enumerate([("Message your Bot.", WHITE), ("Watch it get done.", GOLD)]):
+        tw = d.textlength(line, font=head)
+        d.text((cx - tw / 2, cy - 110 + i * 104), line, font=head, fill=color)
 
-    fb = font("segoeui.ttf", 20)
-    y = cy0 + 72
-    maxw = 316
-    pad = 14
-    lh = 26
-    chat = [
-        ("you", "Did the Henderson order ship? Mia's field trip form is due Friday."),
-        ("bot", "Shipped at 9:40, tracking sent. Field trip form signed and submitted, confirmation in your inbox."),
-        ("you", "Perfect. Dentist Tuesday after 3?"),
-        ("bot", "Booked, 3:40. On the family calendar, reminder at 2:30."),
-    ]
-    for who, text in chat:
-        lines = wrap(d, text, fb, maxw - 2 * pad)
-        tw = max(d.textlength(l, font=fb) for l in lines) + 2 * pad
-        bh = len(lines) * lh + 2 * pad - 4
-        if who == "you":
-            x1 = cx1 - 22
-            x0 = x1 - tw
-            bubble(d, (x0, y, x1, y + bh), GOLD, 18, tail="right")
-            color = INK
-        else:
-            x0 = cx0 + 22
-            x1 = x0 + tw
-            bubble(d, (x0, y, x1, y + bh), BUBBLE_BOT, 18, tail="left")
-            color = WHITE
-        ty = y + pad - 3
-        for l in lines:
-            d.text((x0 + pad, ty), l, font=fb, fill=color)
-            ty += lh
-        y += bh + 10
-    assert y <= cy1 - 10, f"chat overflows the card by {y - (cy1 - 10)} px"
+    d.rectangle([cx - 60, cy + 122, cx + 60, cy + 126], fill=GOLD)
+
+    sub_f = font("segoeui.ttf", 32)
+    sub = "Tailored AI agents for business owners and their families."
+    d.text((cx - d.textlength(sub, font=sub_f) / 2, cy + 150), sub, font=sub_f, fill=MUTED)
+    site_f = font("segoeuib.ttf", 30)
+    site = "botticus.com"
+    d.text((cx - d.textlength(site, font=site_f) / 2, cy + 206), site, font=site_f, fill=GOLD)
     return img
 
 
 def main():
     os.makedirs(OUT, exist_ok=True)
     profile().save(os.path.join(OUT, "profile-720.png"), "PNG", optimize=True)
-    cover().save(os.path.join(OUT, "cover-1640x624.png"), "PNG", optimize=True)
-    print("wrote profile-720.png and cover-1640x624.png to", OUT)
+    cover().save(os.path.join(OUT, "cover-1640x924.png"), "PNG", optimize=True)
+    print("wrote profile-720.png and cover-1640x924.png to", OUT)
 
 
 if __name__ == "__main__":
