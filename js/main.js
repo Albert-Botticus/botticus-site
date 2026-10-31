@@ -115,13 +115,15 @@
   }
 
   wireRelayForm({
-    formId: 'contact-form', statusId: 'form-status', formType: 'inquiry',
-    subjectPrefix: 'Botticus inquiry: ',
-    successText: 'Sent. I will reply within one business day.',
+    formId: 'contact-form', statusId: 'form-status', formType: 'quote',
+    subjectPrefix: 'Botticus quote request: ',
+    successText: 'Got it. Your written quote will be in your inbox within one business day.',
     fields: [
       { name: 'name', label: 'Name' }, { name: 'business', label: 'Business' },
       { name: 'email', label: 'Email' }, { name: 'phone', label: 'Phone' },
-      { name: 'size', label: 'Team size' }, { name: 'details', label: 'What eats your time' }
+      { name: 'want', label: 'Looking for' }, { name: 'size', label: 'Team size' },
+      { name: 'systems', label: 'Systems' }, { name: 'autonomy', label: 'Autonomy' },
+      { name: 'details', label: 'What eats your time' }
     ]
   });
 

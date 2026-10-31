@@ -34,8 +34,26 @@ function doPost(e) {
   // 'website-mockup' is the pre-2026-10-30-evening name for the same form; a cached
   // page can still send it, so both are accepted and both get the demo subject.
   var mockup = get('formType') === 'website-demo' || get('formType') === 'website-mockup';
-  var subject = (mockup ? 'Botticus demo site: ' : 'Botticus inquiry: ') + (get('business') || get('name'));
-  var body = (mockup ? [
+  var quote = get('formType') === 'quote';
+  var subject = (mockup ? 'Botticus demo site: ' : quote ? 'Botticus quote request: ' : 'Botticus inquiry: ') + (get('business') || get('name'));
+  var body = (quote ? [
+    'QUOTE REQUEST',
+    '',
+    'Name: ' + get('name'),
+    'Business: ' + get('business'),
+    'Email: ' + get('email'),
+    'Phone: ' + get('phone'),
+    'Looking for: ' + get('want'),
+    'Team size: ' + get('size'),
+    'Systems: ' + get('systems'),
+    'Autonomy: ' + get('autonomy'),
+    '',
+    'What eats their time:',
+    get('details'),
+    '',
+    '--',
+    'Sent from the botticus.com quote form.'
+  ] : mockup ? [
     'FREE DEMO SITE REQUEST',
     '',
     'Name: ' + get('name'),
