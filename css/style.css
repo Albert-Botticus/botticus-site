@@ -156,7 +156,8 @@ p { margin: 0 0 1em; }
 .compare th, .compare td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
 .compare th { background: var(--ink); color: var(--white); font-weight: 700; }
 .compare th:first-child { width: 18%; }
-.compare th:last-child, .compare td:last-child { background: rgba(232,163,61,0.07); }
+.compare td:last-child { background: rgba(232,163,61,0.10); }
+.compare th:last-child { background: var(--gold); color: var(--ink); }
 .compare td:first-child { font-weight: 700; color: var(--ink); }
 .compare td.yes { color: #1f7a4d; }
 .compare td.yes::before { content: "✓  "; font-weight: 800; }
