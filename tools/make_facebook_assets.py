@@ -121,7 +121,7 @@ def cover():
     d.rectangle([cx - 60, cy + 122, cx + 60, cy + 126], fill=GOLD)
 
     sub_f = font("segoeui.ttf", 32)
-    sub = "An AI agent tailored to you, your business and your family."
+    sub = "We tailor AI agents to you, your business, and your family."
     d.text((cx - d.textlength(sub, font=sub_f) / 2, cy + 150), sub, font=sub_f, fill=MUTED)
     site_f = font("segoeuib.ttf", 30)
     site = "botticus.com"
