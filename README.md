@@ -84,5 +84,4 @@ family tier. The Plans lead says a household-only Bot starts smaller than Starte
   every claim in it must stay true in the build.
 - COPPA (amended rule effective 2025-06-23): Botticus does not collect children's data itself; anything
   the Bot knows about a child comes from a parent, inside the family's own accounts. Kids' sites carry
-  first name only, no photo, school or address, and need parental approval. Lawyer review (Lorin
-  Westfall) still recommended before marketing the kids' features hard.
+  first name only, no photo, school or address, and need parental approval. Nathan (2026-10-30): no lawyer review needed right now; his attorney is A.C. Strip.
