@@ -285,3 +285,11 @@ table.gift td:last-child{text-align:right;color:var(--olive);font-weight:500}
 }
 .tc-img.after img{object-position:center 92%}
 .ba-img.lr .t{top:10px;left:10px}.ba-img.lr .b{top:10px;left:calc(50% + 10px)}
+/* mirrored specials (her own wording from elysiumohio.com/specials) */
+.sp.mirror h3{font-size:30px;margin-bottom:14px}
+.sp.mirror h3::first-letter{text-transform:uppercase}
+.sp.mirror .sp-body p{margin:0 0 10px}
+.sp.mirror .sp-body i{color:var(--muted);font-size:14px}
+.sp.mirror .sp-body ul.check{margin:4px 0 12px}
+.sp.mirror.feat{display:block}
+.sp.mirror.feat .sp-body i{color:rgba(238,226,204,.7)}
