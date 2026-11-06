@@ -284,3 +284,4 @@ table.gift td:last-child{text-align:right;color:var(--olive);font-weight:500}
   .badge-card{left:8px;bottom:18px}
 }
 .tc-img.after img{object-position:center 92%}
+.ba-img.lr .t{top:10px;left:10px}.ba-img.lr .b{top:10px;left:calc(50% + 10px)}
