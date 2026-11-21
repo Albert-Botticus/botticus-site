@@ -177,9 +177,9 @@ legend{color:var(--dim);font-size:12px;padding:0 6px}
 <section class="pane on" id="pane-runs">
   <div class="hero">
     <h1>One flight. Three shows.</h1>
-    <p>An artist is already flying in for one show. The nights around it are open. Claim one
-       for your room at the price the artist has set, and the flight gets shared instead of
-       carried by one promoter.</p>
+    <p>An artist is already flying in for one show, and the nights around it are open. The
+       artist plays more paid shows on one trip. Nearby rooms get a touring act for close to
+       what a local costs. The promoter who booked the flight gets some of it back.</p>
   </div>
 
   <div class="row" style="margin-bottom:18px">
@@ -215,19 +215,22 @@ legend{color:var(--dim);font-size:12px;padding:0 6px}
 
   <h2 class="sectionhead">The math</h2>
   <div class="splitcalc">
-    <h3>What a shared flight saves you</h3>
+    <h3>What one shared trip is worth to each side</h3>
     <div class="calcrow">
       <label>Airfare <input type="number" id="cAir" value="450" min="0" step="25" /></label>
-      <label>Rooms sharing it <input type="number" id="cRooms" value="3" min="1" max="6" /></label>
-      <label>Your fee to the artist <input type="number" id="cFee" value="250" min="0" step="25" /></label>
+      <label>Nights on the trip <input type="number" id="cRooms" value="3" min="1" max="6" /></label>
+      <label>Artist fee per night <input type="number" id="cFee" value="250" min="0" step="25" /></label>
     </div>
     <div class="calcout">
-      <div><span class="k">Alone</span><strong id="cAlone">-</strong></div>
-      <div><span class="k">Shared</span><strong id="cSplit" class="good">-</strong></div>
-      <div><span class="k">You keep</span><strong id="cSave" class="good">-</strong></div>
+      <div><span class="k">Artist earns</span><strong id="cArtist" class="good">-</strong>
+        <span class="k" id="cArtistNote"></span></div>
+      <div><span class="k">An added room pays</span><strong id="cAdded">-</strong>
+        <span class="k">fee plus its share of the flight</span></div>
+      <div><span class="k">First promoter pays</span><strong id="cFirst">-</strong>
+        <span class="k" id="cFirstNote"></span></div>
     </div>
-    <p class="fine">Travel divided across the rooms on the trip, plus what each room pays the
-      artist for its own night.</p>
+    <p class="fine">Flight shared equally across the nights. Each room still promotes its own
+      night and brings its own crowd; that part stays with the host.</p>
   </div>
 </section>
 
@@ -420,9 +423,9 @@ function rateLabel(a) {
   if (r.model === 'airfare') return { text: 'Travel covered, no fee', listed: true };
   if (r.model === 'ask') return { text: 'Rate on request', listed: false };
   if (r.model === 'airfare-plus') {
-    return { text: r.amount ? `Travel + ${r.amount}` : 'Travel plus a fee', listed: true };
+    return { text: r.amount ? `Travel + $${r.amount}` : 'Travel plus a fee', listed: true };
   }
-  return { text: r.amount ? `${r.amount} flat` : 'Flat fee', listed: true };
+  return { text: r.amount ? `$${r.amount} flat` : 'Flat fee', listed: true };
 }
 
 /* travel dates come only from real submissions */
@@ -532,13 +535,14 @@ function renderOpenDates() {
 
 function recalc() {
   const air = Number($('cAir').value || 0);
-  const rooms = Math.max(1, Number($('cRooms').value || 1));
+  const nights = Math.max(1, Number($('cRooms').value || 1));
   const fee = Number($('cFee').value || 0);
-  const alone = air + fee;
-  const split = Math.round(air / rooms) + fee;
-  $('cAlone').textContent = `${alone}`;
-  $('cSplit').textContent = `${split}`;
-  $('cSave').textContent = `${Math.max(0, alone - split)}`;
+  const share = Math.round(air / nights);
+  $('cArtist').textContent = `$${fee * nights}`;
+  $('cArtistNote').textContent = nights > 1 ? `instead of $${fee} for one show` : 'one show';
+  $('cAdded').textContent = `$${fee + share}`;
+  $('cFirst').textContent = `$${fee + share}`;
+  $('cFirstNote').textContent = nights > 1 ? `instead of $${fee + air} alone` : 'carrying the whole flight';
 }
 ['cAir', 'cRooms', 'cFee'].forEach((id) => $(id).addEventListener('input', recalc));
 $('postTrip').onclick = () => openTripForm();
