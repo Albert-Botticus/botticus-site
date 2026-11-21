@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow, noarchive" />
+<meta name="referrer" content="no-referrer" />
+<title>Flyover - book an artist who is already headed your way</title>
+<style>
+:root{
+  --bg:#0a0c11; --panel:#141821; --panel2:#1b2030; --line:#262d3d;
+  --ink:#e9edf5; --dim:#97a1b8; --accent:#ff5c35; --good:#2de1c2; --warn:#ffcc4d;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3{margin:0;line-height:1.25}
+button{font:inherit;cursor:pointer}
+a{color:var(--good)}
+
+.top{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+  padding:14px 22px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#151b29,#0a0c11);position:sticky;top:0;z-index:30}
+.brand{display:flex;gap:12px;align-items:center;text-decoration:none;color:var(--ink)}
+.mark{font-size:20px;width:40px;height:40px;display:grid;place-items:center;flex:0 0 auto;
+  background:var(--accent);color:#1b0d08;border-radius:11px;transform:rotate(-20deg)}
+.brand strong{display:block;font-size:19px;letter-spacing:.3px}
+.brand small{display:block;color:var(--dim);font-size:12px}
+
+.tabs{display:flex;gap:5px;flex-wrap:wrap}
+.tabs button{background:transparent;color:var(--dim);border:1px solid transparent;
+  padding:8px 13px;border-radius:999px}
+.tabs button:hover{color:var(--ink)}
+.tabs button.on{background:var(--panel2);color:var(--ink);border-color:var(--line)}
+
+.pane{display:none;padding:22px 22px 70px;max-width:1180px;margin:0 auto}
+.pane.on{display:block}
+
+.hero{margin-bottom:22px;max-width:680px}
+.hero h1{font-size:27px;margin-bottom:8px}
+.hero p{color:var(--dim);margin:0}
+
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+input,select,textarea{background:var(--panel);color:var(--ink);border:1px solid var(--line);
+  border-radius:9px;padding:9px 11px;font:inherit}
+input[type=search]{min-width:220px}
+textarea{width:100%;resize:vertical}
+.check{color:var(--dim);display:flex;gap:7px;align-items:center}
+.check input[type=checkbox]{width:auto}
+.count{color:var(--dim);font-size:13px;margin-left:auto}
+
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;
+  display:flex;flex-direction:column;gap:9px}
+.card h3{font-size:16px}
+.where{color:var(--dim);font-size:13px}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:var(--panel2);border:1px solid var(--line);color:var(--dim);
+  border-radius:999px;padding:2px 9px;font-size:12px}
+.rate{font-weight:700;color:var(--good)}
+.rate.unlisted{color:var(--dim);font-weight:500;font-style:italic}
+.links{display:flex;gap:9px;flex-wrap:wrap;font-size:13px}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:auto}
+.btn{background:var(--accent);color:#1b0d08;border:none;border-radius:9px;padding:9px 15px;
+  font-weight:650}
+.btn:hover{filter:brightness(1.08)}
+.ghost{background:transparent;color:var(--dim);border:1px solid var(--line);
+  border-radius:9px;padding:9px 15px}
+.ghost:hover{color:var(--ink)}
+.leg{font-size:13px;color:var(--dim)}
+.leg b{color:var(--ink)}
+
+.empty{color:var(--dim);padding:30px 0;text-align:center}
+.empty-card{background:var(--panel);border:1px dashed var(--line);border-radius:14px;
+  padding:26px;text-align:center;max-width:520px;margin:0 auto}
+.empty-card p{color:var(--dim)}
+
+.sectionhead{font-size:18px;margin:26px 0 14px}
+
+.splitcalc{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.splitcalc h3{font-size:16px;margin-bottom:12px}
+.calcrow{display:flex;gap:14px;flex-wrap:wrap}
+.calcrow label{display:flex;flex-direction:column;gap:5px;color:var(--dim);font-size:13px}
+.calcrow input{width:130px}
+.calcout{display:flex;gap:26px;flex-wrap:wrap;margin-top:16px;padding-top:14px;
+  border-top:1px solid var(--line)}
+.calcout div{display:flex;flex-direction:column}
+.calcout .k{color:var(--dim);font-size:12px}
+.calcout strong{font-size:22px}
+.calcout .good{color:var(--good)}
+.fine{color:var(--dim);font-size:12px;margin:10px 0 0}
+
+.twocol{display:grid;gap:16px;grid-template-columns:1fr 1fr;align-items:start}
+.form{gap:12px}
+.form h2{font-size:18px}
+.form label{display:flex;flex-direction:column;gap:5px;color:var(--dim);font-size:13px}
+.form label.radio{flex-direction:row;align-items:center;gap:8px}
+.form input,.form select,.form textarea{width:100%}
+.form label.radio input{width:auto}
+fieldset{border:1px solid var(--line);border-radius:10px;padding:12px;margin:0}
+legend{color:var(--dim);font-size:12px;padding:0 6px}
+.riders{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.riders label{flex-direction:row;align-items:center;gap:8px;font-size:13px}
+.riders input{width:auto}
+
+.modalwrap{position:fixed;inset:0;background:rgba(4,6,10,.78);display:grid;place-items:center;
+  padding:20px;z-index:60;overflow:auto}
+.modalwrap[hidden]{display:none}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;
+  max-width:600px;width:100%;position:relative;max-height:92vh;overflow:auto}
+.x{position:absolute;right:14px;top:9px;background:none;border:none;color:var(--dim);font-size:26px}
+.modal label{display:flex;flex-direction:column;gap:5px;color:var(--dim);font-size:13px;margin:11px 0}
+.modal input,.modal select,.modal textarea{width:100%}
+.offerbox{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:13px;margin-top:14px}
+.offerbox .big{font-size:21px;font-weight:700;color:var(--good)}
+
+.foot{border-top:1px solid var(--line);padding:22px;color:var(--dim);font-size:12px;
+  max-width:1180px;margin:0 auto}
+.foot p{margin:0 0 7px}
+
+@media (max-width:720px){ .twocol{grid-template-columns:1fr} .riders{grid-template-columns:1fr} }
+
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="brand" href="#" data-tab="browse">
+    <span class="mark">&#9992;</span>
+    <span>
+      <strong>Flyover</strong>
+      <small>Book an artist who is already headed your way.</small>
+    </span>
+  </a>
+  <nav class="tabs" id="tabs">
+    <button data-tab="browse" class="on">Artists</button>
+    <button data-tab="routes">Passing through</button>
+    <button data-tab="runs">Split a flight</button>
+    <button data-tab="venues">Venues</button>
+    <button data-tab="join">Join</button>
+  </nav>
+</header>
+
+<!-- BROWSE -->
+<section class="pane on" id="pane-browse">
+  <div class="hero">
+    <h1>One flight. Three shows.</h1>
+    <p>A good artist being five hundred miles away should not be the reason a show doesn't
+       happen. Find who is already travelling near you, and split the airfare with the other
+       rooms on the run.</p>
+  </div>
+
+  <div class="filters">
+    <input type="search" id="q" placeholder="Search name, city, genre" />
+    <select id="fGenre"><option value="">All genres</option></select>
+    <select id="fState"><option value="">All states</option></select>
+    <label class="check"><input type="checkbox" id="fTravels" /> Known to travel</label>
+    <label class="check"><input type="checkbox" id="fListed" /> Has listed a rate</label>
+    <span class="count" id="browseCount"></span>
+  </div>
+
+  <div class="grid" id="browseGrid"></div>
+  <p class="empty" id="browseEmpty" hidden></p>
+</section>
+
+<!-- ROUTES -->
+<section class="pane" id="pane-routes">
+  <div class="hero">
+    <h1>Passing through</h1>
+    <p>Artists post where they are going. If their trip already brings them within driving
+       distance of your room, the expensive part of the booking is already paid for.</p>
+  </div>
+  <div class="filters">
+    <label class="check">Near
+      <select id="routeCity"></select>
+    </label>
+    <span class="count" id="routeCount"></span>
+  </div>
+  <div class="grid" id="routeGrid"></div>
+  <div class="empty-card" id="routeEmpty" hidden>
+    <h3>No travel dates posted yet.</h3>
+    <p>This fills up as artists add their trips. It is the first thing we ask for when an artist
+       joins, and it is the only field that makes the rest of this work.</p>
+    <button class="btn" data-tab="join">Add your dates</button>
+  </div>
+</section>
+
+<!-- RUNS -->
+<section class="pane" id="pane-runs">
+  <div class="hero">
+    <h1>Split a flight</h1>
+    <p>One room usually cannot justify flying someone in. Three rooms in three cities can. Post
+       the run you want and let the other promoters on the route carry their share of it.</p>
+  </div>
+
+  <div class="splitcalc">
+    <h3>What a split actually saves you</h3>
+    <div class="calcrow">
+      <label>Airfare <input type="number" id="cAir" value="450" min="0" step="25" /></label>
+      <label>Rooms splitting <input type="number" id="cRooms" value="3" min="1" max="6" /></label>
+      <label>Your fee to the artist <input type="number" id="cFee" value="250" min="0" step="25" /></label>
+    </div>
+    <div class="calcout">
+      <div><span class="k">Alone</span><strong id="cAlone">-</strong></div>
+      <div><span class="k">Split</span><strong id="cSplit" class="good">-</strong></div>
+      <div><span class="k">You keep</span><strong id="cSave" class="good">-</strong></div>
+    </div>
+    <p class="fine">Travel cost divided across the rooms on the run, plus whatever each room pays
+      the artist for its own night. Change the numbers to match your situation.</p>
+  </div>
+
+  <h2 class="sectionhead">Open runs</h2>
+  <div class="grid" id="runGrid"></div>
+  <div class="empty-card" id="runEmpty" hidden>
+    <h3>No open runs yet.</h3>
+    <p>A run is one artist, one trip, several cities. Post the first one and we will find the
+       other rooms on the route.</p>
+    <button class="btn" id="startRun">Post a run</button>
+  </div>
+</section>
+
+<!-- VENUES -->
+<section class="pane" id="pane-venues">
+  <div class="hero">
+    <h1>Venues and promoters</h1>
+    <p>The rooms in this cluster that already book artists from out of town.</p>
+  </div>
+  <div class="filters">
+    <input type="search" id="hq" placeholder="Search venue, promoter, city" />
+    <select id="hState"><option value="">All states</option></select>
+    <label class="check"><input type="checkbox" id="hFly" checked /> Books touring acts</label>
+    <span class="count" id="venueCount"></span>
+  </div>
+  <div class="grid" id="venueGrid"></div>
+  <p class="empty" id="venueEmpty" hidden></p>
+</section>
+
+<!-- JOIN -->
+<section class="pane" id="pane-join">
+  <div class="hero">
+    <h1>Join Flyover</h1>
+    <p>Free, both sides, no cut of your fee. We make money coordinating split flights, not by
+       taking a slice of what you earn.</p>
+  </div>
+
+  <div class="twocol">
+    <form class="card form" id="artistForm">
+      <h2>I am an artist</h2>
+      <p class="fine">The travel dates are the part that matters. Everything else can come later.</p>
+      <label>Artist name <input name="name" required /></label>
+      <label>Home city <input name="city" placeholder="Columbus, OH" required /></label>
+      <label>Genres <input name="genres" placeholder="house, techno" /></label>
+      <label>Links (SoundCloud, Instagram, site) <input name="links" /></label>
+      <label>Booking contact (you or your management) <input name="contact" type="email" required /></label>
+
+      <fieldset>
+        <legend>What do you charge?</legend>
+        <label class="radio"><input type="radio" name="priceModel" value="airfare" /> Travel covered, no fee</label>
+        <label class="radio"><input type="radio" name="priceModel" value="airfare-plus" checked /> Travel covered plus a fee</label>
+        <label class="radio"><input type="radio" name="priceModel" value="flat" /> Flat fee, I sort my own travel</label>
+        <label class="radio"><input type="radio" name="priceModel" value="ask" /> Depends, ask me</label>
+        <label>Amount in USD, if you want it shown
+          <input name="amount" type="number" min="0" step="25" placeholder="leave blank to show 'rate on request'" /></label>
+      </fieldset>
+
+      <label>Trips coming up, one per line
+        <textarea name="dates" rows="3" placeholder="Feb 12-15, near Chicago&#10;Mar 3-5, near Pittsburgh"></textarea></label>
+
+      <fieldset>
+        <legend>What you need from a room</legend>
+        <div class="riders">
+          <label><input type="checkbox" name="need" value="Airport pickup" /> Airport pickup</label>
+          <label><input type="checkbox" name="need" value="Lodging" /> Lodging</label>
+          <label><input type="checkbox" name="need" value="Backline / CDJs" /> Backline / CDJs</label>
+          <label><input type="checkbox" name="need" value="Guest list" /> Guest list</label>
+          <label><input type="checkbox" name="need" value="Hospitality" /> Hospitality</label>
+          <label><input type="checkbox" name="need" value="Ground transport" /> Ground transport</label>
+        </div>
+      </fieldset>
+
+      <label>Anything else <textarea name="notes" rows="2"></textarea></label>
+      <button class="btn" type="submit">Send</button>
+      <p class="fine" id="artistFormNote"></p>
+    </form>
+
+    <form class="card form" id="venueForm">
+      <h2>I book shows</h2>
+      <p class="fine">Venue, promoter, collective or a series you run out of someone else's room.</p>
+      <label>Name of the venue, night or company <input name="name" required /></label>
+      <label>City <input name="city" placeholder="Columbus, OH" required /></label>
+      <label>Room capacity <input name="capacity" type="number" min="0" placeholder="200" /></label>
+      <label>What you book <input name="genres" placeholder="house, bass, dnb" /></label>
+      <label>Contact email <input name="contact" type="email" required /></label>
+      <label>Typical budget for a visiting artist, all in
+        <input name="budget" placeholder="e.g. 400-700, or leave blank" /></label>
+      <label class="radio"><input type="checkbox" name="splitInterest" checked />
+        Interested in splitting a flight with rooms in other cities</label>
+      <label>Anything else <textarea name="notes" rows="2"></textarea></label>
+      <button class="btn" type="submit">Send</button>
+      <p class="fine" id="venueFormNote"></p>
+    </form>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="modalwrap" id="modal" hidden>
+  <div class="modal">
+    <button class="x" id="modalClose">&times;</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<footer class="foot">
+  <p><strong>Flyover</strong> is an early-stage project, not a live booking service. Artist and
+     venue listings are compiled from public sources and nobody listed has agreed to appear or
+     quoted a rate. Rates show as "on request" until an artist tells us one.</p>
+  <p id="footContact"></p>
+</footer>
+
+<script>/* Flyover config. One place for brand and submission routing.
+ *
+ * WHY MAILTO IS THE DEFAULT: botticus.com is GitHub Pages, which is static hosting with no
+ * server side. Until there is a form relay (Formspree, same as shipsrl.com uses) every form
+ * falls back to opening the visitor's mail client with the answers pre-filled. That is
+ * unglamorous and it genuinely works today with zero accounts to create.
+ *
+ * TO GO LIVE PROPERLY: create a Formspree form, paste its endpoint into FORM_ENDPOINT below,
+ * and every form on the site posts to it instead. That is the only change needed.
+ */
+window.FLYOVER_CONFIG = {
+  brand: 'Flyover',
+  tagline: 'Book an artist who is already headed your way.',
+
+  // Set to a Formspree (or similar) endpoint to switch every form from mailto to a real POST.
+  FORM_ENDPOINT: null,
+
+  // Where mailto submissions go until the endpoint exists.
+  CONTACT_EMAIL: 'hello@botticus.com',
+
+  // The cluster we are starting in. Drive times from Columbus, used in the routing copy.
+  HOME_CITY: 'Columbus, OH',
+  CLUSTER: [
+    { city: 'Columbus, OH', drive: 'home' },
+    { city: 'Cincinnati, OH', drive: '1h45' },
+    { city: 'Cleveland, OH', drive: '2h15' },
+    { city: 'Pittsburgh, PA', drive: '3h' },
+    { city: 'Indianapolis, IN', drive: '3h' },
+    { city: 'Detroit, MI', drive: '3h15' },
+    { city: 'Louisville, KY', drive: '3h30' },
+    { city: 'Chicago, IL', drive: '5h30' },
+  ],
+};
+</script>
+<script>window.__FLYOVER__={artists:{"generatedAt":"2026-11-21T05:12:00Z","method":"Primary-source crawling of promoters, venues, labels, collectives and grant programmes, not search results. The search layer specified in the brief broke mid-run: DuckDuckGo HTML and Lite both began serving a 'select all squares containing a duck' CAPTCHA, and Bing, Mojeek, Brave, Ecosia, Marginalia and several SearXNG instances were blocked, JS-walled, or returned canned city-tourism results that ignored the query terms. The working technique was instead: find a local promoter, venue, label, collective or funder site, fetch it, harvest its resident/roster/lineup/grantee names, then corroborate each name on a second fetched page. Three parallel subagents covered Columbus/Dayton/Athens, Cincinnati/Louisville/Indianapolis and Pittsburgh/Detroit/Chicago; their leads were re-fetched and re-verified at source before being recorded. Load-bearing sources: overthehump.org (Cleveland/Akron artist directory with per-artist city, genre, links and full event histories), risingartistfoundation.org (the named 2025 Fourth River cohort of ten emerging Pittsburgh electronic musicians, with links), smartbarchicago.com/residents, interdimensionaltransmissions.com, spiritpgh.com, daytonsilentdisco.com, luxdetculture.com and allevents.in organizer/event pages.","limitations":"NO ARTIST IN THIS FILE PUBLISHES A FEE. All 40 `fee` values are null and none were inferred. The dollar figures seen during research ($5-$34) are door and ticket prices, never artist fees, and were deliberately not converted. If the demo displays a price it must be visibly synthetic. Only 3 entries have any booking route, and all three are organisation-level rather than personal: a label 'Book an Artist' address, a collective contact form, and a production company's event site. Resident Advisor, Bandcamp search and SoundCloud profile pages are not fetchable from this host (403 / bot challenge / JS wall), so RA and SoundCloud URLs appear only where another fetched page displayed them; follower counts, platform genre tags and live gig calendars could not be read. `travels` is 'unknown' for 24 of 40: absence of an out-of-town date on a local directory is not evidence an artist will not travel, only that this run saw none. Cities flagged in notes as inferred come from an artist's event history, not a stated location. LOUISVILLE KY IS THE ONE TARGET CITY WITH NO ENTRY: its techno and house listings return 'No active events here at the moment', its EDM listings carry only out-of-scope touring headliners, and the single lead found (Triptunnel, a record-store DJ set at Better Days Records) could not be confirmed as electronic at all, so it was left out rather than padded. Verified leads held back to stay within the 40-artist target, available if more supply is wanted: Alejo (Cincinnati, on a 2026 national audiovisual tour, so real travel evidence), Shawn Rudiman, pvkvsv, Repeat Offender and Dave Clevr (Pittsburgh), Boomkat and DOONE (Cincinnati), DJ Seoul and T.Linder (Detroit Techno Militia roster), John Chapel (Dayton, hip hop station so out of genre scope), Muchi Nochi and Barticus (Athens trio with B-Funk), JOTA, PUG, RIDLLA and JEFE (Indianapolis, with promoter-published Instagram handles), Kitt Vesper and Mark Angel (Chicago), and Cozy Kev, Soka, Picke Jef, Antron, A6 General and Chayse (Columbus, single-lineup mentions each). Names surfaced and deliberately excluded as out of scope: GlitchxCity, Layton Giordani, Kompany, HVDES, TroyBoi, Alan Walker, Derrick Carter, DJ Heather, The Blessed Madonna, Louie Vega, DJ Seinfeld (touring headliners); Avery Dahl (Arizona), Flose (relocating to Los Angeles), Patrick Russell (now NYC), Israel Vines (now LA), Garrett David (Berlin), Adam Arthur (Arkansas) (wrong city); and the Athens, Georgia events that allevents.in mixes into its Athens pages.","artists":[{"id":"andre-leone","name":"Andre Leone","city":"Cleveland","state":"OH","genres":["house","techno","deep house","tech house"],"links":{"soundcloud":"https://soundcloud.com/andre-leone","bandcamp":null,"instagram":"https://www.instagram.com/dreleone/","ra":"https://ra.co/dj/andreleone","other":"https://www.beatport.com/artist/andre-leone/2286765"},"bookingUrl":null,"fee":null,"travels":"true","evidence":"Profile states he is 'one-fourth of the Disfunktional collective in Cleveland' who 'helped build the city's underground scene before bringing that vision to Hawaii as Disfunktional Hawaii', and that he cut his teeth in Chicago's house scene. Bio ends 'Available for bookings, festivals, and residencies.'","sourceUrl":"https://overthehump.org/artists/andre-leone","confidence":"high","notes":"Strongest candidate in the set: 25+ years active, explicitly advertises availability for bookings, has run an event brand out of state, and has the most complete link set. Released 'Truss The Power' with DJ Romain on Intimate Venues Recordings, March 2026."},{"id":"lolo-knows","name":"Lolo Knows","city":"Cleveland","state":"OH","genres":["house","afro-latin house","disco"],"links":{"soundcloud":"https://soundcloud.com/loloknows","bandcamp":null,"instagram":"https://www.instagram.com/lolo__knows/","ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"true","evidence":"Profile: 'Originally from Brooklyn, she has shaped the cultural landscape of Cleveland and Akron for over two decades - hosting the iconic Dirty Disco at the Foundation Room and holding down the residency at Akron's Baxter's Speakeasy - as Ohio's first Afro-Latin House artist.' Holds concurrent residencies in two cities ~40 miles apart.","sourceUrl":"https://overthehump.org/artists/lolo-knows","confidence":"high","notes":"Two decades of documented activity across Cleveland and Akron, plus festival slots (Betterland Fest, Summer Rave at Akron's Art District). Already operates regionally rather than in one room."},{"id":"solace","name":"Solace","city":"Cleveland","state":"OH","genres":["breakbeat","electro","techno","house"],"links":{"soundcloud":"https://soundcloud.com/ruby-flores-452989645","bandcamp":"https://truself216.bandcamp.com/track/solace-uphoria","instagram":null,"ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"true","evidence":"Profile: 'A staple of Cleveland breakbeat and electro, Solace is known for her monthly party Queer Social, hosted with Johnny Honk in the basement of Cocktails Cleveland.' Played Summer Rave at Akron's Art District 7/25/2026, outside Cleveland. Release 'Uphoria' issued July 2026 on truself216.","sourceUrl":"https://overthehump.org/artists/solace","confidence":"high","notes":"Runs her own monthly night that 'bring[s] in local and regional DJs', so she is both bookable talent and a small-room buyer. Also a twice-featured Over The Hump radio guest."},{"id":"teddy-eisenberg","name":"Teddy Eisenberg","city":"Cleveland","state":"OH","genres":["house","deep house"],"links":{"soundcloud":"https://soundcloud.com/teddyeisenberg","bandcamp":null,"instagram":"https://www.instagram.com/teddyeisenberg/","ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Profile: 'Teddy Eisenberg is a Cleveland-based DJ, broadcaster, and curator... He hosts The Eisenberg Review on WRUW 91.1 FM Cleveland, and is the founder of Eisenberg Productions and curator behind Two Birds Records.' Ten documented Cleveland appearances Jul-Nov 2026, all in-market.","sourceUrl":"https://overthehump.org/artists/teddy-eisenberg","confidence":"high","notes":"Very high local gig frequency (three dates in the 11/20-11/28 window alone). Runs a label and a radio show, so has infrastructure, but no out-of-town date was visible."},{"id":"delish","name":"Delish","city":"Cleveland","state":"OH","genres":["tech house","house","techno"],"links":{"soundcloud":"https://soundcloud.com/delish","bandcamp":null,"instagram":"https://www.instagram.com/delish_disco/","ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"true","evidence":"Profile: 'Cleveland tech house and house DJ, resident of Al Dente and a fixture of the city's club nights.' Played Summer Rave at Akron's Art District 7/25/2026. Has opened for touring acts including FJAAK (Berlin), Eli Escobar, Chez Damier, Harry Romero, Mark Farina and DJ Heather.","sourceUrl":"https://overthehump.org/artists/delish","confidence":"high","notes":"The most frequently booked support DJ in this Cleveland set — repeatedly paired with international headliners, which suggests she is trusted on bigger-ticket nights."},{"id":"chris-pulse","name":"Chris Pulse","city":"Cleveland","state":"OH","genres":["deep house","tech house","detroit techno"],"links":{"soundcloud":"https://soundcloud.com/chrispulse","bandcamp":null,"instagram":null,"ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Profile: 'Cleveland DJ and recurring special guest at the Over The Hump Open Decks & DJ Workshop.' Nine documented Cleveland-area appearances Jul-Oct 2026 including Betterland Fest at Globe Iron.","sourceUrl":"https://overthehump.org/artists/chris-pulse","confidence":"high","notes":"Teaches and guests at a DJ workshop series, so is comfortable in a non-club booking context."},{"id":"savone","name":"Savone","city":"Cleveland","state":"OH","genres":["afrobeat","deep house","house"],"links":{"soundcloud":null,"bandcamp":null,"instagram":"https://www.instagram.com/djsavone/","ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Profile lists city as Cleveland and genres Afrobeat / Deep House / House. Holds a recurring Monday 'Industry Night' residency at The Brothers Lounge (9/14 and 10/12/2026) plus Scarpetta dates at Lava Lounge.","sourceUrl":"https://overthehump.org/artists/savone","confidence":"high","notes":"One of the few Afrobeat-leaning selectors in the regional pool, which is useful genre diversity for matching. City explicitly stated on profile."},{"id":"hush","name":"Hush","city":"Cleveland","state":"OH","genres":["house","techno","disco"],"links":{"soundcloud":"https://soundcloud.com/veryhushush","bandcamp":null,"instagram":"https://www.instagram.com/veryhushush/","ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"true","evidence":"Ten documented appearances Jul-Nov 2026, all Cleveland except Summer Rave at Akron's Art District 7/25/2026. Opened for Physical Therapy (NYC) at Crobar 9/5/2026.","sourceUrl":"https://overthehump.org/artists/hush","confidence":"medium","notes":"City INFERRED from a dense Cleveland-area gig history; the profile page does not state a location. Has both SoundCloud and Instagram handles."},{"id":"neil-chastain","name":"Neil Chastain","city":"Cleveland","state":"OH","genres":["latin","house","downtempo"],"links":{"soundcloud":"https://soundcloud.com/user1057979","bandcamp":null,"instagram":null,"ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Eight documented Cleveland appearances Jul-Nov 2026, including a solo all-vinyl billing ('Neil Chastain: All Vinyl', Bad Medicine Bar, 11/20/2026) and a credit for 'live percussion by Neil Chastain' at Locals Only.","sourceUrl":"https://overthehump.org/artists/neil-chastain","confidence":"medium","notes":"City INFERRED from gig history. Offers a live-percussion hybrid set as well as DJ sets, which is a differentiated booking. SoundCloud handle is an unbranded auto-generated username."},{"id":"trezell-lorenzo","name":"Trezell Lorenzo","city":"Akron","state":"OH","genres":["progressive house","tech house"],"links":{"soundcloud":"https://soundcloud.com/trezlmusic","bandcamp":"https://trezelllorenzo.bandcamp.com/track/head-of-a-thousand-gallons","instagram":null,"ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Release note on profile: 'Trezell Lorenzo, mastermind behind Rhythm Dimensions Collective and the Akron monthly parties Double Blend and Flow Dimension, is known for his euphoric progressive house sounds.' Released 'Head Of A Thousand Gallons' with Austin Leeds, March 2026. Five documented dates at The Vortex Concert Club, Akron.","sourceUrl":"https://overthehump.org/artists/trezell-lorenzo","confidence":"high","notes":"Runs his own collective and two Akron monthlies, so he books other artists too. All documented dates are Akron; no travel evidence seen."},{"id":"kandi-kid","name":"Kandi Kid","city":"Akron","state":"OH","genres":["drum and bass","tech house","breaks"],"links":{"soundcloud":"https://soundcloud.com/djlazereye","bandcamp":null,"instagram":null,"ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Six documented appearances Jul-Dec 2026, all at The Vortex Concert Club in Akron, across the Rhythm Dimensions Collective 'Blender' and 'Double Blend' series. Profile genre listed as Drum and Bass.","sourceUrl":"https://overthehump.org/artists/kandi-kid","confidence":"medium","notes":"City INFERRED: every documented date is the same Akron venue. Fills the drum and bass slot, which is thin elsewhere in this set. SoundCloud handle (djlazereye) differs from the stage name shown."},{"id":"lizsco","name":"Lizsco","city":"Columbus","state":"OH","genres":["techno","hardgroove techno","disco","italo","indie dance"],"links":{"soundcloud":"https://soundcloud.com/lizsco","bandcamp":null,"instagram":"https://www.instagram.com/lizsco/","ra":"https://ra.co/dj/lizsco","other":"https://linktr.ee/lizsco"},"bookingUrl":null,"fee":null,"travels":"true","evidence":"Directory profile gives city as Columbus and states she 'began her journey as a DJ in 2019' and has shared stages with national acts (Azzecca, Andi, Calvin Stanley, Henry Brooks, Mija, No Mana). Travel confirmed two ways: played Queer Social at Cocktails Cleveland 8/15/2026, and her own Linktree hosts a mix titled 'Lizsco @ Riff's Cleveland'. Separately billed on a Columbus home date: 'Lizsco and Shoon close out the month at The Cave on Saturday, November 28 with a House Session.'","sourceUrl":"https://overthehump.org/artists/lizco","confidence":"high","notes":"Best-documented Columbus artist found, corroborated across five independent fetched pages (overthehump.org, linktr.ee, an allevents.in Columbus date, plus RA and Instagram profiles surfaced in search listings). Co-founded the label and event series Deep Field XP in 2020, runs the 'Filthy/Gorgeous' disco night, and works with the Columbus chapter of the Walking & Falling DJ workshop and mentorship programme for women and nonbinary people. Indexed as 'Lizco' on overthehump.org but spells it Lizsco everywhere else."},{"id":"bejaguz","name":"Bejaguz","city":"Columbus","state":"OH","genres":["tech house","minimal","latin house","progressive"],"links":{"soundcloud":"https://soundcloud.com/bejaguz","bandcamp":null,"instagram":"https://www.instagram.com/eduardobejaguz/","ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Listed as a Tech House & Minimal resident of the Columbus promoter Luxdet Culture, billed on five of its 2026 events. Separately confirmed on an upcoming Columbus date: 'PERREO + RAVE - BLACKOUT WEDNESDAY with Bejaguz in Columbus, OH at The Cave Bar and Lounge on November 25, 2026.' Subject of a full interview episode of Columbus DJ series The VIP Hour.","sourceUrl":"https://luxdetculture.com/","confidence":"high","notes":"Corroborated across five independent fetched pages: the promoter's own site, an edmtrain event listing, a SoundCloud profile, an Instagram bio reading '[ Bejaguz | Music ] @luxdetculture', and a radiatetheworld event page. The busiest Columbus underground DJ found in this run. No out-of-town date seen."},{"id":"tweety","name":"Tweety","city":"Columbus","state":"OH","genres":["minimal","tech house","house"],"links":{"soundcloud":null,"bandcamp":null,"instagram":null,"ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Listed as a Minimal & Tech House resident of Columbus promoter Luxdet Culture and billed on its Festival Latino Afters event (8/22/2026). Also billed on 'THE CAVE HOUSE SESSION: Tweety, Flose, Bejaguz' at The Cave Bar and Lounge, Columbus, 6/27/2026. Described by Bejaguz in a VIP Hour interview as a mentor and 'one of his closest friends, DJ Tweety'.","sourceUrl":"https://luxdetculture.com/","confidence":"medium","notes":"Named consistently across three fetched pages and credited as a mentor figure in the Columbus scene, but no public profile links were found, so his music cannot be previewed from this record."},{"id":"venee","name":"Venee","city":"Columbus","state":"OH","genres":["minimal","micro-house","tech house"],"links":{"soundcloud":null,"bandcamp":null,"instagram":null,"ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Listed as a Minimal & Micro-house resident of Columbus promoter Luxdet Culture, billed on three of its 2026 events (Festival Latino Afters, Grovhaus, Drop Culture Vol. II). Also billed on the upcoming Blackout Wednesday at The Cave & Bodi Complex, Columbus, 11/25/2026: 'On the decks: Bejaguz b2b Venee, Yormin Fernandez, Cale, and Ese Enrique.'","sourceUrl":"https://luxdetculture.com/","confidence":"medium","notes":"Plays back-to-back with Bejaguz, so the pair could be offered as a b2b booking. No public profile links found."},{"id":"broken-boy","name":"broken boy","city":"Columbus","state":"OH","genres":["goth","industrial","EBM","dark alternative","80s"],"links":{"soundcloud":null,"bandcamp":null,"instagram":null,"ra":null,"other":"http://www.mixlr.com/gothchurch"},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Resident DJ and organizer of the recurring CHURCH night at Spacebar, Columbus, billed as 'Your (DJ) entertainment for the evening: + KevyKev + broken boy'. The organizer page lists five Columbus events across 2024-2026 (Spacebar, Ace of Cups, The Summit Music Hall). No out-of-town dates listed.","sourceUrl":"https://allevents.in/org/dj-broken-boy/8701491","confidence":"medium","notes":"Longest documented local track record of the Columbus allevents.in finds, and the only goth/industrial/EBM selector in the pool — useful genre diversity. CHURCH and CATHEDRAL nights are broadcast live via mixlr.com/gothchurch. Single-source with no artist-controlled profile links, so confidence is capped at medium."},{"id":"sebastian-fabrice","name":"Sebastian Fabrice","city":"Columbus","state":"OH","genres":["house"],"links":{"soundcloud":null,"bandcamp":null,"instagram":null,"ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Resident and host of two recurring free Columbus house parties at Apt. B (1044 N High St): 'SEB'S HOUSE' (Halloween Edition 10/31/2026, Winter Edition 12/5/2026) and 'NOISE COMPLAINT' (12/11/2026), billed as 'RESIDENT SEBASTIAN FABRICE'.","sourceUrl":"https://allevents.in/org/sebastian-fabrice-music/28258241","confidence":"medium","notes":"Books guest DJs himself (hosted an Arizona guest in December 2026), so he is both bookable talent and a small-room buyer — a useful two-sided demo persona. Single-source on allevents.in with no artist profile links, so confidence is capped at medium."},{"id":"redkattseven","name":"redkattseven","city":"Cincinnati","state":"OH","genres":["hard techno","hardstyle","hard house"],"links":{"soundcloud":null,"bandcamp":null,"instagram":null,"ra":null,"other":"https://allevents.in/org/redkattwreckchords/22966873"},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Billed on four separate upcoming Cincinnati events on the Red.Katt.Wreck.Chords. organizer page (Hard 21 at Mixie's Northside 12/3, HARDER5 at Good Judy's 12/4, HARDEST at 4023 Hamilton Ave 12/5, Subsonic Frequencies Live 20 12/18). That page shows 136 events and 317 followers. A Subsonic Frequencies listing describes 'local favorites Boomkat and redkattseven'.","sourceUrl":"https://allevents.in/org/redkattwreckchords/22966873","confidence":"high","notes":"Anchor of the Cincinnati hard-techno scene: resident DJ plus the promoter behind the monthly H.A.R.D. series, Subsonic Frequencies and Club Alma afterparties. Half of the tag-team duo 'Kat2Katt' with Boomkat. Door prices on his own events run free to $13, which places him firmly in the costs-plus tier. No artist profile links published on any page fetched."},{"id":"cndrcell","name":"CNDRCELL","city":"Cincinnati","state":"OH","genres":["hard techno","hardstyle","hard house"],"links":{"soundcloud":null,"bandcamp":null,"instagram":null,"ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Billed on two separate upcoming Cincinnati events from the same monthly series: 'Hard 21 featuring Echo Side, D3m0lit1on.l4k3, CNDRCELL and redkattseven' (Mixie's Northside, 12/3/2026, free) and 'HARDER5 featuring Chitravati, Brom, CNDRCELL and redkattseven' (Good Judy's, 12/4/2026, free).","sourceUrl":"https://allevents.in/org/redkattwreckchords/22966873","confidence":"medium","notes":"Repeat booking across consecutive editions of the H.A.R.D. series, described as 'a monthly hardstyle, hard house and dark techno themed event on the first Thursday of each month... 140-160 BPM'. No profile links found; city inferred from exclusively Cincinnati billings."},{"id":"kiml","name":"KimL","city":"Dayton","state":"OH","genres":["EDM","electronic"],"links":{"soundcloud":null,"bandcamp":null,"instagram":null,"ra":null,"other":"https://www.daytonsilentdisco.com/"},"bookingUrl":"https://www.daytonsilentdisco.com/","fee":null,"travels":"unknown","evidence":"Standing resident of Dayton Silent Disco, 'THREE DJS ON THREE STATIONS, THE LAST FRIDAY OF EVERY MONTH' at The Brightside, 905 E 3rd St, Dayton: 'KimL will be on the green station with EDM, Sexbox on the blue station with 70s, 80s, and 90s, and John Chapel on the Red station with modern Hip Hop.' Same billing repeated on an 11/25/2026 charity event page.","sourceUrl":"https://www.daytonsilentdisco.com/","confidence":"high","notes":"Corroborated on two independent pages (the event's own site and an allevents.in listing). Monthly residency running at least mid-2026 through a 9th-annual NYE edition. Produced by Level Up Productions, whose event site is the practical booking route — recorded as the bookingUrl rather than the organiser's email address."},{"id":"sexbox","name":"Sexbox","city":"Dayton","state":"OH","genres":["disco","70s/80s/90s dance"],"links":{"soundcloud":null,"bandcamp":null,"instagram":null,"ra":null,"other":"https://www.daytonsilentdisco.com/"},"bookingUrl":"https://www.daytonsilentdisco.com/","fee":null,"travels":"unknown","evidence":"Standing monthly resident of Dayton Silent Disco at The Brightside: 'Sexbox on the blue station with 70s, 80s, and 90s.' Identical billing on the 11/25/2026 SICSA charity event page.","sourceUrl":"https://www.daytonsilentdisco.com/","confidence":"high","notes":"Retro and disco rather than contemporary club electronic — flag if the demo must stay strictly four-to-the-floor. Same monthly residency and booking route as KimL."},{"id":"dj-b-funk","name":"DJ B-Funk","city":"Athens","state":"OH","genres":["disco","funk","retro dance"],"links":{"soundcloud":null,"bandcamp":null,"instagram":null,"ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"'Music Will be provided by DJ B-Funk with full lights and production' for Platinum Disco 2 at The Athens Armory, 12/12/2026. His organizer page shows a repeating Athens series: Platinum Disco (Mar 2026 and Dec 2026, Athens Armory), three Golden Hour Dance Party fundraisers at West End Ciderhouse (Jan/Jun/Sep 2025), and NYE at The Side Bar (Dec 2024).","sourceUrl":"https://allevents.in/org/muchi-nochi-b-funk-and-barticus/25204043","confidence":"high","notes":"Brings his own lights and production, which lowers the venue's technical burden. Co-produces the Heroes in Color film series with the Athena Cinema and runs his parties as fundraisers for it, so he is used to cause-tied, budget-conscious bookings. Usually bills as a trio with Muchi Nochi and Barticus."},{"id":"a-squared-indy","name":"A-Squared (Annie & Andy)","city":"Indianapolis","state":"IN","genres":["dark rave","industrial","electronic"],"links":{"soundcloud":null,"bandcamp":null,"instagram":null,"ra":null,"other":"https://allevents.in/org/a-squared-industries/22840947"},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Spellbound Indy page: \"Indy's Dark Rave with hosts Annie & Andy of A-Squared Industries\", event 'featuring the A-Squared DJs and DJ Evil Twin and guest DJ John Larner'. The organizer page shows 37 events and monthly Spellbound Indy editions at White Rabbit Cabaret running May through Nov 2026.","sourceUrl":"https://allevents.in/org/a-squared-industries/22840947","confidence":"high","notes":"Resident DJ duo behind Indianapolis's monthly dark rave; two independent fetched pages agree. Presented in partnership with record shop Indy CD & Vinyl. $15-$29 door, and a past edition featured Belgian act Ultra Sunn, so the night books international guests and understands travel costs."},{"id":"atto-indy","name":"ATTO","city":"Indianapolis","state":"IN","genres":["techno","house"],"links":{"soundcloud":null,"bandcamp":null,"instagram":"https://instagram.com/atto.techno","ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Billed with a set time on the 'Unz Unz - This is House Music' lineup at Martini Event Center, Indianapolis: '11 PM - 12 AM | ATTO - @atto.techno'. The same page's sign-off reads 'Learn More: Follow us on instagrams @atto.techno / @wol_arsi / @sisixstudio'. Event copy: 'Who says you have to leave Indy for great nightlife? UNZ UNZ is bridging the gap and bringing a new era of house music to the city.'","sourceUrl":"https://allevents.in/indianapolis/unz-unz-this-is-house-music/100002004865988140","confidence":"medium","notes":"Appears to be both a performing DJ and a co-organiser of Unz Unz — the handle is given as the event's own 'learn more' contact, making this the most reachable Indianapolis name found. Instagram handle was published by the promoter, not guessed."},{"id":"garrison-xr","name":"Garrison XR","city":"Detroit","state":"MI","genres":["house","techno","multi-genre club"],"links":{"soundcloud":null,"bandcamp":null,"instagram":null,"ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"true","evidence":"Headliner of 'Jaguar' at Spirit, 242 51st St, Pittsburgh PA, Friday 4 December 2026, with a published set time of 11:30-01:00, $15, 21+. Venue bio: 'Garrison XR is Detroit's it girl! DJ, producer, and xtravaganza curator, Garrison XR is a creative force in Detroit's underground culture. As the founder and sole organizer of XOXR, they have cultivated an xstatic queer realm within the city.'","sourceUrl":"https://www.spiritpgh.com/calendar/2024/11/29/jaguar-eh78n-ynh4h-5wjkr-8mhgj-rh64f-dczpc-hbb7t-p856t-ecjpe-j5bjt-gfdpt-3ald8-5shf7-sgbll-9933h-psacj-4wzkt-252zc-gmzlk-5xj39","confidence":"high","notes":"THE CLEANEST DEMO CASE IN THIS FILE: a Detroit artist verifiably booked to headline another city 290 miles away, on a $15-door club night — exactly the costs-plus economics the marketplace is built around. Runs their own party, XOXR. The venue bio uses they/them. No profile links could be found; a linktr.ee/garrisonxr guess returned 404, so links are left empty rather than invented."},{"id":"carlos-souffront","name":"Carlos Souffront","city":"Detroit","state":"MI","genres":["techno","acid","house","experimental"],"links":{"soundcloud":"https://soundcloud.com/csouffront","bandcamp":null,"instagram":null,"ra":"https://www.residentadvisor.net/dj/carlossouffront","other":"https://www.discogs.com/artist/81079-Carlos-Souffront"},"bookingUrl":"mailto:booking@interdimensionaltransmissions.com","fee":null,"travels":"unknown","evidence":"Roster artist on the Detroit label Interdimensional Transmissions, whose site publishes a 'Book an Artist' address on every page. Bio: 'He mastered his deep mixing skills with a cassette deck and a belt drive turntable in his father's den in Troy, home of contemporaries such as Mike Servito, Tadd Mullinex and Matt Dear... Carlos is an important component of the Interdimensional Transmissions parties. At the original No Way Back party, he demanded truth in advertising, pushing us to and then past the 12 hour mark.'","sourceUrl":"https://interdimensionaltransmissions.com/artists/carlos-souffront","confidence":"high","notes":"THE ONLY ARTIST HERE WITH A REAL BOOKING ROUTE — a label-level public 'Book an Artist' address, not a personal contact. Described as 'a true DJ's DJ': deeply respected locally, five label podcast episodes, but not a festival headliner. City is Detroit metro (Troy, MI) per the bio, not the city proper."},{"id":"detroit-bureau-of-sound","name":"Detroit Bureau of Sound","city":"Detroit","state":"MI","genres":["techno","dub techno","ambient","experimental"],"links":{"soundcloud":"https://soundcloud.com/detroitbureauofsound","bandcamp":"https://detroitbureauofsound.bandcamp.com/","instagram":"https://www.instagram.com/detroitbureauofsound/","ra":"https://ra.co/dj/detroitbureauofsound","other":"https://detroitbureauofsound.com/"},"bookingUrl":null,"fee":null,"travels":"true","evidence":"Profile lists city as Detroit and genre as Techno. Travelled out of market to headline 'Phase:Zero Beyond The Veil' at Crobar, Cleveland, 10/30/2026 ($15, 21+) — roughly 170 miles from home.","sourceUrl":"https://overthehump.org/artists/detroit-bureau-of-sound","confidence":"high","notes":"Most complete link set of any artist here (SoundCloud, Bandcamp, Beatport, YouTube, Instagram, Facebook, RA and own website) plus documented regional travel. The own website is the likeliest place to find a booking contact and is worth a follow-up fetch."},{"id":"al-ester","name":"Al Ester","city":"Detroit","state":"MI","genres":["detroit techno","techno","house","tech house"],"links":{"soundcloud":null,"bandcamp":null,"instagram":"https://www.instagram.com/realdjalester/","ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"true","evidence":"Profile lists city as Detroit. Travelled to Cleveland twice in 2026: 'Technoberfest' at Spotlight Cleveland 10/10/2026 and 'Off The Clock' at RE:BAR 7/31/2026 — two separate out-of-market bookings by different promoters.","sourceUrl":"https://overthehump.org/artists/al-ester","confidence":"high","notes":"Clean proof of the exact behaviour the marketplace is selling: a Detroit artist repeatedly booked into another city's rooms by different buyers. Only an Instagram link is published, so there is no way to preview sets from this record."},{"id":"viii-dorsey","name":"Viii Dorsey","city":"Pittsburgh","state":"PA","genres":["experimental","beat tape","sound collage"],"links":{"soundcloud":null,"bandcamp":"https://viiidorsey.bandcamp.com/album/viiitality-when-weird-noises-heal-a-sound-collage-beat-tape-experiment","instagram":"https://www.instagram.com/viiidorsey/","ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Named grantee of the 2025 Fourth River programme, described on the funder's recap page as one of 'Ten emerging Pittsburgh-based musicians [who] received a grant and personalized creative development from acclaimed artist Midland'. Grantees played a Honcho live showcase at New Hot Mass, Pittsburgh, 12/20/2025.","sourceUrl":"https://risingartistfoundation.org/programs/fourth-river/","confidence":"high","notes":"Vetted by a selective nonprofit grant programme explicitly aimed at the emerging tier — a strong supply signal for a costs-plus marketplace. Genre taken from the artist's own Bandcamp album title; the funder page does not state genres. Produces sound collage rather than conventional DJ sets."},{"id":"ezdoesit","name":"EZDOESIT","city":"Pittsburgh","state":"PA","genres":["electronic"],"links":{"soundcloud":"https://soundcloud.com/ezdoesit808","bandcamp":null,"instagram":"https://www.instagram.com/ez.does.it808/","ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Named grantee of the 2025 Fourth River programme for 'Ten emerging Pittsburgh-based musicians', awarded a $1,500 stipend, music-making tools and covered healthcare costs alongside six weeks of sessions with Midland.","sourceUrl":"https://risingartistfoundation.org/programs/fourth-river/","confidence":"high","notes":"Grant-vetted emerging Pittsburgh artist with an active SoundCloud. Genre is NOT stated on the source page; the '808' handle hints at beat production but that is unconfirmed."},{"id":"a-e-seith","name":"a.e.","city":"Pittsburgh","state":"PA","genres":["electronic","experimental"],"links":{"soundcloud":"https://m.soundcloud.com/funeral_parade_of_roses","bandcamp":"https://seithcommuniti.bandcamp.com/","instagram":"https://www.instagram.com/seithcommuniti/","ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Named grantee of the 2025 Fourth River programme for 'Ten emerging Pittsburgh-based musicians', run by The Rising Artist Foundation with Pittsburgh collective Honcho.","sourceUrl":"https://risingartistfoundation.org/programs/fourth-river/","confidence":"high","notes":"Grant-vetted emerging Pittsburgh artist. Operates under several handles (a.e. / seithcommuniti / funeral_parade_of_roses), so identity-match carefully before contacting. Genre not stated on the source page."},{"id":"naeem-pgh","name":"Naeem","city":"Pittsburgh","state":"PA","genres":["electronic"],"links":{"soundcloud":"https://soundcloud.com/dyspheric-x","bandcamp":null,"instagram":"https://www.instagram.com/sasb.radio/","ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Named grantee of the 2025 Fourth River programme for 'Ten emerging Pittsburgh-based musicians'. Additionally highlighted by the funder as its featured 'Rising Artist: Naeem [2025 cohort]'.","sourceUrl":"https://risingartistfoundation.org/programs/fourth-river/","confidence":"high","notes":"The only grantee singled out as the foundation's featured Rising Artist, so the best-endorsed of the Pittsburgh cohort. The Instagram handle is a radio project (sasb.radio). Genre not stated on the source page."},{"id":"slowdanger","name":"Slowdanger","city":"Pittsburgh","state":"PA","genres":["electronic","live performance"],"links":{"soundcloud":null,"bandcamp":"https://slowdanger.bandcamp.com/music","instagram":"https://www.instagram.com/slowdanger__/","ra":null,"other":"https://www.slowdangerslowdanger.com/"},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Named grantee of the 2025 Fourth River programme for 'Ten emerging Pittsburgh-based musicians', run with Honcho in Pittsburgh, October-November 2025.","sourceUrl":"https://risingartistfoundation.org/programs/fourth-river/","confidence":"high","notes":"The only grantee with its own standalone website, which is the most likely place a booking contact exists — worth a follow-up fetch. Appears to be a performance project rather than a club DJ, so suits a live-set slot rather than a dancefloor set. Genre not stated on the source page."},{"id":"frogonbough","name":"frogonbough","city":"Pittsburgh","state":"PA","genres":["electronic","experimental"],"links":{"soundcloud":"https://soundcloud.com/frogonbough","bandcamp":"https://frogonbough.bandcamp.com/","instagram":"https://www.instagram.com/stripochre/","ra":null,"other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Named grantee of the 2025 Fourth River programme for 'Ten emerging Pittsburgh-based musicians', awarded a stipend plus six weeks of creative development with Midland.","sourceUrl":"https://risingartistfoundation.org/programs/fourth-river/","confidence":"high","notes":"Grant-vetted emerging Pittsburgh artist with both Bandcamp and SoundCloud. The Instagram handle (stripochre) differs from the project name. Genre not stated on the source page."},{"id":"fiona-ishem","name":"Fiona Ishem","city":"Pittsburgh","state":"PA","genres":["electronic"],"links":{"soundcloud":"https://soundcloud.com/feeownuh","bandcamp":null,"instagram":"https://www.instagram.com/theoreticalboofing/","ra":null,"other":"https://ninaprotocol.com/profiles/fish.ee"},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Named grantee of the 2025 Fourth River programme for 'Ten emerging Pittsburgh-based musicians', run by The Rising Artist Foundation with Honcho.","sourceUrl":"https://risingartistfoundation.org/programs/fourth-river/","confidence":"high","notes":"Grant-vetted emerging Pittsburgh artist, also publishing on Nina Protocol. Genre not stated on the source page."},{"id":"brenda-chicago","name":"Brenda","city":"Chicago","state":"IL","genres":["techno","hypnotic techno"],"links":{"soundcloud":"https://soundcloud.com/brendacurtis","bandcamp":null,"instagram":"https://www.instagram.com/brenda.c_312/","ra":"https://ra.co/dj/brenda","other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Smartbar resident bio: 'She has been a smartbar resident since 2023, leads A&R for Format Recordings, and co-curates Format events and the long-running Format.FM podcast series. Her sets are grounded in deep, hypnotic techno.' No out-of-town dates stated.","sourceUrl":"https://smartbarchicago.com/residents/brenda/","confidence":"high","notes":"Working-tier Chicago resident with label A&R and curation duties, not a touring headliner. Holds a PhD in molecular and cellular biochemistry and DJs alongside a science career, which may constrain weekday travel."},{"id":"harry-cross-chicago","name":"Harry Cross","city":"Chicago","state":"IL","genres":["house","italo","breaks","electro"],"links":{"soundcloud":"https://soundcloud.com/harry_cross","bandcamp":null,"instagram":"https://www.instagram.com/harrycross_chicago/","ra":"https://ra.co/dj/harrycross","other":null},"bookingUrl":null,"fee":null,"travels":"true","evidence":"Smartbar resident bio: 'In Chicago he holds a residency at the legendary smartbar and Steamworks Bath house. He's the promoter of the late night Witch Finger raves, the daytime Overly Dramatic party and the weekend-long Loose Ends at the Dunes in Saugatuck, MI.' Runs a recurring event out of state in Michigan.","sourceUrl":"https://smartbarchicago.com/residents/harry-cross/","confidence":"high","notes":"Co-founded the Men's Room party in 2012 and promotes three of his own event brands, one out of state — so he already handles travel logistics and understands costs-plus economics from the buyer's side."},{"id":"madeline-chicago","name":"Madeline","city":"Chicago","state":"IL","genres":["house","club","techno-tinged house"],"links":{"soundcloud":"https://soundcloud.com/madeline-url","bandcamp":null,"instagram":"https://www.instagram.com/soft.content/","ra":"https://ra.co/dj/madelinechi","other":null},"bookingUrl":null,"fee":null,"travels":"true","evidence":"Smartbar resident bio: 'Since then, Madeline has had international debuts in Berlin and Toronto, a Boiler Room Chicago debut, a feature in DJMag's artists to watch, and a growing catalog of production releases.' Earned the Statement Piece smartbar residency in 2023; a Bay Area transplant who hosted radio on WNUR 89.3FM and worked at Gramaphone Records.","sourceUrl":"https://smartbarchicago.com/residents/madeline/","confidence":"high","notes":"Clearest documented flight history in the whole set (Berlin and Toronto debuts), so the most plausible 'airfare only' candidate. Rising profile means a fee expectation may already exist — confirm before pitching costs-plus."},{"id":"justin-aulis-long","name":"Justin Aulis Long","city":"Chicago","state":"IL","genres":["techno","acid","EBM","new beat","new wave"],"links":{"soundcloud":"https://soundcloud.com/justin-aulis-long","bandcamp":null,"instagram":"https://www.instagram.com/justinaulislong/","ra":"https://ra.co/dj/justinaulislong","other":null},"bookingUrl":null,"fee":null,"travels":"unknown","evidence":"Smartbar resident bio: 'Long has been a consecutive resident of smartbar for 30+ years with his current residency project, Flowers of Romance.' Began in 1989 at the teen club Medusas with a soundtrack of 'New Beat, EBM, Acid, Techno and New Wave'. A vinyl selector.","sourceUrl":"https://smartbarchicago.com/residents/justin-aulis-long/","confidence":"medium","notes":"Deeply established locally (30+ year residency) but with no documented touring, so a regional booking is plausible. All-vinyl sets mean heavier luggage and a specific backline rider — relevant to an airfare-only offer."},{"id":"ariel-zetina","name":"Ariel Zetina","city":"Chicago","state":"IL","genres":["house","hard techno","hyperpop","Belizean punta","club"],"links":{"soundcloud":"https://soundcloud.com/arielzetina","bandcamp":null,"instagram":"https://www.instagram.com/arielzetina/","ra":"https://ra.co/dj/arielzetina","other":null},"bookingUrl":null,"fee":null,"travels":"true","evidence":"Smartbar resident bio: 'Ariel is a resident DJ at the legendary house club Smartbar and has had the privilege to deejay all over the world, including... playing iconic venues and festivals like De School (Amsterdam), Unsound (Krakow), Planetas Manas (Lisbon), and Pitchfork Fest (Chicago).' Nominated for DJ Mag Breakthrough DJ-North America in 2022 and named Chicagoan of the Year in the Chicago Tribune's pop music category in 2023.","sourceUrl":"https://smartbarchicago.com/residents/ariel-zetina/","confidence":"high","notes":"THE MOST ESTABLISHED ARTIST IN THIS FILE and arguably above the costs-plus tier — she has opened for Beyonce and James Blake and tours internationally. Included because she is a genuine club resident with extensive travel history, but treat her as the ceiling of the supply range, not a typical airfare-only booking. Also co-runs the Chicago party and mix series Rumors."}]},hosts:{"generatedAt":"2026-11-21T05:10:00Z","method":"Seeded from the Listen LLC show at Seventh Son Brewing (Columbus, 2026-11-20), then crawled outward with web_fetch only (web_search is disabled on this host). The richest source was MATO (ma.to): its /venue/<handle> pages double as organizer pages with a description, Instagram handle, external links, event counts and a 'Similar places in <city>' list, so the Columbus promoter graph was crawled from that. Supplemented with discopresents.com promoter/venue pages, mainstagefm.com city/venue/artist pages, allevents.in organizer pages, and each promoter's or venue's own site. DuckDuckGo HTML search worked for the first few queries (and is the only place Instagram bio text was readable) before it began returning bot-challenge pages. Cleveland/Cincinnati/Dayton/Athens and the out-of-state Midwest were researched by two parallel subagents under the same evidence rules; their entries are included verbatim with their own confidence ratings.","limitations":"ra.co returns 403 to this host, so Resident Advisor promoter and event pages (including the ticket link for the 2026-11-20 Listen show) could never be read; that is the single biggest gap, since RA is where underground promoters are best catalogued. Instagram profile pages return an empty shell when fetched directly, so every Instagram handle here is either printed on a site/directory page we fetched or quoted from a DuckDuckGo result snippet, and no follower counts or recent-post history could be verified. DuckDuckGo captcha'd partway through, which cost the Instagram-bio route for the later cities. MATO has no city pages for Cleveland, Cincinnati, Dayton, Athens, Indianapolis or Louisville, so those cities rest on thinner sources. typicalCapacity is null for every entry: no fetched page stated a capacity figure, and we did not guess. No booking fees, contact names, or private contact details were collected. Several Columbus organizations are known only through a MATO organizer page plus an Instagram handle and have no verifiable website. Listen LLC itself is the weakest-documented entry relative to its importance: its existence, city and Columbus house-event focus are confirmed, but no page we fetched names it as the promoter of record for the 2026-11-20 show, and the fly-in detail for that night comes from Nathan's firsthand attendance, not from a fetched page. Entry count is 36, slightly above the 15-30 target: every entry had real fetched evidence and we kept them rather than discarding verified rows.","hosts":[{"id":"listen-llc","name":"Listen LLC","type":"promoter","city":"Columbus","state":"OH","website":null,"social":"https://www.instagram.com/listen.llc/","bookingUrl":null,"genres":["house","disco"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"Instagram bio, quoted verbatim in search results: 'Come to Listen, Stay to Dance. Curating Vibes, 1 Dance Floor at a Time. People / DJ's / Sound System. Columbus, OHIO Based DJ Events'. MATO lists 'First Listen Event at Seventh Son' on Sat 14 Nov 2026, 21:00-01:00: 'The first Listen Event takes place upstairs at Seventh Son, under the disco ball. House music plays all night, from 9pm to 1am.' MainStageFM lists the following Listen-night date at the same room: 'Jörgen - Columbus, Fri Nov 20, 2026, Doors 9:00 PM, Venue: Seventh Son Brewing', ticketed through ra.co. FLY-IN EVIDENCE IS FIRSTHAND, NOT FROM A FETCHED PAGE: Nathan attended the 2026-11-20 show and reports Listen flew in two artists, one from Charleston SC and one from LA.","sourceUrl":"https://html.duckduckgo.com/html/?q=%22Listen+LLC%22+Columbus+Ohio+electronic+music+promoter","confidence":"medium","notes":"THE SEED ORGANIZATION - this is the profile every other entry is matched against: a small, new, independent Columbus house promoter running a named recurring night in a brewery's upstairs room and flying in out-of-state talent. Only 1 Instagram post as of the bio snapshot, so it is very new. MATO credits the 14 Nov 'First Listen Event' to Seventh Son Brewing as organizer of record, which is typical for a brewery-hosted series; no fetched page names Listen LLC as promoter for the 20 Nov date. Supporting MATO page: https://ma.to/event/first-listen-event-at-seventh-son-14-nov-2026 ; show listing: https://mainstagefm.com/events/columbus-2026-11-20-jorgen/ . Worth confirming the Listen-to-Seventh-Son relationship and the two booked artists directly before using this row as ground truth."},{"id":"my-best-friends-party","name":"My Best Friends Party (#MBFP)","type":"promoter","city":"Columbus","state":"OH","website":"https://mybestfriendsparty.com/","social":"https://www.instagram.com/mybestfriendsparty/","bookingUrl":"https://mybestfriendsparty.com/contact/","genres":["bass","dubstep","drum & bass","house","future bass"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"Own site: 'My Best Friends Party is an event production company specializing in electronic music events. Based in Columbus, OH - we've been throwing events in our home state since 2009... our monthly electronic event - LeBOOM!, every third Saturday at Skully's; or our weekly electronic show - Thump, every Wednesday at Duecento.' Named touring bookings on their MATO calendar: 'taiki nulight: Full Circle Tour' (Mar 2027), 'Heyz: Something Different Tour' (Nov 2026), EPROM at Otherworld (Dec 4), 'Jade Cicada, Alejo, Petals, Popbot' (Dec 5), 'Smoakland & sfam: LeBOOM' (Dec 19), 'YOOKIE: 360 Set' (Jan 2027), 'Eric Luttrell at Otherworld' (Feb 2027). Disco Presents lists them as co-promoter of record on Columbus dates.","sourceUrl":"https://ma.to/venue/mybestfriendsparty","confidence":"high","notes":"The most established independent Columbus electronic promoter found - 17 years running, two recurring residencies (LeBOOM! monthly at Skully's, Thump weekly), and a continuous national touring calendar. Also credited on Disco Presents event pages as co-promoter, and their own site says they have helped produce Electric Forest, Lost Lands, All Good and The Werkout. Best-case template for a host who already books fly-ins at volume. Secondary sources: https://discopresents.com/promoter/my-best-friends-party and https://mybestfriendsparty.com/"},{"id":"breakaway-presents","name":"Breakaway Presents","type":"promoter","city":"Columbus","state":"OH","website":"https://www.teambreakaway.com/breakaway-presents","social":"https://www.instagram.com/breakawaypresents/","bookingUrl":null,"genres":["bass","house","dubstep","drum & bass"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"MATO: 'Breakaway Presents is a touring event promoter organizing electronic music concerts and multi-city festivals throughout Columbus and beyond... While they host events in Columbus at spaces like Kemba Live! Outdoor, the collective manages programming across numerous cities including Pittsburgh, Cincinnati, Atlanta, and St. Petersburg.' Named tours on calendar: 'Boogie T: T-Man Tour' (Feb 2027), 'TroyBoi: Hear2Move Tour' (Feb 2027), 'BUNT: The Levi Did It Tour' (May 2027), Liquid Stranger, DEVAULT, SIDEPIECE at The Bluestone, KREAM at Globe Iron, 'Bassvictim - White Flag Tour', 'CID: Out of Service Tour'; recent 'Haunted Fest 26' editions in Cincinnati and Pittsburgh.","sourceUrl":"https://ma.to/venue/breakawaypresents","confidence":"high","notes":"Columbus-based but operating at national promoter scale (own festival brand, Haunted Fest, plus multi-city routing) - included as the top of the market rather than as a Listen LLC peer. Useful as the 'graduated' end of a host spectrum in the demo."},{"id":"circuit-909","name":"C I R C U I T 9 0 9","type":"collective","city":"Columbus","state":"OH","website":"http://circuit909.com/events","social":"https://www.instagram.com/circuit909presents/","bookingUrl":null,"genres":["house","tech house"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"MATO: 'C I R C U I T 9 0 9 is an active music collective and event organizer based in Columbus. They specialize in immersive house music and electronic events, ranging from intimate boiler room style gatherings to large-scale day parties. The group frequently partners with local establishments like the Moxy terrace, The Bluestone, and Forum to deliver curated lineups of local talent and touring acts.' Recurring night 'UNIT 909' at Apartment B (6 Nov, 17 Oct, 3 Oct, 18 Sep, 6 Sep); 'AYYBO at The Bluestone' (29 Aug); 'XANDRA at Midway Block' plus a free XANDRA pregame show (28 Nov).","sourceUrl":"https://ma.to/venue/circuit909presents","confidence":"high","notes":"Closest structural peer to Listen LLC: roaming house-music collective with a named recurring night (UNIT 909) in a small bar room, partnering with venues rather than owning one, and explicitly mixing local talent with touring guests. Also runs the Azure Day Party partnership for seasonal programming."},{"id":"null-entertainment","name":"Null Entertainment","type":"promoter","city":"Columbus","state":"OH","website":"http://universallynull.com","social":"https://www.instagram.com/universallynull/","bookingUrl":null,"genres":["dubstep","bass"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"MATO: 'Null Entertainment is an independent promoting and events production team based in Columbus... ranging from underground dubstep showcases to themed experiences like the mysterious MasqueRAVE.' Named out-of-town bookings: 'Murkwood: Apparition & Joe Nice' (13 Nov 2026) and 'Enigma Dubz: Universally Null' (21 Nov 2026) - Joe Nice and Enigma Dubz are touring/UK dubstep artists. Recurring brand 'Murkwood' at 5-year anniversary (24 Oct 2026) with 'Murkwood: Final of the Year' on 18 Dec.","sourceUrl":"https://ma.to/venue/universallynull","confidence":"high","notes":"Directly relevant to a booking marketplace: MATO states 'Null Entertainment frequently runs online talent contests where DJs can submit mixes for a chance to win a support slot on their upcoming lineups', and they run open-decks nights on CDJ-3000s and an A9 mixer. That is exactly the supply-side matching problem a DJ-match product addresses. Nomadic - partners with The Sanctuary on Neil and Skully's Music Diner. Also produces all-ages kid raves."},{"id":"alchemy-sessions","name":"Alchemy Sessions","type":"promoter","city":"Columbus","state":"OH","website":null,"social":"https://www.instagram.com/alchemy_sessions/","bookingUrl":null,"genres":["bass","dubstep","drum & bass","experimental bass"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"Instagram bio, quoted verbatim in search results: 'Creating gold one sound wave at a time. Columbus, Ohio based electronic music promotion group. @rechargethursdays'. Ticketing-platform organizer blurb: 'Creating gold one sound wave at a time. Based out of Columbus, OH Alchemy Sessions aims to grow the experimental Bass community in Ohio.' Facebook page: 'Alchemy Sessions, Columbus. 981 followers. Bringing the best experimental electronic dance music to Columbus, Ohio'. Touring booking: Eventbrite listing 'Alchemy Sessions & Funkshway Presents: Smigonaut, Breadwinner, and More - Friday, June 6, 2025 at The Summit Music Hall, Columbus, OH' (Smigonaut and Breadwinner are touring US bass acts).","sourceUrl":"https://html.duckduckgo.com/html/?q=%22Alchemy+Sessions%22+Columbus+Ohio+underground+electronic+promoter","confidence":"medium","notes":"Runs the Re:Charge weekly electronic residency at The Summit Music Hall (Thursdays), visible on the Summit's own MATO calendar as 'Re: Charge: yum yum' (19 Nov) and 'Open Decks: RE:CHARGE' (3 Dec) - a residency plus open-decks combination that makes them a strong marketplace candidate. Co-promotes with Funkshway, another Columbus bass crew that we could only verify through that one Eventbrite title. CAUTION: alchemy-sessions.com is an unrelated business, not this promoter, so website is deliberately null. Facebook page: https://www.facebook.com/alchemysessions/ ; ticketing org page https://theticketing.co/o/alchemysessions would not render for us."},{"id":"house-social","name":"House Social","type":"promoter","city":"Columbus","state":"OH","website":"https://housesocial.co/","social":"https://instagram.com/housesocial.us","bookingUrl":"mailto:contact@housesocial.co","genres":["house","tech house","disco"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"Own site: 'Columbus-based. House and tech house nights across Ohio. Rooftops, warehouses, the occasional basement.' Origin story: 'House Social started with two trumpet players from the Ohio State Marching Band... We tried to keep the feeling alive, sending mixes to collectives, reaching out to promoters, and showing up to nights hoping someone would give us a shot. The doors we knocked on stayed closed, so we built our own.' Upcoming nights listed: 'Performance Review' (The Cave), 'Disco Hour' (Nov 19), 'Cosi After Dark' (January). Ticketing via posh.vip. Footer: 'Curated electronic experiences - est. MMXXVI'.","sourceUrl":"https://housesocial.co/","confidence":"high","notes":"The single most on-the-nose entry for a DJ-booking marketplace demo: founded in 2026 by two musicians who could not get booked, and whose stated mission is 'a place that brings creators together, shares the opportunities we create, and makes room for the next DJ who deserves to be heard.' Fly-in signal marked unknown because every stated date is their own/local DJs - their model is creating slots, not importing headliners."},{"id":"tribe-records","name":"TRIBE (Tribe Records)","type":"collective","city":"Columbus","state":"OH","website":"https://linktr.ee/triberecs","social":"https://www.instagram.com/triberecs","bookingUrl":"https://www.tstack.link/tribe-records","genres":["house","tech house","minimal","techno"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"Linktree header: 'House Music Collective & Record Label. Columbus, OH.' Documented events with named rooms: 'UNDERGROUND BARBERSHOP RAVE | KHUN SOL | TRIBE @ ETHOS', 'KHUN SOL | TRIBE NYE @ THE CAVE | DARK GROOVY TECH', 'SANTERO | TRIBE NYE @ THE CAVE | EUPHORIC HOUSE', 'SOKA | NYE LIVE @ THE CAVE | UNDERGROUND RAVE', 'Euphoric Golden Hour DJ Set @ TRIBE Dayclub'. Runs a label with Beatport releases (KOBAIEN, Khun Sol, Santero, SOKA, PENTHOUSE) and an open demo channel ('Send demos to Tribe Records').","sourceUrl":"https://linktr.ee/triberecs","confidence":"high","notes":"Collective + record label + event series + YouTube mix channel, running unconventional rooms (a barbershop, a tattoo parlour, The Cave, a dayclub). The public demo-submission link is a real inbound-talent channel. All named artists appear to be its own roster, so no fly-in evidence; 'Next Event: Details coming soon' as of the fetch."},{"id":"ope-collective","name":"OPE Collective","type":"collective","city":"Columbus","state":"OH","website":null,"social":"https://www.instagram.com/ope_collective/","bookingUrl":"mailto:opecollective@gmail.com","genres":["house"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"Instagram bio, quoted verbatim in search results: 'House music DJs based in Columbus, OH promoting good vibes and good music. Booking Contact: opecollective@gmail.com' (3,537 followers, 107 posts). Facebook page: 'OPE Collective, Columbus. 1,468 followers. Established in 2020. House music DJs based in Columbus, OH promoting good vibes and good music'.","sourceUrl":"https://html.duckduckgo.com/html/?q=Columbus+Ohio+techno+house+promoter+collective+instagram","confidence":"medium","notes":"Active since 2020 and the largest Columbus house-collective following found (~3.5k IG). The listed address is the collective's own published booking contact, not a private individual's. Appears in a My Best Friends Party photo caption ('ope-n-buku'), suggesting they have shared bills with MBFP. No website or current calendar was verifiable, so activity in late 2026 is unconfirmed. Facebook: https://www.facebook.com/opecollective/"},{"id":"redroom","name":"REDROOM","type":"series","city":"Columbus","state":"OH","website":"https://enterredroom.com/","social":null,"bookingUrl":"https://enterredroom.com/contact","genres":["hard techno","industrial","acid","psytrance"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"Own About page: 'A hard techno event series from Ohio. REDROOM started with one idea: Ohio deserved a real underground rave. Not a club night with a dress code and a DJ in the corner, but a dark warehouse, red light and hard techno from open to close. It began in Columbus in April 2026. Secret location, address sent to ticket holders before the night... Since then REDROOM has turned into a monthly ritual, and it is heading to more cities.' Contact page headed 'Bookings, press and partnerships' with contact@enterredroom.com. Registered as REDROOM LLC; tickets via Speakeasy.","sourceUrl":"https://enterredroom.com/about","confidence":"high","notes":"Started April 2026, so a direct contemporary of Listen LLC and House Social - the 2026 cohort of new Columbus promoters. Monthly, secret-warehouse, advance-ticket model, explicitly expanding to more cities, and it publishes a dedicated bookings intake. A public SMS support line is listed on the site; it is a business support number, not a personal one, and is left out of this record deliberately."},{"id":"subform-dnb","name":"Subform","type":"series","city":"Columbus","state":"OH","website":null,"social":"https://www.instagram.com/subform.dnb/","bookingUrl":null,"genres":["drum & bass","jungle"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"MATO: 'Columbus, Ohio drum & bass event brand uniting local and regional talent... Subform is based in Columbus, Ohio, and presents drum & bass events in the city.' Event page for 18 Sep 2026 at The Oracle: 'subform brings drum and bass to The Oracle. A lineup of local talent including D Wreck, Lefto, J.A.N.K., Synapse, and Grayo will be playing both vinyl and digital sets. No cover charge.' Next date 'Subform Drum & Bass', Sat 5 Dec 2026, 20:00-01:00, $10.","sourceUrl":"https://ma.to/venue/subform.dnb","confidence":"high","notes":"New brand (first MATO listing Sep 2026), free-to-$10 door, built around The Oracle. 'Regional talent' in the MATO description hints at out-of-town bookings but the one lineup we could read was explicitly all local, so the fly-in signal stays unknown. Linked out to soundcloud.com/z-rekt and soundcloud.com/grayodnb and a Facebook page."},{"id":"raven-columbus","name":"Raven","type":"collective","city":"Columbus","state":"OH","website":"http://beloudergroup.com","social":"https://www.instagram.com/ravencbus/","bookingUrl":null,"genres":["house","techno","bass","drum & bass","trance"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"MATO: 'Raven is a community-focused electronic music collective and event organizer hosting immersive bass, house, and techno events in Columbus... Raven is an event collective and promoter that organizes dance music experiences at various locations across Columbus.' Volume: '42 events listed since September 2026'. Named recurring series: Bass Frequencies (at Vol. 23), House Heads (Vol. 13, '2-Stage Rave'), Home Haus (Vol. 15), Multiverse (Vol. 5), Riddim Rampage (Vol. 3), Boss Frequencies, Louder Fest (Vol. 6), BUMP. Ticketing partner beloudergroup.com.","sourceUrl":"https://ma.to/venue/ravencbus","confidence":"high","notes":"Highest event cadence of any Columbus independent found - 42 events in roughly three months across seven or more parallel numbered series, plus community yoga and paint nights. MATO characterises programming as 'emphasizing local DJ talent', which is why the fly-in flag is unknown rather than true; that same local-first emphasis plus very high slot volume makes them a heavy consumer of DJ supply."},{"id":"hypnotech-collective","name":"HYPNOTECH","type":"collective","city":"Columbus","state":"OH","website":null,"social":"https://www.instagram.com/hypnotechcollective/","bookingUrl":null,"genres":["hard techno","acid","industrial","psytrance"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"Instagram bio, quoted verbatim in search results: 'Hard Techno DJ Collective. Columbus, OH. @alexaortegaa @anairomusicofficial. Acid / Industrial / Psy / Harder / All Night. DM for inquiries' (453 followers, 30 posts).","sourceUrl":"https://html.duckduckgo.com/html/?q=Columbus+Ohio+techno+house+promoter+collective+instagram","confidence":"medium","notes":"Small two-DJ hard-techno collective, inquiries by DM only - no website, no bookable calendar, and no event page we could reach, so present-day activity is unconfirmed. Included as a realistic example of the smallest tier of host: a crew that would need a marketplace precisely because it has no booking infrastructure."},{"id":"restart-drum-and-bass","name":"Restart Drum and Bass","type":"series","city":"Columbus","state":"OH","website":"http://www.restartdrumandbass.com/","social":"https://www.facebook.com/restartdrumandbass/","bookingUrl":"http://restartdrumandbass.com/#booking","genres":["drum & bass","jungle","liquid dnb"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"Own site: 'Restart is a collective of DJs, producers and artists who share a common love of true Drum and Bass. Our monthly Columbus-based DnB night serves both as a venue for us to play the music we love and as a place where new DJ talent can cut their teeth in front of a crowd. Catch us the 1st Friday of every month at Rehab Tavern, 456 W Town Street, Columbus, Ohio.' Booking section: 'We have always prided ourselves on providing a venue for both new and seasoned DJ talent to play in front of a crowd of true Drum and Bass heads... If you'd like to play at a Restart Drum and Bass event contact...'. Facebook: 'Restart Drum & Bass. 1,305 followers. Restart is dedicated to bringing you the finest in deep and underground drum & bass music.'","sourceUrl":"http://www.restartdrumandbass.com/","confidence":"medium","notes":"Deep-rooted Columbus DnB lineage - co-founded by DJs Aria, Dr. Spilkus and Dingo8, connected to Restart House Music (restarthousemusic.com), the URU crew, the old Bento Go Go weekly, and Clandestine Agents Audio, described as 'Columbus' first Drum & Bass record label'. First-Friday monthly at Rehab Tavern. Their booking page is an explicit open call for DJs, which is the marketplace use case. The site lists a named individual's email as booking contact; the booking-page URL is recorded here instead. Site freshness is uncertain (its events link points at sparrow.house), so confirm the monthly is still running."},{"id":"glotaku","name":"Glotaku","type":"series","city":"Columbus","state":"OH","website":"https://glotaku.live/","social":"https://www.instagram.com/glotakuparty/","bookingUrl":null,"genres":["rave","bass","hardstyle","anime-themed EDM"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"MATO: 'Glotaku is a cosplay party series featuring music, vendors and games, with events organised across several Midwestern cities... the series organises events in Detroit, Cincinnati, Columbus, Indianapolis and the Bowling Green/Toledo area.' '20 events listed since September 2026'. Multi-city dates confirmed on the calendar: 'Glotaku Pokerave: Cincinnati' (21 Nov), 'PokeRave at Gotta Gacha' Detroit (27 Nov), 'Gotta Rave 'Em All: Pokemon Rave' Columbus (28 Nov), 'Glotaku at Monsterz Inc' Indianapolis (12 Dec), 'HALLOWEEB Cleveland' (9 Oct), 'HALLOWEEB Cincinnati' (17 Oct), 'NEKO NYE' (31 Dec).","sourceUrl":"https://ma.to/venue/glotakuparty","confidence":"high","notes":"A themed rave series that already routes the same format across five Midwest metros - i.e. a host that needs to fill DJ slots in cities where it has no local roster. That repeat-multi-city structure is a strong marketplace fit even though no individual booking is confirmed as a fly-in."},{"id":"seventh-son-brewing","name":"Seventh Son Brewing Co.","type":"venue","city":"Columbus","state":"OH","website":"https://www.seventhsonbrewing.com/","social":"https://www.instagram.com/seventh_son_brewing/","bookingUrl":"https://www.seventhsonbrewing.com/rental-info/","genres":["house","disco"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"MATO: 'Seventh Son Brewing Co. is a vibrant craft brewery and community hub located in the heart of Columbus, Ohio... This energetic space hosts regular community events including creative writing workshops, themed dance parties, and flea markets.' Of 20 tracked events, 4 are club nights. MATO credits it as organizer of 'First Listen Event at Seventh Son' (14 Nov 2026), 'upstairs at Seventh Son, under the disco ball. House music plays all night, from 9pm to 1am.' Also hosted 'Damn Girl: Dead Disco' (16 Oct 2026) and the Jörgen date on 20 Nov 2026 per MainStageFM. Address 1101 North 4th Street, Columbus OH 43201. Public rental intake: 'Thank you for choosing Seventh Son for your upcoming event!... Please read the following info and submit the rental request form below.'","sourceUrl":"https://ma.to/venue/seventh_son_brewing","confidence":"high","notes":"THE SEED VENUE - the room where Nathan saw the Listen LLC show. Exactly the profile worth replicating: a craft brewery with an upstairs room and a disco ball, a public rental-request form, and a calendar that is mostly trivia/markets/movie nights with a handful of promoter-run dance nights layered on top. Fly-in flag is unknown because it rents the room and is organizer-of-record for promoter nights rather than booking touring artists itself."},{"id":"skullys-music-diner","name":"Skully's Music-Diner","type":"venue","city":"Columbus","state":"OH","website":null,"social":"https://www.instagram.com/skullysmusicdiner/","bookingUrl":null,"genres":["bass","dubstep","house","disco"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"MATO: 'Skully's Music-Diner is a long-standing entertainment venue in Columbus hosting touring live music, electronic dance parties, and community nightlife events... For over 24 years... hosts a diverse array of live music, ranging from indie and rock acts to touring electronic artists.' 91 events tracked since July 2026, 46 of them club nights. Touring electronic bookings: 'LeBOOM: Kompany & Hvdes' (21 Nov 2026, $30, 18+, with Manzii X Phxrmxcy, Thresher, Daze, Changing State) - Disco Presents lists the same date as 'Kompany, HVDES at Skully's Music-Diner'. Also hosts MBFP's weekly Thump, 'Emo Night Brooklyn', 'Broadway Rave', 'Gimme Gimme Disco', 'Know Good: Against All Odds Tour', and a kid rave.","sourceUrl":"https://ma.to/venue/skullysmusicdiner","confidence":"high","notes":"Just marked its 25th anniversary. The main mid-size Columbus room that independent promoters (MBFP, Null Entertainment) rent for touring bass bookings, so it is a venue-side host with an existing promoter relationship model. No venue-owned website URL was printed on any page we fetched, so website is null rather than guessed."},{"id":"otherworld-columbus","name":"Otherworld","type":"venue","city":"Columbus","state":"OH","website":"https://otherworldohio.com/","social":"https://www.instagram.com/otherworldohio/","bookingUrl":null,"genres":["bass","dubstep","drum & bass","future bass","house"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"Disco Presents venue page: Otherworld, 5819 Chantry Dr, Columbus, OH 43232. Touring bookings routed there: 'Dirt Monkey, Smoakland at Otherworld' (12 Dec 2025, promoters Disco Presents + My Best Friends Party, genres Bass / Drum & Bass / Dubstep / Future Bass), 'TVBOO, OZZTIN at Otherworld' (25 Nov 2026), 'Jantsen, HerShe at Otherworld' (27 Nov 2026). MBFP's own calendar adds EPROM, Jade Cicada, Smoakland & sfam, YOOKIE and Eric Luttrell at the same room, ticketed via otherworld.ticketspice.com.","sourceUrl":"https://discopresents.com/venue/otherworld","confidence":"high","notes":"An immersive art installation that doubles as Columbus's main late-night bass room; it is the venue both national (Disco Presents) and local (MBFP) promoters route touring acts into. Unusual-space analogue to the brewery-room model, at larger scale."},{"id":"the-summit-music-hall","name":"The Summit Music Hall","type":"venue","city":"Columbus","state":"OH","website":"https://thesummitcolumbus.com/","social":"https://www.instagram.com/thesummitmusichall/","bookingUrl":null,"genres":["drum & bass","jungle","bass","jam-electronic","house"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"MATO: 'The calendar features everything from country music series and Grateful Dead tribute shows to high-energy EDM, drum and bass, and jungle nights. Beyond touring acts, the space fosters local talent through monthly open stage events and residency-style electronic showcases.' 85 events tracked since July 2026, 19 club nights. Electronic residency visible on calendar: 'Re: Charge: yum yum' (19 Nov), 'Open Decks: RE:CHARGE' (3 Dec), 'Gotta Rave 'Em All: Columbus' (28 Nov), 'Two Guys: Spy Dub Tour' (17 Dec), 'Grateful Dead Super Jam' (25 Nov). Address 2210 Summit St, Columbus OH. Previously hosted 'Alchemy Sessions & Funkshway Presents: Smigonaut, Breadwinner, and More'.","sourceUrl":"https://ma.to/venue/thesummitmusichall","confidence":"high","notes":"Home of the Re:Charge weekly electronic residency and its open-decks night, plus free monthly open-stage - the most explicitly talent-development-oriented mid-size room in Columbus, and the room Alchemy Sessions uses for touring bass bills. Covers the jam-electronic end of the brief too."},{"id":"the-bluestone","name":"The Bluestone","type":"venue","city":"Columbus","state":"OH","website":"http://liveatthebluestone.com/","social":"https://www.instagram.com/the_bluestone/","bookingUrl":null,"genres":["techno","house","bass"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"MATO: 'The Bluestone is a versatile concert hall and event space in Columbus... The musical calendar includes folk, country, rock, and electronic DJ sets.' International techno booking on the calendar: 'Layton Giordani at The Bluestone', Fri 4 Dec 2026, 21:00-02:00. Also 'TWINSICK: New Year's Eve', 'Ian Asher Live at The Bluestone' (3 Nov), 'Fright Night: JKYL & HYDE' (31 Oct), and SIDEPIECE on 12 Dec via Breakaway Presents. Circuit 909 booked 'AYYBO at The Bluestone' (29 Aug).","sourceUrl":"https://ma.to/venue/the_bluestone","confidence":"high","notes":"A converted church concert hall that takes bookings from both Columbus collectives (Circuit 909) and national promoters (Breakaway), and lands genuine international techno (Layton Giordani). Only 4 of 29 tracked events are club nights, so electronic is a minority of its calendar."},{"id":"the-oracle-columbus","name":"The Oracle","type":"venue","city":"Columbus","state":"OH","website":"http://theoraclebar.com/","social":"https://www.instagram.com/the_oracle_ote/","bookingUrl":null,"genres":["drum & bass","house","breaks","disco"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"MATO: bar in Olde Towne East at 1159 Oak St, Columbus OH 43205; 'Indoor & Patio Seating. Wisdom // Spirits // Unofficial Portrait Art Museum in OTE!' 7 of 9 tracked events are club nights and '6 of 6 events with known prices were marked free entry'. Booked electronic nights: 'SUBFORM: Drum N Bass' (18 Sep, free), 'Candy Rain' recurring dance party (21 Nov, 19 Dec, 16 Jan, free), 'Dance Floor Solutions' (13 Nov), 'International Soundclash Sessions' (6 Nov), 'Freakbeat Ohio: True Skills' (30 Oct).","sourceUrl":"https://ma.to/venue/the_oracle_ote","confidence":"high","notes":"The clearest small/DIY end of the Columbus spectrum: a neighbourhood bar whose calendar is almost entirely free promoter-run dance nights (Subform, Candy Rain, Freakbeat Ohio, Dance Floor Solutions). Free entry means no guarantee budget, so a useful contrast case for a marketplace's low end."},{"id":"good-land-bar","name":"GOOD LAND BAR","type":"venue","city":"Columbus","state":"OH","website":"http://goodlandohio.com","social":"https://www.instagram.com/goodlandohio/","bookingUrl":null,"genres":["house","disco","dance"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"MATO: 'GOOD LAND is a community-focused wine bar in Franklinton, Columbus, featuring a covered patio, lounge space, and local art programming... hosts a variety of cultural happenings including live music, clothing swaps, and the monthly Good Market.' At 510 W Walnut Street, Franklinton. 27 events tracked since May 2026, 10 of them club nights, '8 of 10 events with known prices were marked free entry'. Recurring DJ night: 'Good Music on the Patio', 21:00-00:30, 28 Nov with further dates 26 Dec and 30 Jan; also 'Halloween Dance Party', 'Nightmare on Walnut St.', 'The $5 Block Party'.","sourceUrl":"https://ma.to/venue/goodlandohio","confidence":"high","notes":"The closest non-brewery analogue to the Seventh Son pattern: a neighbourhood bar with a covered patio running a named monthly DJ night alongside markets and community programming. Free or $5 door, so local-roster economics."},{"id":"church-of-drum-and-bass","name":"Church of Drum & Bass","type":"collective","city":"Cleveland","state":"OH","website":"http://www.churchofdrumandbass.com/","social":"https://www.instagram.com/churchofdrumandbass","bookingUrl":"https://www.ticketfairy.com/events/church-of-drum-and-bass","genres":["drum & bass","jungle","bass","breaks"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"Dec 12 2026 at crobar: 'Church of Drum and Bass welcomes back one of the most accomplished and entertaining turntablists in Jungle music, JFB. A three time World DMC Champion and four time UK DMC Champion... stages at Glastonbury, Boomtown, Shambhala.' Org page also lists past 'Church of Drum and Bass Presents: Alpha Rhythm' (Cleveland), 'BASS SUMMIT: London Elektricity' and 'ANITA BASS X CHURCH OF DRUM & BASS PRESENT: DJ QBERT'. Self-described 'Serving the Almighty Amen since 2011.'","sourceUrl":"https://allevents.in/org/church-of-drum-and-bass/13744456","confidence":"high","notes":"16 events listed. Cleveland home room is crobar (3244 St Clair Ave NE); also ran dates at The Winchester Music Tavern and in Oakland/SF. Strongest fly-in signal found in Cleveland. churchofdrumandbass.com redirects to their Ticket Fairy org page, which currently shows no upcoming events despite the Dec 12 listing."},{"id":"crobar-cleveland","name":"crobar","type":"venue","city":"Cleveland","state":"OH","website":null,"social":"@crobar1921","bookingUrl":null,"genres":["drum & bass","house","techno","bass"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"Hosts booked electronic nights for outside promoters: Church of Drum & Bass booked UK turntablist JFB there for Dec 12 2026 ('CroBar, 3244 St Clair Ave NE, Cleveland, OH 44114. $20 Advance / $30 At the Door, 21+'), and previously Alpha Rhythm on Jul 18 2026 at the same address. Club-grade DJ install confirmed: 'Practice on the club equipment Pioneer CDJ-3000s, and the Pioneer V10 mixer.'","sourceUrl":"https://allevents.in/cleveland/church-of-drum-and-bass-presents-jfb-the-cleveland-return/200031025148809","confidence":"medium","notes":"3244 St Clair Ave NE, Cleveland OH 44114. Confirmed from two independent fetched event pages as the recurring room for Church of Drum & Bass and the monthly Over The Hump open-decks/DJ-workshop night. The Instagram handle is as printed in event copy, not verified on Instagram itself. No crobar-owned website could be reached (crobarcle.com does not resolve), so website and booking contact are unverified."},{"id":"dont-funk-the-groove","name":"Don't Funk the Groove (Scarpetta series)","type":"series","city":"Cleveland","state":"OH","website":null,"social":null,"bookingUrl":null,"genres":["house","disco","deep house","tech house"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"Organizer of 'Scarpetta vol. 006 - House, Deep, Disco - Black Friday', Nov 27 2026: 'Deep crates. Long sets. No rush.' Timed lineup 8pm-1:30am (Savone, Vaver, lamar_z, Lolo Knows, the scarpetta b2b). 'Upstairs at the Lava Lounge, above Edison's Pizza, Tremont.' Guest billed as local: 'Lolo Knows brings Afro-Latin house, disco and tech house from 22 years deep in the Cleveland-Akron scene.'","sourceUrl":"https://allevents.in/cleveland/scarpetta-vol-006-house-deep-disco-black-friday/200031055896538","confidence":"medium","notes":"Numbered monthly-ish series at vol. 006, so roughly six editions deep - the closest Cleveland parallel to Listen LLC's model (small upstairs room above a pizza place, house/disco, long sets). Free/RSVP, 1307 Auburn Ave, Tremont. Lineups seen are Cleveland/Akron DJs; no out-of-town booking observed, but no local-only statement either. Also runs an open-decks night downstairs."},{"id":"red-katt-wreck-chords","name":"Red.Katt.Wreck.Chords.","type":"promoter","city":"Cincinnati","state":"OH","website":null,"social":null,"bookingUrl":null,"genres":["techno","hard techno","hardstyle","hard house"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"Org page shows 136 events and 317 followers, with a dense recurring slate: 'Hard 21' (Dec 3, Mixie's Northside), 'HARDER5' (Dec 4, Good Judy's), 'HARDEST' (Dec 5), 'Subsonic Frequencies Live 20' (Dec 18, Mixie's Northside), 'Still Pushin' featuring Charles Feelgood' (Jan 23, Liberty Exhibition Hall, $22). Series description: 'H.A.R.D.E.R., Hardstyle Anthems Revolutionizing Dance & Empowering Ravers, a weekend hardstyle, hard house, and dark techno themed event with a focus on those pounding 140-160 BPM techno bangers.'","sourceUrl":"https://allevents.in/org/redkattwreckchords/22966873","confidence":"high","notes":"Most prolific independent electronic promoter found outside Columbus - 136 events and multiple parallel numbered series (HARDER at edition 5, Hard at 21, Subsonic Frequencies Live at 20, Accelerate at 24). The single-headliner billing 'Still Pushin' featuring Charles Feelgood' at a $22 ticket is the strongest fly-in signal, but no fetched page states Charles Feelgood's origin, so the flag stays unknown. Co-presents with two other named Cincinnati crews, HARD: Cincinnati Hard Techno and Subsonic Frequencies - approach the cluster together. Rooms are small and free-to-$22: Good Judy's (4169 Hamilton Ave), Mixie's Northside, Alma (4023 Hamilton Ave), Liberty Exhibition Hall."},{"id":"gra-audio","name":"GRA.audio","type":"collective","city":"Cincinnati","state":"OH","website":null,"social":null,"bookingUrl":null,"genres":["bass","livetronica","house","techno"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"GRA.005 at Memorial Hall OTR, Nov 28 2026: 'Electronic music producer and Cincinnati native, Alejo joins forces once again with long time visual collaborator 3NA to bring their 2026 national tour \"Nerves | The Live Audiovisual Experience\" to Memorial Hall OTR... a dynamic array of electronic music accompanied by spectacular visuals from some of the nation's top underground acts.' Supporting acts: Duffrey, pheel., Psydell, Focal Point, Yestermorrow. 'Presented by Colony Productions & GRA.audio.' Org page: 'est. 2023 | Cincinnati, USA | Alejo | Mr. Scissors | Jetlag | Copi'.","sourceUrl":"https://allevents.in/org/graaudio/25802255","confidence":"high","notes":"Hosts a named national tour with out-of-town support (Duffrey, pheel.) in a seated-capable hall - the cleanest fly-in fit in Cincinnati. Numbered series GRA.003-005 plus a 'GRA.Connects' mini-series and 'GRA presents SOUNDCHECK'. Rooms: Memorial Hall OTR (1223 Elm St), Galaxie Covington KY, Mixie's Northside; has also promoted across state lines at Portal Louisville. Co-promotes with Colony Productions and with the Galaxie and ONI crews."},{"id":"the-brightside-dayton","name":"The Brightside Music & Event Venue","type":"venue","city":"Dayton","state":"OH","website":"https://www.thebrightsidedayton.com","social":"https://www.instagram.com/thebrightsidedayton/","bookingUrl":"https://www.thebrightsidedayton.com/bands-and-promoters","genres":["livetronica","jam-electronic","disco","dance"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"Own booking page: 'An upscale, mid-size, independent venue in the heart of downtown Dayton.' Touring-artist testimonials on that page: 'I love playing The Brightside! We always make it a point to play there when we're in the Midwest' (Jennifer Hartswick) and 'When we first played there a few years ago we knew it was going to be a permanent notch in our Midwestern tour belt' (Nick Cassarino, The Nth Power). Calendar carries named tours ('Hannah Wicklund - The Red Gorilla Tour', 'Miss May I X Born of Osiris: Relentless Fest') plus the recurring Dayton Silent Disco and jam-electronic bill 'ekoostik hookah & Subterranean' (Dec 4).","sourceUrl":"https://www.thebrightsidedayton.com/bands-and-promoters","confidence":"high","notes":"905 E. Third St., Dayton OH 45402. Has a real promoter-facing intake form and a green room/loft for touring acts. Important caveat stated on their own page: 'The Brightside is not a bar with regular hours, so we do not have a walk-up crowd at shows... show promotion is your responsibility', and 'We host live music most frequently on Thursday evenings', with weekends often taken by weddings. Electronic programming is silent disco plus jam/livetronica rather than club nights. Dayton's other verified recurring dance host is Dayton Silent Disco (daytonsilentdisco.com), nine years running at this same room."},{"id":"platinum-disco-athens","name":"Platinum Disco / Golden Hour Dance Party","type":"series","city":"Athens","state":"OH","website":null,"social":null,"bookingUrl":null,"genres":["disco","dance"],"typicalCapacity":null,"bookstravelingActs":"false","evidence":"Organizer of 'Platinum Disco 2 @ Athens Armory (A Retro Dance Party Fundraiser)', Dec 12 2026, 7-11pm, 21+: 'PLATINUM DISCO returns to the Athens Armory to raise funds for the Heroes in Color Movie Series!... Music will span all the hits from the 70's, 80's, and DEFINITELY 90's... Music Will be provided by DJ B-Funk with full lights and production.' Capacity ambition stated: 'Let's see what we can with 250 of you together at once!' Org page lists six editions, every one billed to the same three resident DJs (Muchi Nochi, B-Funk., Barticus): Platinum Disco (Mar 2026) and Platinum Disco 2 at The Athens Armory, three 'Golden Hour Dance Party' fundraisers at West End Ciderhouse, and 'NYE @ Side Bar'.","sourceUrl":"https://allevents.in/org/muchi-nochi-b-funk-and-barticus/25204043","confidence":"medium","notes":"The only recurring dance-music host we could verify in Athens OH. Marked local-only because all six listed editions across two years are billed solely to the three resident DJs with no guest or out-of-town act. Charity/fundraiser model, free-to-$20, retro rather than contemporary club genres - low fit for a touring-artist offer, included to show Athens is genuinely thin rather than unchecked. Rooms: The Athens Armory (1 Armory St), West End Ciderhouse, The Side Bar."},{"id":"smartbar-chicago","name":"smartbar","type":"venue","city":"Chicago","state":"IL","website":null,"social":null,"bookingUrl":null,"genres":["house","techno","disco"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"19 upcoming electronic shows listed, including international/out-of-town bookings: 'Horse Meat Disco' (Dec 11), 'Madeline (UK)' (Nov 20), 'D'Julz' (Dec 6), 'Ø [Phase]' (Dec 4), 'Theo Parrish' (Dec 18), 'Honey Dijon' (Dec 20), 'DVS1' (Nov 27).","sourceUrl":"https://mainstagefm.com/venues/smartbar/","confidence":"high","notes":"Deep, continuously booked house/techno/disco calendar plus Chicago residents (Derrick Carter, Mark Farina, DJ Heather). Its own site was not fetched, so website/social/booking are left null."},{"id":"podlasie-club-chicago","name":"Podlasie Club","type":"venue","city":"Chicago","state":"IL","website":null,"social":null,"bookingUrl":null,"genres":["house","techno","bass"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"Page lists '8 upcoming electronic-music shows at Podlasie Club in Chicago, IL - house, techno, bass and more', including Berlin-based 'Kangding Ray' (Nov 27) and 'Daniel Bell' (Dec 11) alongside Chicago house figures Glenn Underground, Boo Williams and Anthony Nicholson.","sourceUrl":"https://mainstagefm.com/venues/podlasie-club/","confidence":"high","notes":"Old Polish social hall used as an underground dance venue; 9pm doors, recurring weekend programming. A larger-market version of the 'unconventional room running booked house/techno nights' pattern that Seventh Son represents in Columbus."},{"id":"outset-chicago","name":"Outset","type":"venue","city":"Chicago","state":"IL","website":null,"social":null,"bookingUrl":null,"genres":["house","techno","bass","livetronica"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"15 upcoming electronic shows at 1675 N Elston Ave, incl. out-of-town/international acts 'UNKLE' (Dec 10), 'Modeselektor' (Feb 18), 'Klangkarussell' (Jan 28), 'NTO' (Mar 27), 'Amtrac' (Dec 11), 'Mindchatter' (Dec 30).","sourceUrl":"https://mainstagefm.com/venues/outset/","confidence":"high","notes":"Newer mid-size Chicago electronic room with a heavy fly-in booking pattern; also books live-electronic acts. Address confirmed on source page."},{"id":"marble-bar-detroit","name":"Marble Bar","type":"venue","city":"Detroit","state":"MI","website":"https://linktr.ee/marblebardetroit","social":"https://www.instagram.com/marbledetroit/","bookingUrl":null,"genres":["techno","house","disco","bass"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"'The space features resident DJs, international touring acts, and live hardware performances.' Upcoming '12 Hour Party: John Acquaviva' (Nov 21); recent 'Amtrac: Dream Live Tour' (Nov 7). Genres listed: 'techno, house, electro, disco, acid, trance, and ghetto tech'.","sourceUrl":"https://ma.to/venue/marbledetroit","confidence":"high","notes":"'Vital cornerstone of the underground scene in Detroit'; indoor ballroom plus open-air patio, 94 events since March 2026, Fri/Sat anchored, door tickets always available, venue rentable."},{"id":"spkrbox-detroit","name":"SPKRBOX","type":"venue","city":"Detroit","state":"MI","website":"https://spkrbox.bar/","social":"https://www.instagram.com/spkrbox.detroit/","bookingUrl":null,"genres":["techno","house","bass"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"'The space hosts an eclectic rotation of techno, house, electro, ghetto tech, and reggaeton sets from local and visiting selectors.' '355 events listed since March 2026, mostly club nights'; recurring series incl. 'Low End Theory Vol. 13', 'FEMMEFALL Underground Series', 'Bang (the) Box 1 Year Anniversary'. At 200 Grand River, downtown Detroit.","sourceUrl":"https://ma.to/venue/spkrbox.detroit","confidence":"high","notes":"Highest event volume found in Detroit (346 past events). 'Visiting selectors' implies out-of-town bookings but no named touring act was seen, so the flag stays unknown."},{"id":"hot-mass-pittsburgh","name":"Hot Mass (The New Hot Mass)","type":"series","city":"Pittsburgh","state":"PA","website":null,"social":null,"bookingUrl":null,"genres":["house","techno"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"\"Pittsburgh's long-running queer late-night house and techno party since 2012, famed for dancing well past the state's 2am bar cutoff, now in its own 'Hot Mass 2.0' space after leaving Club Pittsburgh in 2025, with Honcho as its gay-focused party.\" Nov 21 bill: C Powers (headliner), Nick Boyd, Naeem; 11:00 PM doors, ticketed via ra.co.","sourceUrl":"https://mainstagefm.com/events/pittsburgh-2026-11-21-c-powers/","confidence":"high","notes":"Books guest headliners on an advance-ticket-only model: '21+ and online-tickets only with no door sales; the address is emailed to ticket holders the night of the event' - the same secret-location pattern REDROOM uses in Columbus. Affiliated party Honcho named on the same page. No explicit tour/fly-in wording seen, so left unknown."},{"id":"spirit-pittsburgh","name":"Spirit","type":"venue","city":"Pittsburgh","state":"PA","website":"https://www.spiritpgh.com/","social":null,"bookingUrl":"https://www.spiritpgh.com/contact","genres":["house","techno","disco","livetronica"],"typicalCapacity":null,"bookstravelingActs":"unknown","evidence":"'Spirit is a three-level 15,000 sq ft music venue, event space, rooftop garden bar, and restaurant located in the Lawrenceville neighborhood of Pittsburgh, PA.' Recurring booked DJ nights on its own calendar: 'Celestial Bodies: SAGITTARIUS SZN' with DJs LEMONLINE and MARZ (Nov 27), 'Afro-Caribbean Third Saturdays: Wavy Friendsgiving' with DJ FLIPWAVE and AFRICAN WOLF (Nov 21), 'Bonus' with PVKVSV and EDGAR UM (Nov 25), 'Swiss Mist' (Nov 21).","sourceUrl":"https://www.spiritpgh.com/","confidence":"high","notes":"Multi-room (Hall / Lodge / Pizzeria / Rooftop) so several bookings run per night; monthly and seasonal recurring series, public rental and contact pages. Lineups seen are local DJs; no touring-act evidence on the fetched page. Pittsburgh's other strong small-room option is brillobox (https://ma.to/venue/brilloboxpgh), a $10-cover room that hosts outside party brands such as RESPIRA and HYPERBOP!."},{"id":"hifi-indy-indianapolis","name":"HI-FI Indy (HI-FI / HI-FI Annex / LO-FI Lounge)","type":"venue","city":"Indianapolis","state":"IN","website":"https://hifiindy.com/","social":"https://www.instagram.com/thehifiindy","bookingUrl":"https://hifiindy.com/contact/","genres":["bass","dubstep","livetronica","house"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"Own calendar lists touring bass bill 'Yheti x Toadface' with Flintwick (Dec 4) and 'aurorawave' with O.N.I (Dec 5), plus out-of-town acts DON BROCO (UK), Brother Ali, Temples, Patterson Hood. MainStageFM separately lists the Dec 4 Yheti date at 'HI-FI Indy and HI-FI Annex - Indianapolis'.","sourceUrl":"https://hifiindy.com/","confidence":"high","notes":"Three rooms (indoor HI-FI, open-air Annex, LO-FI Lounge) at 1043 Virginia Ave, Suite 2, Indianapolis IN 46203; public box office and contact page. 'HI-FI AWARDED $1M READI GRANT BY IEDC FOR VENUE EXPANSION' - actively expanding."},{"id":"headliners-music-hall-louisville","name":"Headliners Music Hall","type":"venue","city":"Louisville","state":"KY","website":"https://headlinerslouisville.com/","social":null,"bookingUrl":"https://headlinerslouisville.com/contact","genres":["bass","dubstep","drum & bass","house"],"typicalCapacity":null,"bookstravelingActs":"true","evidence":"Own calendar: 'BASSGIVING VII: OnHell, Jason Leech, Flowtus, Munny b2b Skler, Zarra' (Wed Nov 25, doors 7pm) - a seventh-edition recurring bass event with out-of-town headliners; also 'DAX: The Anger Management Tour w/ Thunderstorm Artis' (Dec 12), a named touring run. Recurring dance nights incl. 'CRIMEWAVE: A GOTH, POST-PUNK & DARKWAVE PARTY' and 'Rhythm + Blues' (10pm).","sourceUrl":"https://headlinerslouisville.com/","confidence":"high","notes":"Strongest independent Louisville option found: public contact and venue-rental pages, ticketing via tixr.com/groups/headliners. Note the site's footer social links point at unrelated accounts, so Instagram/Facebook handles were left null rather than guessed."}]}};</script>
+<script>
+/* Flyover v2.
+ *
+ * The one rule that separates this from the throwaway demo: NOTHING COMMERCIAL IS INVENTED.
+ * No generated fees, no generated travel dates, no fake open runs. If an artist has not told
+ * us a rate, the card says "rate on request". Empty states are honest and tell you what would
+ * fill them. A marketplace that lies about its supply is worse than an empty one.
+ */
+
+const CFG = window.FLYOVER_CONFIG || {};
+const S = { artists: [], hosts: [], meta: {} };
+
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => (
+  { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const $ = (id) => document.getElementById(id);
+
+/* ---------- data ---------- */
+async function loadJSON(path, key) {
+  const inline = globalThis.__FLYOVER__;
+  if (inline && inline[key]) return inline[key];
+  try {
+    const r = await fetch(path, { cache: 'no-store' });
+    if (!r.ok) return { __error: `HTTP ${r.status}` };
+    return await r.json();
+  } catch (e) { return { __error: e.message }; }
+}
+
+/* An artist only has a rate if the research or their own submission gave one. */
+function rateOf(a) {
+  if (a.fee == null || a.fee === '') return null;
+  if (typeof a.fee === 'object') return a.fee;
+  return { model: a.priceModel || 'flat', amount: Number(a.fee) || null };
+}
+function rateLabel(a) {
+  const r = rateOf(a);
+  if (!r) return { text: 'Rate on request', listed: false };
+  if (r.model === 'airfare') return { text: 'Travel covered, no fee', listed: true };
+  if (r.model === 'ask') return { text: 'Rate on request', listed: false };
+  if (r.model === 'airfare-plus') {
+    return { text: r.amount ? `Travel + ${r.amount}` : 'Travel plus a fee', listed: true };
+  }
+  return { text: r.amount ? `${r.amount} flat` : 'Flat fee', listed: true };
+}
+
+/* travel dates come only from real submissions */
+const tripsOf = (a) => Array.isArray(a.trips) ? a.trips : [];
+
+/* ---------- boot ---------- */
+async function boot() {
+  const [a, h] = await Promise.all([
+    loadJSON('../data/artists.json', 'artists'),
+    loadJSON('../data/hosts.json', 'hosts'),
+  ]);
+  S.artists = Array.isArray(a.artists) ? a.artists : [];
+  S.hosts = Array.isArray(h.hosts) ? h.hosts : [];
+  S.meta = { a, h };
+
+  fillSelects();
+  renderBrowse(); renderRoutes(); renderRuns(); renderVenues();
+  recalc();
+  $('footContact').innerHTML = CFG.CONTACT_EMAIL
+    ? `Questions: <a href="mailto:${esc(CFG.CONTACT_EMAIL)}">${esc(CFG.CONTACT_EMAIL)}</a>` : '';
+}
+
+function fillSelects() {
+  const g = new Set(), st = new Set(), hst = new Set();
+  S.artists.forEach((a) => { (a.genres || []).forEach((x) => g.add(x)); if (a.state) st.add(a.state); });
+  S.hosts.forEach((x) => { if (x.state) hst.add(x.state); });
+  const fill = (el, vals) => [...vals].sort().forEach((v) =>
+    el.insertAdjacentHTML('beforeend', `<option value="${esc(v)}">${esc(v)}</option>`));
+  fill($('fGenre'), g); fill($('fState'), st); fill($('hState'), hst);
+
+  const rc = $('routeCity');
+  (CFG.CLUSTER || []).forEach((c) => rc.insertAdjacentHTML('beforeend',
+    `<option value="${esc(c.city)}">${esc(c.city)}${c.drive !== 'home' ? ` (${esc(c.drive)} away)` : ''}</option>`));
+  rc.value = CFG.HOME_CITY || (CFG.CLUSTER || [{}])[0].city || '';
+  rc.onchange = renderRoutes;
+}
+
+/* ---------- artists ---------- */
+function artistCard(a) {
+  const r = rateLabel(a);
+  const links = Object.entries(a.links || {}).filter(([, v]) => v)
+    .map(([k, v]) => `<a href="${esc(v)}" target="_blank" rel="noopener">${esc(k)}</a>`).join('');
+  const travel = String(a.travels) === 'true'
+    ? `<div class="leg"><b>Travels to play.</b> ${esc((a.evidence || '').slice(0, 150))}</div>` : '';
+  return `<div class="card">
+    <div><h3>${esc(a.name)}</h3>
+      <div class="where">${esc(a.city || '')}${a.state ? ', ' + esc(a.state) : ''}</div></div>
+    <div class="tags">${(a.genres || []).slice(0, 5).map((x) => `<span class="chip">${esc(x)}</span>`).join('')}</div>
+    <div class="rate ${r.listed ? '' : 'unlisted'}">${esc(r.text)}</div>
+    ${travel}
+    ${links ? `<div class="links">${links}</div>` : ''}
+    <div class="row">
+      <button class="btn" data-book="${esc(a.id)}">Request a date</button>
+      ${a.sourceUrl ? `<a class="leg" href="${esc(a.sourceUrl)}" target="_blank" rel="noopener">source</a>` : ''}
+    </div>
+  </div>`;
+}
+
+function renderBrowse() {
+  const q = $('q').value.toLowerCase().trim();
+  const g = $('fGenre').value, st = $('fState').value;
+  const tv = $('fTravels').checked, li = $('fListed').checked;
+  const out = S.artists.filter((a) => {
+    if (g && !(a.genres || []).includes(g)) return false;
+    if (st && a.state !== st) return false;
+    if (tv && String(a.travels) !== 'true') return false;
+    if (li && !rateLabel(a).listed) return false;
+    if (q && ![a.name, a.city, a.state, (a.genres || []).join(' ')].join(' ').toLowerCase().includes(q)) return false;
+    return true;
+  });
+  $('browseGrid').innerHTML = out.map(artistCard).join('');
+  const listed = S.artists.filter((a) => rateLabel(a).listed).length;
+  $('browseCount').textContent = `${out.length} of ${S.artists.length} · ${listed} have listed a rate`;
+  const e = $('browseEmpty');
+  e.hidden = out.length > 0;
+  e.textContent = li && listed === 0
+    ? 'No artist has listed a rate yet. That is what the outreach is for.'
+    : 'Nothing matches those filters.';
+}
+['q', 'fGenre', 'fState', 'fTravels', 'fListed'].forEach((id) =>
+  $(id).addEventListener('input', renderBrowse));
+
+/* ---------- routes ---------- */
+function renderRoutes() {
+  const city = $('routeCity').value;
+  const rows = [];
+  S.artists.forEach((a) => tripsOf(a).forEach((t) => {
+    if (!city || t.city === city) rows.push({ a, t });
+  }));
+  $('routeGrid').innerHTML = rows.map(({ a, t }) => `<div class="card">
+    <div><h3>${esc(a.name)}</h3><div class="where">home ${esc(a.city || '?')}</div></div>
+    <div class="leg">Near <b>${esc(t.city)}</b> ${esc(t.start || '')}${t.end ? ' to ' + esc(t.end) : ''}</div>
+    <div class="rate ${rateLabel(a).listed ? '' : 'unlisted'}">${esc(rateLabel(a).text)}</div>
+    <div class="row"><button class="btn" data-book="${esc(a.id)}">Catch this trip</button></div>
+  </div>`).join('');
+  $('routeCount').textContent = rows.length ? `${rows.length} trips` : '';
+  $('routeEmpty').hidden = rows.length > 0;
+  $('routeGrid').hidden = rows.length === 0;
+}
+
+/* ---------- runs ---------- */
+function renderRuns() {
+  const runs = []; // real runs only; none exist until promoters post them
+  $('runGrid').innerHTML = runs.map(() => '').join('');
+  $('runEmpty').hidden = runs.length > 0;
+  $('runGrid').hidden = runs.length === 0;
+}
+function recalc() {
+  const air = Number($('cAir').value || 0);
+  const rooms = Math.max(1, Number($('cRooms').value || 1));
+  const fee = Number($('cFee').value || 0);
+  const alone = air + fee;
+  const split = Math.round(air / rooms) + fee;
+  $('cAlone').textContent = `${alone}`;
+  $('cSplit').textContent = `${split}`;
+  $('cSave').textContent = `${Math.max(0, alone - split)}`;
+}
+['cAir', 'cRooms', 'cFee'].forEach((id) => $(id).addEventListener('input', recalc));
+$('startRun').onclick = () => openRunForm();
+
+/* ---------- venues ---------- */
+function renderVenues() {
+  const q = $('hq').value.toLowerCase().trim();
+  const st = $('hState').value, fly = $('hFly').checked;
+  const out = S.hosts.filter((h) => {
+    if (st && h.state !== st) return false;
+    if (fly && String(h.bookstravelingActs) !== 'true') return false;
+    if (q && ![h.name, h.city, h.state, h.type].join(' ').toLowerCase().includes(q)) return false;
+    return true;
+  });
+  $('venueGrid').innerHTML = out.map((h) => `<div class="card">
+    <div><h3>${esc(h.name)}</h3>
+      <div class="where">${esc(h.city || '')}${h.state ? ', ' + esc(h.state) : ''} · ${esc(h.type || '')}</div></div>
+    <div class="tags">${(h.genres || []).slice(0, 5).map((x) => `<span class="chip">${esc(x)}</span>`).join('')}</div>
+    ${h.bookstravelingActs === 'true' ? '<div class="leg"><b>Books touring acts.</b></div>' : ''}
+    <div class="links">
+      ${h.website ? `<a href="${esc(h.website)}" target="_blank" rel="noopener">website</a>` : ''}
+      ${h.social ? `<a href="${esc(h.social)}" target="_blank" rel="noopener">social</a>` : ''}
+      ${h.bookingUrl ? `<a href="${esc(h.bookingUrl)}" target="_blank" rel="noopener">booking</a>` : ''}
+    </div>
+  </div>`).join('');
+  $('venueCount').textContent = `${out.length} of ${S.hosts.length}`;
+  $('venueEmpty').hidden = out.length > 0;
+  $('venueEmpty').textContent = 'Nothing matches those filters.';
+}
+['hq', 'hState', 'hFly'].forEach((id) => $(id).addEventListener('input', renderVenues));
+
+/* ---------- submission: real POST if configured, mailto otherwise ---------- */
+function submitPayload(subject, data, noteEl) {
+  const lines = Object.entries(data)
+    .filter(([, v]) => v !== '' && v != null && !(Array.isArray(v) && !v.length))
+    .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`);
+  const body = lines.join('\n');
+
+  if (CFG.FORM_ENDPOINT) {
+    fetch(CFG.FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({ _subject: subject, ...data }),
+    }).then((r) => {
+      if (noteEl) noteEl.textContent = r.ok ? 'Sent. We will be in touch.' : 'That did not send. Try the email link in the footer.';
+    }).catch(() => { if (noteEl) noteEl.textContent = 'That did not send. Try the email link in the footer.'; });
+    return;
+  }
+  // no relay configured yet: hand it to the visitor's mail client
+  const to = CFG.CONTACT_EMAIL || '';
+  window.location.href =
+    `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  if (noteEl) noteEl.textContent = 'Opening your email app with this filled in. Hit send there.';
+}
+
+function formToObject(form) {
+  const o = {};
+  new FormData(form).forEach((v, k) => {
+    if (o[k] === undefined) o[k] = v;
+    else if (Array.isArray(o[k])) o[k].push(v);
+    else o[k] = [o[k], v];
+  });
+  return o;
+}
+
+$('artistForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  submitPayload('Flyover: artist signup', formToObject(e.target), $('artistFormNote'));
+});
+$('venueForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  submitPayload('Flyover: venue / promoter signup', formToObject(e.target), $('venueFormNote'));
+});
+
+/* ---------- booking modal ---------- */
+document.body.addEventListener('click', (ev) => {
+  const t = ev.target.closest('[data-book]');
+  if (t) { openBooking(t.dataset.book); return; }
+  const tab = ev.target.closest('[data-tab]');
+  if (tab) { ev.preventDefault(); showTab(tab.dataset.tab); }
+});
+
+function openBooking(id) {
+  const a = S.artists.find((x) => x.id === id);
+  if (!a) return;
+  const r = rateLabel(a);
+  $('modalBody').innerHTML = `
+    <h2>Request a date with ${esc(a.name)}</h2>
+    <p class="where">${esc(a.city || '')}${a.state ? ', ' + esc(a.state) : ''} · ${esc((a.genres || []).join(', '))}</p>
+    <p class="fine">${r.listed ? '' : 'This artist has not listed a rate, so tell them your budget and let them answer.'}</p>
+    <label>Your name <input id="bWho" /></label>
+    <label>Your email <input id="bEmail" type="email" /></label>
+    <label>Venue or event <input id="bVenue" /></label>
+    <label>City <input id="bCity" value="${esc(CFG.HOME_CITY || '')}" /></label>
+    <label>Date <input id="bDate" type="date" /></label>
+    <label>What you can cover, all in <input id="bBudget" placeholder="e.g. flight plus $250, or 600 total" /></label>
+    <label>Anything else <textarea id="bNote" rows="3" placeholder="200 cap room, 11pm to 1am."></textarea></label>
+    <div class="offerbox">
+      <div class="where">Splitting the flight with another city makes this much cheaper.</div>
+      <label class="radio" style="flex-direction:row;align-items:center;gap:8px;margin-top:8px">
+        <input type="checkbox" id="bSplit" checked style="width:auto" />
+        Happy to share this artist's trip with rooms in nearby cities</label>
+    </div>
+    <div class="row" style="margin-top:16px">
+      <button class="btn" id="bSend">Send request</button>
+      <button class="ghost" id="bCancel">Cancel</button>
+    </div>`;
+  $('modal').hidden = false;
+  $('bCancel').onclick = closeModal;
+  $('bSend').onclick = () => {
+    submitPayload(`Flyover: date request for ${a.name}`, {
+      artist: a.name, artistCity: `${a.city || ''}${a.state ? ', ' + a.state : ''}`,
+      from: $('bWho').value, email: $('bEmail').value,
+      venue: $('bVenue').value, city: $('bCity').value, date: $('bDate').value,
+      budget: $('bBudget').value, openToSplit: $('bSplit').checked ? 'yes' : 'no',
+      note: $('bNote').value,
+    });
+    closeModal();
+  };
+}
+
+function openRunForm() {
+  $('modalBody').innerHTML = `
+    <h2>Post a run</h2>
+    <p class="fine">One artist, one trip, several cities. We find the other rooms on the route
+      and split the travel.</p>
+    <label>Artist you want <input id="rArtist" /></label>
+    <label>Your city <input id="rCity" value="${esc(CFG.HOME_CITY || '')}" /></label>
+    <label>Your venue or night <input id="rVenue" /></label>
+    <label>Rough dates <input id="rDates" placeholder="first half of March" /></label>
+    <label>What you can put toward travel <input id="rShare" placeholder="e.g. 150" /></label>
+    <label>Your email <input id="rEmail" type="email" /></label>
+    <div class="row" style="margin-top:16px">
+      <button class="btn" id="rSend">Post it</button>
+      <button class="ghost" id="rCancel">Cancel</button>
+    </div>`;
+  $('modal').hidden = false;
+  $('rCancel').onclick = closeModal;
+  $('rSend').onclick = () => {
+    submitPayload('Flyover: new run proposed', {
+      artist: $('rArtist').value, city: $('rCity').value, venue: $('rVenue').value,
+      dates: $('rDates').value, travelShare: $('rShare').value, email: $('rEmail').value,
+    });
+    closeModal();
+  };
+}
+
+function closeModal() { $('modal').hidden = true; }
+$('modalClose').onclick = closeModal;
+$('modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });
+
+/* ---------- tabs ---------- */
+function showTab(name) {
+  document.querySelectorAll('.tabs button').forEach((b) => b.classList.toggle('on', b.dataset.tab === name));
+  document.querySelectorAll('.pane').forEach((p) => p.classList.toggle('on', p.id === 'pane-' + name));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+boot();
+
+</script>
+</body>
+</html>

@@ -121,12 +121,22 @@ legend{color:var(--dim);font-size:12px;padding:0 6px}
 
 @media (max-width:720px){ .twocol{grid-template-columns:1fr} .riders{grid-template-columns:1fr} }
 
+.trip.example{border-style:dashed}
+.chip.ex{color:var(--warn);border-color:#6b5a1d;background:#241f0e}
+.nights{display:flex;flex-direction:column;gap:6px}
+.night{display:flex;gap:8px;align-items:baseline;padding:7px 10px;border-radius:8px;
+  border:1px solid var(--line);font-size:14px}
+.night span{color:var(--dim);font-size:12px;margin-left:auto}
+.night.taken{background:var(--panel2);color:var(--dim)}
+.night.open{border-color:#1d6b5e;background:#0e2420}
+.night.open b{color:var(--good)}
+
 </style>
 </head>
 <body>
 
 <header class="top">
-  <a class="brand" href="#" data-tab="browse">
+  <a class="brand" href="#" data-tab="runs">
     <span class="mark">&#9992;</span>
     <span>
       <strong>Flyover</strong>
@@ -134,21 +144,20 @@ legend{color:var(--dim);font-size:12px;padding:0 6px}
     </span>
   </a>
   <nav class="tabs" id="tabs">
-    <button data-tab="browse" class="on">Artists</button>
-    <button data-tab="routes">Passing through</button>
-    <button data-tab="runs">Split a flight</button>
+    <button data-tab="runs" class="on">Trips</button>
+    <button data-tab="routes">Open dates</button>
+    <button data-tab="browse">Artists</button>
     <button data-tab="venues">Venues</button>
     <button data-tab="join">Join</button>
   </nav>
 </header>
 
 <!-- BROWSE -->
-<section class="pane on" id="pane-browse">
+<section class="pane" id="pane-browse">
   <div class="hero">
-    <h1>One flight. Three shows.</h1>
-    <p>A good artist being five hundred miles away should not be the reason a show doesn't
-       happen. Find who is already travelling near you, and split the airfare with the other
-       rooms on the run.</p>
+    <h1>Artists</h1>
+    <p>Artists in and around the region, compiled from public sources. Rates show once an
+       artist tells us one.</p>
   </div>
 
   <div class="filters">
@@ -164,59 +173,78 @@ legend{color:var(--dim);font-size:12px;padding:0 6px}
   <p class="empty" id="browseEmpty" hidden></p>
 </section>
 
-<!-- ROUTES -->
-<section class="pane" id="pane-routes">
+<!-- TRIPS (home) -->
+<section class="pane on" id="pane-runs">
   <div class="hero">
-    <h1>Passing through</h1>
-    <p>Artists post where they are going. If their trip already brings them within driving
-       distance of your room, the expensive part of the booking is already paid for.</p>
-  </div>
-  <div class="filters">
-    <label class="check">Near
-      <select id="routeCity"></select>
-    </label>
-    <span class="count" id="routeCount"></span>
-  </div>
-  <div class="grid" id="routeGrid"></div>
-  <div class="empty-card" id="routeEmpty" hidden>
-    <h3>No travel dates posted yet.</h3>
-    <p>This fills up as artists add their trips. It is the first thing we ask for when an artist
-       joins, and it is the only field that makes the rest of this work.</p>
-    <button class="btn" data-tab="join">Add your dates</button>
-  </div>
-</section>
-
-<!-- RUNS -->
-<section class="pane" id="pane-runs">
-  <div class="hero">
-    <h1>Split a flight</h1>
-    <p>One room usually cannot justify flying someone in. Three rooms in three cities can. Post
-       the run you want and let the other promoters on the route carry their share of it.</p>
+    <h1>One flight. Three shows.</h1>
+    <p>An artist is already flying in for one show. The nights around it are open. Claim one
+       for your room at the price the artist has set, and the flight gets shared instead of
+       carried by one promoter.</p>
   </div>
 
+  <div class="row" style="margin-bottom:18px">
+    <button class="btn" id="postTrip">Post a trip</button>
+    <span class="fine" style="margin:0">Artists, agents, or the promoter who booked the first night.</span>
+  </div>
+
+  <h2 class="sectionhead" style="margin-top:0">Open trips</h2>
+  <div class="grid" id="tripGrid"></div>
+  <div class="empty-card" id="tripEmpty" hidden>
+    <h3>No trips posted yet.</h3>
+    <p>The first ones go up as soon as a promoter or artist tells us about a booked fly-in.
+       Below is what one looks like.</p>
+  </div>
+
+  <h2 class="sectionhead">What a trip looks like</h2>
+  <div class="grid">
+    <div class="card trip example">
+      <div class="tags"><span class="chip ex">Example, not a real listing</span></div>
+      <div><h3>House DJ from Los Angeles</h3>
+        <div class="where">Flying into Columbus, OH for a Friday show</div></div>
+      <div class="nights">
+        <div class="night taken"><b>Fri</b> Columbus <span>booked</span></div>
+        <div class="night open"><b>Thu</b> open <span>within 3h30 of Columbus</span></div>
+        <div class="night open"><b>Sat</b> open <span>within 3h30 of Columbus</span></div>
+      </div>
+      <div class="rate">Added night: $150 toward the flight + $250 fee</div>
+      <div class="leg">Needs: airport pickup, lodging, CDJs. First room to claim a night gets it;
+        if two rooms want the same night the artist picks.</div>
+      <div class="row"><button class="btn" data-claim="example">See how claiming works</button></div>
+    </div>
+  </div>
+
+  <h2 class="sectionhead">The math</h2>
   <div class="splitcalc">
-    <h3>What a split actually saves you</h3>
+    <h3>What a shared flight saves you</h3>
     <div class="calcrow">
       <label>Airfare <input type="number" id="cAir" value="450" min="0" step="25" /></label>
-      <label>Rooms splitting <input type="number" id="cRooms" value="3" min="1" max="6" /></label>
+      <label>Rooms sharing it <input type="number" id="cRooms" value="3" min="1" max="6" /></label>
       <label>Your fee to the artist <input type="number" id="cFee" value="250" min="0" step="25" /></label>
     </div>
     <div class="calcout">
       <div><span class="k">Alone</span><strong id="cAlone">-</strong></div>
-      <div><span class="k">Split</span><strong id="cSplit" class="good">-</strong></div>
+      <div><span class="k">Shared</span><strong id="cSplit" class="good">-</strong></div>
       <div><span class="k">You keep</span><strong id="cSave" class="good">-</strong></div>
     </div>
-    <p class="fine">Travel cost divided across the rooms on the run, plus whatever each room pays
-      the artist for its own night. Change the numbers to match your situation.</p>
+    <p class="fine">Travel divided across the rooms on the trip, plus what each room pays the
+      artist for its own night.</p>
   </div>
+</section>
 
-  <h2 class="sectionhead">Open runs</h2>
-  <div class="grid" id="runGrid"></div>
-  <div class="empty-card" id="runEmpty" hidden>
-    <h3>No open runs yet.</h3>
-    <p>A run is one artist, one trip, several cities. Post the first one and we will find the
-       other rooms on the route.</p>
-    <button class="btn" id="startRun">Post a run</button>
+<!-- OPEN DATES -->
+<section class="pane" id="pane-routes">
+  <div class="hero">
+    <h1>Open dates</h1>
+    <p>Have a night to fill? Post the date and what you can pay, all in. Artists who are
+       already going to be nearby can offer to take it.</p>
+  </div>
+  <div class="row" style="margin-bottom:18px">
+    <button class="btn" id="postDate">Post an open date</button>
+  </div>
+  <div class="grid" id="dateGrid"></div>
+  <div class="empty-card" id="dateEmpty" hidden>
+    <h3>No open dates posted yet.</h3>
+    <p>Post yours and we will put it in front of artists with trips near you.</p>
   </div>
 </section>
 
@@ -411,7 +439,7 @@ async function boot() {
   S.meta = { a, h };
 
   fillSelects();
-  renderBrowse(); renderRoutes(); renderRuns(); renderVenues();
+  renderBrowse(); renderTrips(); renderOpenDates(); renderVenues();
   recalc();
   $('footContact').innerHTML = CFG.CONTACT_EMAIL
     ? `Questions: <a href="mailto:${esc(CFG.CONTACT_EMAIL)}">${esc(CFG.CONTACT_EMAIL)}</a>` : '';
@@ -425,11 +453,6 @@ function fillSelects() {
     el.insertAdjacentHTML('beforeend', `<option value="${esc(v)}">${esc(v)}</option>`));
   fill($('fGenre'), g); fill($('fState'), st); fill($('hState'), hst);
 
-  const rc = $('routeCity');
-  (CFG.CLUSTER || []).forEach((c) => rc.insertAdjacentHTML('beforeend',
-    `<option value="${esc(c.city)}">${esc(c.city)}${c.drive !== 'home' ? ` (${esc(c.drive)} away)` : ''}</option>`));
-  rc.value = CFG.HOME_CITY || (CFG.CLUSTER || [{}])[0].city || '';
-  rc.onchange = renderRoutes;
 }
 
 /* ---------- artists ---------- */
@@ -477,31 +500,36 @@ function renderBrowse() {
 ['q', 'fGenre', 'fState', 'fTravels', 'fListed'].forEach((id) =>
   $(id).addEventListener('input', renderBrowse));
 
-/* ---------- routes ---------- */
-function renderRoutes() {
-  const city = $('routeCity').value;
-  const rows = [];
-  S.artists.forEach((a) => tripsOf(a).forEach((t) => {
-    if (!city || t.city === city) rows.push({ a, t });
-  }));
-  $('routeGrid').innerHTML = rows.map(({ a, t }) => `<div class="card">
-    <div><h3>${esc(a.name)}</h3><div class="where">home ${esc(a.city || '?')}</div></div>
-    <div class="leg">Near <b>${esc(t.city)}</b> ${esc(t.start || '')}${t.end ? ' to ' + esc(t.end) : ''}</div>
-    <div class="rate ${rateLabel(a).listed ? '' : 'unlisted'}">${esc(rateLabel(a).text)}</div>
-    <div class="row"><button class="btn" data-book="${esc(a.id)}">Catch this trip</button></div>
+/* ---------- trips and open dates ----------
+ * Real ones only. Both lists are empty until someone posts; the page shows one clearly
+ * labelled example so the shape is obvious. NO AUCTION: an added night has the price the
+ * artist set, first room to claim gets it, and the artist picks if two rooms collide.
+ */
+const TRIPS = [];
+const OPEN_DATES = [];
+
+function tripCard(t) {
+  return `<div class="card trip">
+    <div><h3>${esc(t.artist)}</h3><div class="where">Flying into ${esc(t.into)} · ${esc(t.dates)}</div></div>
+    <div class="nights">${(t.nights || []).map((n) => `<div class="night ${n.open ? 'open' : 'taken'}">
+      <b>${esc(n.day)}</b> ${esc(n.open ? 'open' : n.city)} <span>${esc(n.open ? (n.note || '') : 'booked')}</span></div>`).join('')}</div>
+    <div class="rate">${esc(t.price || 'Added-night price on request')}</div>
+    ${t.needs ? `<div class="leg">Needs: ${esc(t.needs)}</div>` : ''}
+    <div class="row"><button class="btn" data-claim="${esc(t.id)}">Claim a night</button></div>
+  </div>`;
+}
+function renderTrips() {
+  $('tripGrid').innerHTML = TRIPS.map(tripCard).join('');
+  $('tripEmpty').hidden = TRIPS.length > 0;
+}
+function renderOpenDates() {
+  $('dateGrid').innerHTML = OPEN_DATES.map((d) => `<div class="card">
+    <div><h3>${esc(d.date)} · ${esc(d.city)}</h3><div class="where">${esc(d.venue || '')}</div></div>
+    <div class="rate">${esc(d.budget || '')}</div>
   </div>`).join('');
-  $('routeCount').textContent = rows.length ? `${rows.length} trips` : '';
-  $('routeEmpty').hidden = rows.length > 0;
-  $('routeGrid').hidden = rows.length === 0;
+  $('dateEmpty').hidden = OPEN_DATES.length > 0;
 }
 
-/* ---------- runs ---------- */
-function renderRuns() {
-  const runs = []; // real runs only; none exist until promoters post them
-  $('runGrid').innerHTML = runs.map(() => '').join('');
-  $('runEmpty').hidden = runs.length > 0;
-  $('runGrid').hidden = runs.length === 0;
-}
 function recalc() {
   const air = Number($('cAir').value || 0);
   const rooms = Math.max(1, Number($('cRooms').value || 1));
@@ -513,7 +541,92 @@ function recalc() {
   $('cSave').textContent = `${Math.max(0, alone - split)}`;
 }
 ['cAir', 'cRooms', 'cFee'].forEach((id) => $(id).addEventListener('input', recalc));
-$('startRun').onclick = () => openRunForm();
+$('postTrip').onclick = () => openTripForm();
+$('postDate').onclick = () => openDateForm();
+
+function openClaim(id) {
+  const example = id === 'example';
+  const t = TRIPS.find((x) => x.id === id);
+  $('modalBody').innerHTML = `
+    <h2>Claim a night${t ? ' with ' + esc(t.artist) : ''}</h2>
+    <p class="fine">${example ? 'This is the example trip, so nothing is sent. On a real trip this goes to the artist or their agent.' : 'The price is the one the artist set. First room to claim a night gets it.'}</p>
+    <label>Which night <select id="kNight"><option>Thursday</option><option>Saturday</option></select></label>
+    <label>Your venue or night <input id="kVenue" /></label>
+    <label>City <input id="kCity" /></label>
+    <label>Your name <input id="kWho" /></label>
+    <label>Your email <input id="kEmail" type="email" /></label>
+    <label>Anything the artist should know <textarea id="kNote" rows="2" placeholder="200 cap, 11pm to 1am."></textarea></label>
+    <div class="row" style="margin-top:16px">
+      <button class="btn" id="kSend">${example ? 'Close' : 'Claim it'}</button>
+      <button class="ghost" id="kCancel">Cancel</button>
+    </div>`;
+  $('modal').hidden = false;
+  $('kCancel').onclick = closeModal;
+  $('kSend').onclick = () => {
+    if (!example) {
+      submitPayload(`Flyover: night claimed on ${t ? t.artist : id}`, {
+        trip: id, night: $('kNight').value, venue: $('kVenue').value, city: $('kCity').value,
+        from: $('kWho').value, email: $('kEmail').value, note: $('kNote').value,
+      });
+    }
+    closeModal();
+  };
+}
+
+function openTripForm() {
+  $('modalBody').innerHTML = `
+    <h2>Post a trip</h2>
+    <p class="fine">An artist with a booked show and open nights around it. You set the price of
+      an added night; rooms claim at that price. No bidding.</p>
+    <label>Artist <input id="tArtist" /></label>
+    <label>Flying into <input id="tInto" value="${esc(CFG.HOME_CITY || '')}" /></label>
+    <label>Booked show (date and room) <input id="tBooked" placeholder="Fri Mar 6, Seventh Son" /></label>
+    <label>Open nights <input id="tOpen" placeholder="Thu Mar 5, Sat Mar 7" /></label>
+    <label>Price of an added night <input id="tPrice" placeholder="$150 toward the flight + $250 fee" /></label>
+    <label>What the artist needs <input id="tNeeds" placeholder="airport pickup, lodging, CDJs" /></label>
+    <label>You are
+      <select id="tRole"><option>the artist</option><option>the artist's agent or manager</option><option>the promoter who booked the first night</option></select></label>
+    <label>Your email <input id="tEmail" type="email" /></label>
+    <div class="row" style="margin-top:16px">
+      <button class="btn" id="tSend">Post it</button>
+      <button class="ghost" id="tCancel">Cancel</button>
+    </div>`;
+  $('modal').hidden = false;
+  $('tCancel').onclick = closeModal;
+  $('tSend').onclick = () => {
+    submitPayload('Flyover: new trip posted', {
+      artist: $('tArtist').value, flyingInto: $('tInto').value, bookedShow: $('tBooked').value,
+      openNights: $('tOpen').value, addedNightPrice: $('tPrice').value, needs: $('tNeeds').value,
+      postedBy: $('tRole').value, email: $('tEmail').value,
+    });
+    closeModal();
+  };
+}
+
+function openDateForm() {
+  $('modalBody').innerHTML = `
+    <h2>Post an open date</h2>
+    <p class="fine">Artists already travelling near you can offer to take it.</p>
+    <label>Date <input id="dDate" type="date" /></label>
+    <label>Venue or night <input id="dVenue" /></label>
+    <label>City <input id="dCity" value="${esc(CFG.HOME_CITY || '')}" /></label>
+    <label>What you book <input id="dGenres" placeholder="house, bass" /></label>
+    <label>What you can pay, all in <input id="dBudget" placeholder="$400 all in" /></label>
+    <label>Your email <input id="dEmail" type="email" /></label>
+    <div class="row" style="margin-top:16px">
+      <button class="btn" id="dSend">Post it</button>
+      <button class="ghost" id="dCancel">Cancel</button>
+    </div>`;
+  $('modal').hidden = false;
+  $('dCancel').onclick = closeModal;
+  $('dSend').onclick = () => {
+    submitPayload('Flyover: open date posted', {
+      date: $('dDate').value, venue: $('dVenue').value, city: $('dCity').value,
+      genres: $('dGenres').value, budget: $('dBudget').value, email: $('dEmail').value,
+    });
+    closeModal();
+  };
+}
 
 /* ---------- venues ---------- */
 function renderVenues() {
@@ -589,6 +702,8 @@ $('venueForm').addEventListener('submit', (e) => {
 document.body.addEventListener('click', (ev) => {
   const t = ev.target.closest('[data-book]');
   if (t) { openBooking(t.dataset.book); return; }
+  const k = ev.target.closest('[data-claim]');
+  if (k) { openClaim(k.dataset.claim); return; }
   const tab = ev.target.closest('[data-tab]');
   if (tab) { ev.preventDefault(); showTab(tab.dataset.tab); }
 });
@@ -627,32 +742,6 @@ function openBooking(id) {
       venue: $('bVenue').value, city: $('bCity').value, date: $('bDate').value,
       budget: $('bBudget').value, openToSplit: $('bSplit').checked ? 'yes' : 'no',
       note: $('bNote').value,
-    });
-    closeModal();
-  };
-}
-
-function openRunForm() {
-  $('modalBody').innerHTML = `
-    <h2>Post a run</h2>
-    <p class="fine">One artist, one trip, several cities. We find the other rooms on the route
-      and split the travel.</p>
-    <label>Artist you want <input id="rArtist" /></label>
-    <label>Your city <input id="rCity" value="${esc(CFG.HOME_CITY || '')}" /></label>
-    <label>Your venue or night <input id="rVenue" /></label>
-    <label>Rough dates <input id="rDates" placeholder="first half of March" /></label>
-    <label>What you can put toward travel <input id="rShare" placeholder="e.g. 150" /></label>
-    <label>Your email <input id="rEmail" type="email" /></label>
-    <div class="row" style="margin-top:16px">
-      <button class="btn" id="rSend">Post it</button>
-      <button class="ghost" id="rCancel">Cancel</button>
-    </div>`;
-  $('modal').hidden = false;
-  $('rCancel').onclick = closeModal;
-  $('rSend').onclick = () => {
-    submitPayload('Flyover: new run proposed', {
-      artist: $('rArtist').value, city: $('rCity').value, venue: $('rVenue').value,
-      dates: $('rDates').value, travelShare: $('rShare').value, email: $('rEmail').value,
     });
     closeModal();
   };
