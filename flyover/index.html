@@ -209,7 +209,7 @@ legend{color:var(--dim);font-size:12px;padding:0 6px}
        Below is what one looks like.</p>
   </div>
 
-  <h2 class="sectionhead">What a trip looks like</h2>
+  <h2 class="sectionhead">With a price set</h2>
   <div class="grid">
     <div class="card trip example">
       <div class="tags"><span class="chip ex">Example, not a real listing</span></div>
@@ -522,15 +522,31 @@ function renderBrowse() {
  * labelled example so the shape is obvious. NO AUCTION: an added night has the price the
  * artist set, first room to claim gets it, and the artist picks if two rooms collide.
  */
-const TRIPS = [];
+const TRIPS = [
+  { id: 'demo-jorgen', demo: true, artist: 'Jörgen', from: 'Los Angeles, CA',
+    into: 'Columbus, OH', dates: 'Nov 19 to 21',
+    nights: [
+      { day: 'Thu Nov 19', open: true, note: 'within 3h30 of Columbus' },
+      { day: 'Fri Nov 20', open: false, city: 'Columbus · Listen at Seventh Son' },
+      { day: 'Sat Nov 21', open: true, note: 'within 3h30 of Columbus' },
+    ] },
+  { id: 'demo-mackenzie', demo: true, artist: 'Mackenzie Whitaker', from: 'Charleston, SC',
+    into: 'Columbus, OH', dates: 'Nov 19 to 21',
+    nights: [
+      { day: 'Thu Nov 19', open: true, note: 'within 3h30 of Columbus' },
+      { day: 'Fri Nov 20', open: false, city: 'Columbus · Listen at Seventh Son' },
+      { day: 'Sat Nov 21', open: true, note: 'within 3h30 of Columbus' },
+    ] },
+];
 const OPEN_DATES = [];
 
 function tripCard(t) {
-  return `<div class="card trip">
-    <div><h3>${esc(t.artist)}</h3><div class="where">Flying into ${esc(t.into)} · ${esc(t.dates)}</div></div>
+  return `<div class="card trip${t.demo ? ' example' : ''}">
+    ${t.demo ? '<div class="tags"><span class="chip ex">Demo: last Friday\'s real show, as a trip would look</span></div>' : ''}
+    <div><h3>${esc(t.artist)}</h3><div class="where">${t.from ? 'From ' + esc(t.from) + ' · ' : ''}Flying into ${esc(t.into)} · ${esc(t.dates)}</div></div>
     <div class="nights">${(t.nights || []).map((n) => `<div class="night ${n.open ? 'open' : 'taken'}">
       <b>${esc(n.day)}</b> ${esc(n.open ? 'open' : n.city)} <span>${esc(n.open ? (n.note || '') : 'booked')}</span></div>`).join('')}</div>
-    <div class="rate">${esc(t.price || 'Added-night price on request')}</div>
+    <div class="rate${t.demo ? ' unlisted' : ''}">${esc(t.demo ? 'Added-night price: set by the artist (none set, demo)' : (t.price || 'Added-night price on request'))}</div>
     ${t.needs ? `<div class="leg">Needs: ${esc(t.needs)}</div>` : ''}
     <div class="row"><button class="btn" data-claim="${esc(t.id)}">Claim a night</button></div>
   </div>`;
@@ -563,11 +579,11 @@ $('postTrip').onclick = () => openTripForm();
 $('postDate').onclick = () => openDateForm();
 
 function openClaim(id) {
-  const example = id === 'example';
   const t = TRIPS.find((x) => x.id === id);
+  const example = id === 'example' || Boolean(t && t.demo);
   $('modalBody').innerHTML = `
     <h2>Claim a night${t ? ' with ' + esc(t.artist) : ''}</h2>
-    <p class="fine">${example ? 'This is the example trip, so nothing is sent. On a real trip this goes to the artist or their agent.' : 'The price is the one the artist set. First room to claim a night gets it.'}</p>
+    <p class="fine">${example ? 'This is a demo trip, so nothing is sent. On a real trip this goes to the artist or their agent.' : 'The price is the one the artist set. First room to claim a night gets it.'}</p>
     <label>Which night <select id="kNight"><option>Thursday</option><option>Saturday</option></select></label>
     <label>Your venue or night <input id="kVenue" /></label>
     <label>City <input id="kCity" /></label>
