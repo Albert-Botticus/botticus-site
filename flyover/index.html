@@ -175,6 +175,12 @@ button[disabled]{opacity:.55;cursor:default}
   background:var(--panel);border:1px solid var(--line);border-radius:10px}
 .showrow span{color:var(--dim);font-size:13px;margin-left:auto}
 
+.showlist{display:flex;flex-direction:column;gap:8px}
+.claimbox{margin-top:26px;padding:14px 16px;border:1px dashed var(--line);border-radius:12px;
+  color:var(--dim);font-size:13px;max-width:640px}
+.claimbox b{color:var(--ink)}
+.filters select{max-width:100%}
+
 </style>
 </head>
 <body>
@@ -208,6 +214,7 @@ button[disabled]{opacity:.55;cursor:default}
     <input type="search" id="q" placeholder="Search name, city, genre" />
     <select id="fGenre"><option value="">All genres</option></select>
     <select id="fState"><option value="">All states</option></select>
+    <select id="fVenue"><option value="">Played anywhere</option></select>
     <label class="check"><input type="checkbox" id="fTravels" /> Known to travel</label>
     <label class="check"><input type="checkbox" id="fListed" /> Has listed a rate</label>
     <span class="count" id="browseCount"></span>
@@ -488,6 +495,7 @@ async function boot() {
   S.hosts = Array.isArray(h.hosts) ? h.hosts : [];
   S.meta = { a, h };
 
+  buildProfiles();
   fillSelects();
   renderBrowse(); renderTrips(); renderOpenDates(); renderVenues();
   recalc();
@@ -502,6 +510,8 @@ function fillSelects() {
   const fill = (el, vals) => [...vals].sort().forEach((v) =>
     el.insertAdjacentHTML('beforeend', `<option value="${esc(v)}">${esc(v)}</option>`));
   fill($('fGenre'), g); fill($('fState'), st); fill($('hState'), hst);
+  S.hosts.filter((x) => S.hostCounts[x.id]).sort((a, b) => a.name.localeCompare(b.name)).forEach((x) =>
+    $('fVenue').insertAdjacentHTML('beforeend', `<option value="${esc(x.id)}">${esc(x.name)} (${S.hostCounts[x.id]})</option>`));
 
 }
 
@@ -513,14 +523,15 @@ function artistCard(a) {
   const travel = String(a.travels) === 'true'
     ? `<div class="leg"><b>Travels to play.</b> ${esc((a.evidence || '').slice(0, 150))}</div>` : '';
   return `<div class="card">
-    <div><h3>${esc(a.name)}</h3>
-      <div class="where">${esc(a.city || '')}${a.state ? ', ' + esc(a.state) : ''}</div></div>
+    <div><h3><a class="plain" href="#artist/${esc(a.id)}">${esc(a.name)}</a></h3>
+      <div class="where">${esc(homeOf(a))}</div></div>
     <div class="tags">${(a.genres || []).slice(0, 5).map((x) => `<span class="chip">${esc(x)}</span>`).join('')}</div>
     <div class="rate ${r.listed ? '' : 'unlisted'}">${esc(r.text)}</div>
     ${travel}
     ${links ? `<div class="links">${links}</div>` : ''}
     <div class="row">
       <button class="btn" data-book="${esc(a.id)}">Request a date</button>
+      <a class="ghost linkbtn" href="#artist/${esc(a.id)}">Profile</a>
       ${a.sourceUrl ? `<a class="leg" href="${esc(a.sourceUrl)}" target="_blank" rel="noopener">source</a>` : ''}
     </div>
   </div>`;
@@ -529,10 +540,11 @@ function artistCard(a) {
 function renderBrowse() {
   const q = $('q').value.toLowerCase().trim();
   const g = $('fGenre').value, st = $('fState').value;
-  const tv = $('fTravels').checked, li = $('fListed').checked;
+  const tv = $('fTravels').checked, li = $('fListed').checked, fv = $('fVenue').value;
   const out = S.artists.filter((a) => {
     if (g && !(a.genres || []).includes(g)) return false;
     if (st && a.state !== st) return false;
+    if (fv && !(a.played || []).some((p) => p.hostId === fv)) return false;
     if (tv && String(a.travels) !== 'true') return false;
     if (li && !rateLabel(a).listed) return false;
     if (q && ![a.name, a.city, a.state, (a.genres || []).join(' ')].join(' ').toLowerCase().includes(q)) return false;
@@ -547,7 +559,7 @@ function renderBrowse() {
     ? 'No artist has listed a rate yet. That is what the outreach is for.'
     : 'Nothing matches those filters.';
 }
-['q', 'fGenre', 'fState', 'fTravels', 'fListed'].forEach((id) =>
+['q', 'fGenre', 'fState', 'fVenue', 'fTravels', 'fListed'].forEach((id) =>
   $(id).addEventListener('input', renderBrowse));
 
 /* ---------- trips and open dates ----------
@@ -666,33 +678,64 @@ function renderTrips() {
   $('tripEmpty').hidden = TRIPS.length > 0;
 }
 
+/* Every listed artist gets a profile page. Listed profiles are built from public listings
+ * (who played where), carry no price, and say plainly that the artist has not claimed them.
+ */
+const homeOf = (a) => [a.city || a.home, a.state || a.country].filter(Boolean).join(', ');
+
+function buildProfiles() {
+  const perHost = {};
+  S.artists.forEach((a) => {
+    (a.played || []).forEach((p) => { (perHost[p.hostId] = perHost[p.hostId] || new Set()).add(a.id); });
+    if (PROFILES[a.id]) return;
+    const links = {};
+    Object.entries(a.links || {}).forEach(([k, v]) => { if (v) links[k === 'ra' ? 'RA' : k[0].toUpperCase() + k.slice(1)] = v; });
+    PROFILES[a.id] = {
+      name: a.name, home: homeOf(a), genres: a.genres || [], followers: a.instagramFollowers || null,
+      bio: a.bio || null, links, played: a.played || [], listed: true,
+    };
+  });
+  S.hostCounts = {};
+  Object.entries(perHost).forEach(([h, set]) => { S.hostCounts[h] = set.size; });
+}
+
 function renderProfile(id) {
   const p = PROFILES[id];
-  if (!p) { $('profileBody').innerHTML = '<p class="empty">No such profile.</p>'; return; }
+  if (!p) { $('profileBody').innerHTML = '<a class="back" href="#" data-tab="browse">&larr; All artists</a><p class="empty">No such profile.</p>'; return; }
   const trips = TRIPS.filter((t) => t.profile === id);
+  const shows = p.listed
+    ? (p.played || []).slice().sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 12)
+        .map((s) => `<div class="showrow"><b>${esc(s.date ? dayLabel(s.date) : '')}</b> ${esc(s.event || 'Show')} <span>${esc([s.hostName, s.city].filter(Boolean).join(' · '))}</span></div>`).join('')
+    : `<div class="showrow"><b>${esc(dayLabel(SHOW.date))}</b> ${esc(SHOW.name)} <span>${esc(p.role)} · ${esc(SHOW.room)}</span></div>`;
+  const stats = [
+    p.followers ? `<div><strong>${p.followers.toLocaleString('en-US')}</strong><span class="k">Instagram followers</span></div>` : '',
+    p.listed && (p.played || []).length ? `<div><strong>${p.played.length}</strong><span class="k">${p.played.length === 1 ? 'show' : 'shows'} on record</span></div>` : '',
+    trips.length ? `<div><strong>${trips.reduce((n, t) => n + openNights(t).length, 0)}</strong><span class="k">open nights</span></div>` : '',
+  ].join('');
+  const mail = CFG.CONTACT_EMAIL ? `mailto:${CFG.CONTACT_EMAIL}?subject=${encodeURIComponent('Flyover profile: ' + p.name)}` : '#';
   $('profileBody').innerHTML = `
-    <a class="back" href="#" data-tab="runs">&larr; All trips</a>
+    <a class="back" href="#" data-tab="${p.listed ? 'browse' : 'runs'}">&larr; ${p.listed ? 'All artists' : 'All trips'}</a>
     <div class="phead">
       <div class="avatar big">${esc(initials(p.name))}</div>
       <div>
         <h1>${esc(p.name)}</h1>
-        <div class="where">${esc(p.home)}</div>
-        <div class="tags" style="margin-top:8px">${p.genres.map((g) => `<span class="chip">${esc(g)}</span>`).join('')}</div>
+        <div class="where">${esc(p.home || '')}</div>
+        <div class="tags" style="margin-top:8px">${(p.genres || []).map((g) => `<span class="chip">${esc(g)}</span>`).join('')}</div>
       </div>
     </div>
-    <div class="pstats">
-      <div><strong>${p.followers.toLocaleString('en-US')}</strong><span class="k">Instagram followers</span></div>
-      <div><strong>${trips.reduce((n, t) => n + openNights(t).length, 0)}</strong><span class="k">open nights</span></div>
-    </div>
-    <p class="bio">${esc(p.bio)}</p>
-    <div class="links">${Object.entries(p.links).map(([k, v]) =>
+    ${stats ? `<div class="pstats">${stats}</div>` : '<div style="height:18px"></div>'}
+    ${p.bio ? `<p class="bio">${esc(p.bio)}</p>` : ''}
+    <div class="links">${Object.entries(p.links || {}).map(([k, v]) =>
       `<a class="ghost linkbtn" href="${esc(v)}" target="_blank" rel="noopener">${esc(k)}</a>`).join('')}</div>
-    <h2 class="sectionhead">Trips</h2>
-    <div class="grid">${trips.map(tripCard).join('') || '<p class="empty">No trips posted.</p>'}</div>
-    <h2 class="sectionhead">Recent shows</h2>
-    <div class="showrow"><b>${esc(dayLabel(SHOW.date))}</b> ${esc(SHOW.name)} <span>${esc(p.role)} · ${esc(SHOW.room)}</span></div>
-    <p class="fine">Demo profile, put together from public information. It was not created or
-      claimed by the artist, and the price shown is a demo price.</p>`;
+    ${p.listed ? `<div class="row" style="margin-top:16px"><button class="btn" data-book="${esc(id)}">Request a date</button>
+      <span class="rate unlisted">Rate on request</span></div>` : ''}
+    ${trips.length ? `<h2 class="sectionhead">Trips</h2><div class="grid">${trips.map(tripCard).join('')}</div>` : ''}
+    ${shows ? `<h2 class="sectionhead">Recent shows</h2><div class="showlist">${shows}</div>` : ''}
+    <div class="claimbox">
+      ${p.listed
+        ? `<b>Is this you?</b> This profile was put together from public show listings and has not been claimed. <a href="${esc(mail)}">Claim it</a> to add your travel dates and rate, or <a href="${esc(mail)}">ask us to remove it</a>.`
+        : 'Demo profile, put together from public information. It was not created or claimed by the artist, and the price shown is a demo price.'}
+    </div>`;
 }
 
 function routeFromHash() {
@@ -823,6 +866,7 @@ function renderVenues() {
       <div class="where">${esc(h.city || '')}${h.state ? ', ' + esc(h.state) : ''} · ${esc(h.type || '')}</div></div>
     <div class="tags">${(h.genres || []).slice(0, 5).map((x) => `<span class="chip">${esc(x)}</span>`).join('')}</div>
     ${h.bookstravelingActs === 'true' ? '<div class="leg"><b>Books touring acts.</b></div>' : ''}
+    ${S.hostCounts[h.id] ? `<a class="leg" href="#" data-venue="${esc(h.id)}">${S.hostCounts[h.id]} ${S.hostCounts[h.id] === 1 ? 'artist has' : 'artists have'} played here &rarr;</a>` : ''}
     <div class="links">
       ${h.website ? `<a href="${esc(h.website)}" target="_blank" rel="noopener">website</a>` : ''}
       ${h.social ? `<a href="${esc(h.social)}" target="_blank" rel="noopener">social</a>` : ''}
@@ -884,6 +928,8 @@ document.body.addEventListener('click', (ev) => {
   if (t) { openBooking(t.dataset.book); return; }
   const k = ev.target.closest('[data-claim]');
   if (k) { openClaim(k.dataset.claim); return; }
+  const v = ev.target.closest('[data-venue]');
+  if (v) { ev.preventDefault(); $('fVenue').value = v.dataset.venue; renderBrowse(); showTab('browse'); return; }
   const tab = ev.target.closest('[data-tab]');
   if (tab) { ev.preventDefault(); showTab(tab.dataset.tab); }
 });
