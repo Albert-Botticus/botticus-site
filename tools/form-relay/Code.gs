@@ -10,7 +10,12 @@ var TO = 'hello@botticus.com';
 var MAX_FIELD = 4000;
 var HOURLY_CAP = 30; // spam brake: more than this per hour and we stop emailing until the hour passes
 
-function doGet() {
+function doGet(e) {
+  // botticus.com/flyover asks which artists already have a request, so a second room can see it.
+  if (e && e.parameter && e.parameter.flyover === 'requests') {
+    try { return json_({ ok: true, requests: flyoverRequests_() }); }
+    catch (err) { return json_({ ok: false, error: 'unavailable' }); }
+  }
   return json_({ ok: true, service: 'botticus-form-relay' });
 }
 
@@ -25,6 +30,11 @@ function doPost(e) {
 
   // Honeypot: real visitors never see the field.
   if (get('_gotcha')) return json_({ ok: true });
+  // Flyover (botticus.com/flyover) has its own fields and its own handler below.
+  if (get('formType').indexOf('flyover') === 0) {
+    try { return flyoverPost_(data, get); }
+    catch (err) { return json_({ ok: false, error: 'flyover relay error' }); }
+  }
   if (!get('name') || !get('email')) return json_({ ok: false, error: 'name and email required' });
   if (overCap_()) return json_({ ok: false, error: 'rate limited' });
 
@@ -100,4 +110,79 @@ function overCap_() {
 
 function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+// ---------------------------------------------------------------------------------------
+// Flyover. Two kinds of post:
+//   formType 'flyover-request'  a room asks for an artist on a night. Emailed to hello@ AND
+//                               counted, so the site can show "1 room has asked" to the next
+//                               visitor. Only a count and the city are ever given back out.
+//   formType 'flyover'          any other Flyover form (join, post a trip). Emailed only.
+// Counts live in script properties: no spreadsheet, no extra permissions.
+var FLY_PREFIX = 'fly|';
+
+function flyoverPost_(data, get) {
+  var email = get('email') || get('contact');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json_({ ok: false, error: 'email required' });
+  if (overCap_()) return json_({ ok: false, error: 'rate limited' });
+
+  var isRequest = get('formType') === 'flyover-request';
+  var count = null;
+  if (isRequest) {
+    var artistId = get('artistId');
+    var night = get('nightDate');
+    if (!/^[a-z0-9-]{1,60}$/.test(artistId) || !/^\d{4}-\d{2}-\d{2}$/.test(night)) return json_({ ok: false, error: 'artist and night required' });
+    count = flyoverCount_(artistId, night, get('city').slice(0, 40), email);
+  }
+
+  var skip = { _gotcha: 1, formType: 1, _subject: 1 };
+  var lines = [isRequest ? 'FLYOVER REQUEST' + (count && count.n > 1 ? ' (' + count.n + ' rooms have now asked for this artist and night)' : '') : 'FLYOVER', ''];
+  var keys = Object.keys(data).slice(0, 40);
+  for (var i = 0; i < keys.length; i++) {
+    if (skip[keys[i]]) continue;
+    var v = get(keys[i]);
+    if (v) lines.push(String(keys[i]).slice(0, 40) + ': ' + v);
+  }
+  lines.push('', '--', 'Sent from botticus.com/flyover.');
+  var subject = (isRequest ? 'Flyover request: ' : 'Flyover: ') + (get('_subject') || get('artist') || get('name') || 'form').replace(/[\r\n]+/g, ' ').slice(0, 140);
+  MailApp.sendEmail(TO, subject, lines.join('\n'), { name: 'botticus.com/flyover', replyTo: email });
+  return json_({ ok: true, count: count ? count.n : null });
+}
+
+// One property per artist + night: { n: rooms that asked, cities: [...], who: [short hashes] }.
+// The hash only stops one person from counting twice; no email address is stored.
+function flyoverCount_(artistId, night, city, email) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(8000);
+  try {
+    var props = PropertiesService.getScriptProperties();
+    var key = FLY_PREFIX + artistId + '|' + night;
+    var rec = JSON.parse(props.getProperty(key) || '{"n":0,"cities":[],"who":[]}');
+    var who = Utilities.base64Encode(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, email.toLowerCase() + '|' + key)).slice(0, 10);
+    if (rec.who.indexOf(who) < 0 && rec.who.length < 40) {
+      rec.who.push(who);
+      rec.n = rec.who.length;
+      if (city && rec.cities.indexOf(city) < 0 && rec.cities.length < 8) rec.cities.push(city);
+      props.setProperty(key, JSON.stringify(rec));
+    }
+    if (Math.random() < 0.05) flyoverPrune_(props);
+    return rec;
+  } finally { lock.releaseLock(); }
+}
+
+function flyoverRequests_() {
+  var all = PropertiesService.getScriptProperties().getProperties();
+  var out = {};
+  for (var k in all) {
+    if (k.indexOf(FLY_PREFIX) !== 0) continue;
+    try { var r = JSON.parse(all[k]); out[k.slice(FLY_PREFIX.length)] = { n: r.n, cities: r.cities }; } catch (err) { /* skip a bad row */ }
+  }
+  return out;
+}
+
+// Drop counts for nights that are more than a week gone.
+function flyoverPrune_(props) {
+  var cutoff = Utilities.formatDate(new Date(Date.now() - 7 * 86400000), 'America/New_York', 'yyyy-MM-dd');
+  var all = props.getProperties();
+  for (var k in all) if (k.indexOf(FLY_PREFIX) === 0 && k.split('|')[2] < cutoff) props.deleteProperty(k);
 }
